@@ -9,7 +9,6 @@ export const constantRoutes = [
     component: () => import('@/views/login/index'),
     hidden: true
   },
-
   {
     path: '/404',
     component: () => import('@/views/404'),
@@ -37,14 +36,21 @@ export const constantRoutes = [
         path: 'entrycode',
         name: 'EntryCode',
         component: () => import('@/views/codelist/entrycode/index'),
-        meta: { title: '词条码', icon: 'el-icon-bank-card' },
+        meta: { title: '词条码', icon: 'el-icon-bank-card' }
       },
       {
         path: 'create',
         component: () => import('@/views/codelist/entrycode/create'),
         name: 'CreateArticle',
         hidden: true,
-        meta: { title: '新增二维码'}
+        meta: { title: '新增二维码' }
+      },
+      {
+        path: 'edit',
+        component: () => import('@/views/codelist/entrycode/edit'),
+        name: 'EntryEdit',
+        hidden: true,
+        meta: { title: '编辑词条' }
       },
       {
         path: 'funcode',

@@ -31,8 +31,8 @@
                 <el-upload
                   class="upload-demo"
                   action="/api/Store/UploadFile"
-                  :headers="headers"
                   :on-success="imageUploadSuccess"
+                  :headers="headers"
                   :show-file-list="false"
                   :on-progress="uploadProgress"
                 >
@@ -46,8 +46,8 @@
                 <el-upload
                   class="upload-demo"
                   action="/api/Store/UploadFile"
-                  :headers="headers"
                   :show-file-list="false"
+                  :headers="headers"
                   :on-success="audioUploadSuccess"
                   :on-progress="uploadProgress"
                 >
@@ -61,8 +61,8 @@
                 <el-upload
                   class="upload-demo"
                   action="/api/Store/UploadFile"
-                  :headers="headers"
                   :show-file-list="false"
+                  :headers="headers"
                   :on-success="videoUploadSuccess"
                   :on-progress="uploadProgress"
                 >
@@ -117,21 +117,13 @@
         </el-col>
         <el-col :span="6">
           <div class="create-code-img">
-            <img
-              v-if="!codeSendImg"
-              src="@/assets/icon/create-codeno.png"
-              alt=""
-              srcset=""
-            >
-            <img v-else :src="codeSendImg" alt="" srcset="">
-            <div v-if="!codeSendImg" class="create-btn">
-              <el-button type="primary" @click="publish">生成二维码</el-button>
-            </div>
-            <div v-else class="create-btn">
+            <img :src="codeSendImg" alt="" srcset="">
+            <div class="create-btn">
               <span><el-link type="primary">预览</el-link></span>
               <span><el-link type="primary">下载</el-link></span>
               <div class="create-btn-yes">
-                <el-button type="primary" @click="goback">完成</el-button>
+                <el-button v-if="!isEdit" type="primary" @click="entryEdit">保存</el-button>
+                <el-button v-else type="primary" @click="goback">完成</el-button>
               </div>
             </div>
           </div>
@@ -685,13 +677,14 @@
 <script>
 import { Loading } from 'element-ui'
 import { getToken } from '@/utils/auth'
-import { postPublish, postEntryList } from '@/api/entrycode'
+import { postEntryList, postGetRelics, postEdit } from '@/api/entrycode'
 export default {
-  name: 'CreateArticle',
+  name: 'EntryEdit',
   data() {
     return {
-      activeName: 'second',
       headers: { Authorization: 'Bearer ' + getToken() },
+      activeName: 'second',
+      id: this.$route.query.id,
       entryTipList: [],
       entryTipValue: '',
       checkList: [],
@@ -708,6 +701,7 @@ export default {
       isShowDoc: false,
       editor: null, // 编辑器实例
       editorData: '',
+      isEdit: false,
       editorConfig: {
         image_previewText: '',
         removeDialogTabs: 'image:advanced;image:Link',
@@ -749,16 +743,36 @@ export default {
       target: document.querySelector('.create-code'),
       text: '初始化中...'
     })
+    this.GetRelics()
   },
   methods: {
     checkChange() {
       console.log(this.checkList)
     },
+    // 词条详情信息查询
+    GetRelics() {
+      let params = {
+        id: this.id
+      }
+      postGetRelics(this.qs.stringify(params)).then((res) => {
+        this.codeTitle = res.data.relics_info.name
+        this.codeImage = res.data.relics_info.image
+        this.codeVideo = res.data.relics_info.video_url
+        this.codeAudio = res.data.relics_info.voice_url
+        this.editorData = res.data.relics_info.content
+        this.codeSendImg = res.data.relics_info.mini_code
+        this.entryTipList = res.data.relics_info.related_list
+        res.data.relics_info.related_list.map((item,index)=>{
+          this.checkList.push(item.id);
+        })
+      })
+    },
+
     // 查找相关
     remoteMethod() {
       if (this.entryTipValue !== '') {
         this.loading = true
-        const params = {
+        let params = {
           keyword: this.entryTipValue,
           type: 1
         }
@@ -772,9 +786,10 @@ export default {
     goback() {
       this.$router.go(-1)
     },
-    // 点击上传生成二维码
-    publish() {
-      const parmas = {
+    // 编辑
+    entryEdit() {
+      let parmas = {
+        id: this.id,
         name: this.codeTitle,
         image: this.codeImage,
         voice_url: this.codeAudio,
@@ -782,9 +797,11 @@ export default {
         content: this.editorData,
         related_ids: this.checkList.toString()
       }
-      const loading = this.$loading()
-      postPublish(this.qs.stringify(parmas)).then((res) => {
-        this.codeSendImg = res.data.file_path
+      let loading = this.$loading()
+      postEdit(this.qs.stringify(parmas)).then((res) => {
+        if (res.status == 200) {
+          this.isEdit = true
+        }
         loading.close()
       })
     },

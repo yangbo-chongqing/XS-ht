@@ -38,7 +38,7 @@ export default {
           yesterday: res.data.yesterday,
           nowadays: res.data.nowadays
         }
-        this.chartData = res.data.info_list;
+        this.chartData = res.data.info_list
       })
     }
   }

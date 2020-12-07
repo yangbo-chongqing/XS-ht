@@ -97,7 +97,8 @@ export default {
       loading: false,
       passwordType: 'password',
       redirect: undefined,
-      otherQuery: {}
+      otherQuery: {},
+      setInt: ''
     }
   },
   watch: {
@@ -115,6 +116,9 @@ export default {
   created() {
     this.loginCredentials()
   },
+  destroyed() {
+    clearInterval(this.setInt)
+  },
   methods: {
     // 获取二维码状态
     getCodeStatus() {
@@ -129,7 +133,7 @@ export default {
     loginCredentials() {
       LoginCredentials().then((res) => {
         this.codeKey = res.data.key
-        setInterval(() => {
+        this.setInt = setInterval(() => {
           this.getCodeStatus()
         }, 1500)
       })

@@ -3,7 +3,7 @@
     <div class="homepage-text">
       <el-row :gutter="20">
         <el-col :span="18">
-          <pageForm />
+          <pageForm v-if="enterpriseInfo" :info='enterpriseInfo' />
         </el-col>
         <el-col :span="6">
           <wapAntevisao />
@@ -16,12 +16,28 @@
 <script>
 import pageForm from './form'
 import wapAntevisao from './wapAntevisao'
+import { getGetMuse } from '@/api/settings'
 export default {
   name: 'HomePage',
   components: {
     pageForm,
     wapAntevisao
-  }
+  },
+  data() {
+    return {
+      enterpriseInfo:''
+    }
+  },
+  created () {
+    this.GetMuse();
+  },
+  methods: {
+    GetMuse() {
+        getGetMuse().then((res)=>{
+          this.enterpriseInfo = res.data.muse_info;
+        })
+    }
+  },
 }
 </script>
 

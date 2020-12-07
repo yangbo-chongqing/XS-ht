@@ -3,68 +3,68 @@
 </template>
 
 <script>
-import echarts from "echarts";
-require("echarts/theme/macarons");
-import resize from "./mixins/resize";
+import echarts from 'echarts'
+require('echarts/theme/macarons')
+import resize from './mixins/resize'
 export default {
   mixins: [resize],
   props: {
     className: {
       type: String,
-      default: "chart",
+      default: 'chart'
     },
     width: {
       type: String,
-      default: "100%",
+      default: '100%'
     },
     height: {
       type: String,
-      default: "350px",
+      default: '350px'
     },
     autoResize: {
       type: Boolean,
-      default: true,
+      default: true
     },
     chartData: {
       type: Array,
-      default: [],
-    },
+      default: []
+    }
   },
   data() {
     return {
-      chart: null,
-    };
+      chart: null
+    }
   },
   watch: {
     chartData: {
       deep: true,
       handler(val) {
-        this.setOptions(val);
-      },
-    },
+        this.setOptions(val)
+      }
+    }
   },
   mounted() {
     this.$nextTick(() => {
-      this.initChart();
-    });
+      this.initChart()
+    })
   },
   beforeDestroy() {
     if (!this.chart) {
-      return;
+      return
     }
-    this.chart.dispose();
-    this.chart = null;
+    this.chart.dispose()
+    this.chart = null
   },
   methods: {
     initChart() {
-      this.chart = echarts.init(this.$el, "macarons");
+      this.chart = echarts.init(this.$el, 'macarons')
       // this.setOptions(this.chartData)
     },
     setOptions() {
-      let xAxisData = [];
-      let yAxisData = [];
-      this.chartData.map((item,index)=>{
-        xAxisData.push(item.date);
+      const xAxisData = []
+      const yAxisData = []
+      this.chartData.map((item, index) => {
+        xAxisData.push(item.date)
         yAxisData.push(item.number)
       })
       this.chart.setOption({
@@ -72,44 +72,44 @@ export default {
           data: xAxisData,
           boundaryGap: false,
           axisTick: {
-            show: false,
-          },
+            show: false
+          }
         },
         tooltip: {
-          trigger: "axis",
+          trigger: 'axis',
           axisPointer: {
-            type: "cross",
+            type: 'cross'
           },
-          padding: [5, 10],
+          padding: [5, 10]
         },
         yAxis: {
           axisTick: {
-            show: false,
-          },
+            show: false
+          }
         },
         legend: {
-          data: ["填写数"],
+          data: ['填写数']
         },
         series: [
           {
-            name: "填写数",
+            name: '填写数',
             itemStyle: {
               normal: {
-                color: "#389eef",
+                color: '#389eef',
                 lineStyle: {
-                  color: "#389eef",
-                  width: 2,
-                },
-              },
+                  color: '#389eef',
+                  width: 2
+                }
+              }
             },
-            type: "line",
+            type: 'line',
             data: yAxisData,
             animationDuration: 2800,
-            animationEasing: "cubicInOut",
-          },
-        ],
-      });
-    },
-  },
-};
+            animationEasing: 'cubicInOut'
+          }
+        ]
+      })
+    }
+  }
+}
 </script>

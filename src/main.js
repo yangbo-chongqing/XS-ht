@@ -15,6 +15,9 @@ import qs from 'qs'
 import '@/icons' // icon
 import '@/permission' // permission control
 Vue.prototype.qs = qs
+import CKEditor from 'ckeditor4-vue'
+
+Vue.use(CKEditor)
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
