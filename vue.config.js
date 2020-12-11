@@ -24,10 +24,10 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '/',
+  publicPath: './',
   outputDir: 'dist',
   assetsDir: 'static',
-  lintOnSave: process.env.NODE_ENV === 'development',
+  lintOnSave: false,         //process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
     open: true,
@@ -38,7 +38,7 @@ module.exports = {
     hotOnly: false, // See https://github.com/vuejs/vue-cli/blob/dev/docs/cli-service.md#configuring-proxy
     proxy: {
       '/api': {
-        target: 'http://testsydt.xunsheng.org.cn',
+        target: 'http://xsdt.xunsheng.org.cn',
         // target: 'http://test.xunsheng.org.cn',
         // target:'http://118.178.94.250',
         changeOrigin: true

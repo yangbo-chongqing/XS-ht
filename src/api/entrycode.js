@@ -1,4 +1,12 @@
 import request from '@/utils/request'
+// 数据统计
+export function postStatistics(data) {
+  return request({
+    url: '/api/Store/Statistics',
+    method: 'post',
+    data
+  })
+}
 // 获取工作台详情
 export function entryCodeList(data) {
   return request({

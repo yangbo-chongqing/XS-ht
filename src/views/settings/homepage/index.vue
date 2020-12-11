@@ -3,7 +3,7 @@
     <div class="homepage-text">
       <el-row :gutter="20">
         <el-col :span="18">
-          <pageForm v-if="enterpriseInfo" :info='enterpriseInfo' />
+          <pageForm v-if="enterpriseInfo" :info="enterpriseInfo" />
         </el-col>
         <el-col :span="6">
           <wapAntevisao />
@@ -25,19 +25,19 @@ export default {
   },
   data() {
     return {
-      enterpriseInfo:''
+      enterpriseInfo: ''
     }
   },
-  created () {
-    this.GetMuse();
+  created() {
+    this.GetMuse()
   },
   methods: {
     GetMuse() {
-        getGetMuse().then((res)=>{
-          this.enterpriseInfo = res.data.muse_info;
-        })
+      getGetMuse().then((res) => {
+        this.enterpriseInfo = res.data.muse_info
+      })
     }
-  },
+  }
 }
 </script>
 

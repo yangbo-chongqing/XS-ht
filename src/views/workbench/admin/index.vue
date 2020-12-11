@@ -21,7 +21,11 @@
         <el-col :span="24"><div>近3日热码</div></el-col>
       </el-row>
       <div class="workbench-code-list">
-        <div v-for="(item,index) in relicsList" :key="item.id+index" class="workbench-code-list-item">
+        <div
+          v-for="(item, index) in relicsList"
+          :key="item.id + index"
+          class="workbench-code-list-item"
+        >
           <el-row :gutter="20">
             <el-col :span="16">
               <el-row :gutter="20">
@@ -37,16 +41,20 @@
                   :span="12"
                 ><div class="workbench-code-item-body">
                   <h3>{{ item.name }}</h3>
-                  <p>近3日扫码量<span>{{ item.three }}</span>总扫码量<span>{{ item.watch_number }}</span></p>
-                  <p>分类<span>{{ item.type.type_name }}</span></p>
+                  <p>
+                    近3日扫码量<span>{{ item.three }}</span>总扫码量<span>{{ item.watch_number }}</span>
+                  </p>
+                  <p>
+                    分类<span>{{ item.type.type_name }}</span>
+                  </p>
                 </div></el-col>
               </el-row>
             </el-col>
             <el-col :span="8">
               <div class="workbench-code-item-link-body">
-                <el-link href="" target="_blank">下载</el-link>
-                <el-link href="" target="_blank">预览</el-link>
-                <el-link href="" target="_blank">编辑</el-link>
+                <el-link target="_blank" @click="downloadImg(item.mini_code,'code')">下载</el-link>
+                <!-- <el-link>预览</el-link> -->
+                <el-link @click="golinkpage('/codelist/edit', { id: item.id })">编辑</el-link>
               </div>
             </el-col>
           </el-row>
@@ -57,6 +65,7 @@
 </template>
 
 <script>
+import { downloadIamge } from '@/utils/utils'
 import { array } from 'js-md5'
 export default {
   name: 'WorkbenchCode',
@@ -80,10 +89,19 @@ export default {
       ]
     }
   },
-  created() {
-  },
+  created() {},
   methods: {
-
+    downloadImg(img, imgname) {
+      downloadIamge(img, imgname)
+    },
+    golinkpage(page, obj) {
+      this.$router.push({
+        path: page,
+        query: {
+          ...obj
+        }
+      })
+    }
   }
 }
 </script>

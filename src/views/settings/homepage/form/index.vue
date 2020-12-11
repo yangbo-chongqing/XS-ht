@@ -1,111 +1,111 @@
 <template>
   <div class="pageform-container">
     <el-row :gutter="20">
-      <el-col :span="18"
-        ><el-form ref="form" label-width="80px">
-          <el-form-item label="企业名称">
-            <el-input v-if="isEditFlag" v-model="info.muse_name" />
-            <p v-else>{{ info.muse_name ? info.muse_name : "暂无" }}</p>
-          </el-form-item>
-          <el-form-item label="经营地址">
-            <el-input v-if="isEditFlag" v-model="info.address" />
-            <p v-else>{{ info.address ? info.address : "暂无" }}</p>
-          </el-form-item>
-          <el-form-item label="口号">
-            <el-input v-if="isEditFlag" v-model="info.slogan" />
-            <p v-else>{{ info.slogan ? info.slogan : "暂无" }}</p>
-          </el-form-item>
-          <el-form-item label="企业音频">
-            <audio
-              v-if="enterpriseAudio"
-              controls
-              :src="enterpriseAudio"
-            ></audio>
-            <el-upload
-              class="upload-demo"
-              action="/api/Store/UploadFile"
-              v-if="!enterpriseAudio || isEditFlag"
-              :headers="headers"
-              :show-file-list="false"
-              :on-success="audioUploadSuccess"
-              :on-progress="uploadProgress"
-            >
-              <el-button size="small" type="primary">上传音频</el-button>
-              <span slot="tip" class="el-upload__tip"
-                >格式 mp3、m4a 小于10M</span
-              >
-            </el-upload>
-          </el-form-item>
-          <el-form-item label="企业视频">
-            <video
-              width="300px"
-              v-if="enterpriseVideo"
-              controls
-              :src="enterpriseVideo"
-            ></video>
-            <el-upload
-              v-if="!enterpriseVideo || isEditFlag"
-              class="upload-demo"
-              action="/api/Store/UploadFile"
-              :headers="headers"
-              :show-file-list="false"
-              :on-success="videoUploadSuccess"
-              :on-progress="uploadProgress"
-            >
-              <el-button size="small" type="primary">上传视频</el-button>
-              <span slot="tip" class="el-upload__tip">格式 mp4 小于20M</span>
-            </el-upload>
-          </el-form-item>
+      <el-col
+        :span="18"
+      ><el-form ref="form" label-width="80px">
+        <el-form-item label="企业名称">
+          <el-input v-if="isEditFlag" v-model="info.muse_name" />
+          <p v-else>{{ info.muse_name ? info.muse_name : "暂无" }}</p>
+        </el-form-item>
+        <el-form-item label="经营地址">
+          <el-input v-if="isEditFlag" v-model="info.address" />
+          <p v-else>{{ info.address ? info.address : "暂无" }}</p>
+        </el-form-item>
+        <el-form-item label="口号">
+          <el-input v-if="isEditFlag" v-model="info.slogan" />
+          <p v-else>{{ info.slogan ? info.slogan : "暂无" }}</p>
+        </el-form-item>
+        <el-form-item label="企业音频">
+          <audio
+            v-if="enterpriseAudio"
+            controls
+            :src="enterpriseAudio"
+          />
+          <el-upload
+            v-if="!enterpriseAudio || isEditFlag"
+            class="upload-demo"
+            action="https://xsdt.xunsheng.org.cn/api/Store/UploadFile"
+            :headers="headers"
+            :show-file-list="false"
+            :on-success="audioUploadSuccess"
+            :on-progress="uploadProgress"
+          >
+            <el-button size="small" type="primary">上传音频</el-button>
+            <span
+              slot="tip"
+              class="el-upload__tip"
+            >格式 mp3、m4a 小于10M</span>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="企业视频">
+          <video
+            v-if="enterpriseVideo"
+            width="300px"
+            controls
+            :src="enterpriseVideo"
+          />
+          <el-upload
+            v-if="!enterpriseVideo || isEditFlag"
+            class="upload-demo"
+            action="https://xsdt.xunsheng.org.cn/api/Store/UploadFile"
+            :headers="headers"
+            :show-file-list="false"
+            :on-success="videoUploadSuccess"
+            :on-progress="uploadProgress"
+          >
+            <el-button size="small" type="primary">上传视频</el-button>
+            <span slot="tip" class="el-upload__tip">格式 mp4 小于20M</span>
+          </el-upload>
+        </el-form-item>
 
-          <el-form-item label="门头">
-            <img
-              width="300px"
-              v-if="enterpriseImage"
-              :src="enterpriseImage"
-              alt=""
-            />
-            <el-upload
-              v-if="!enterpriseImage || isEditFlag"
-              class="upload-demo"
-              action="/api/Store/UploadFile"
-              :headers="headers"
-              :show-file-list="false"
-              :on-success="imageUploadSuccess"
-              :on-progress="uploadProgress"
-            >
-              <el-button size="small" type="primary">上传门头</el-button>
-              <span slot="tip" class="el-upload__tip"
-                >格式 png、jpg 500*500</span
-              >
-            </el-upload>
-          </el-form-item>
-          <el-form-item>
-            <el-button
-              type="primary"
-              @click="saveEditEditMuse"
-              v-if="isEditFlag"
-              >保存</el-button
-            >
-            <el-button
-              :type="isEditFlag ? 'danger' : 'primary'"
-              @click="toggleSave"
-              >{{ isEditFlag ? "取消" : "编辑" }}</el-button
-            >
-          </el-form-item>
-        </el-form></el-col
-      >
+        <el-form-item label="门头">
+          <img
+            v-if="enterpriseImage"
+            width="300px"
+            :src="enterpriseImage"
+            alt=""
+          >
+          <el-upload
+            v-if="!enterpriseImage || isEditFlag"
+            class="upload-demo"
+            action="https://xsdt.xunsheng.org.cn/api/Store/UploadFile"
+            :headers="headers"
+            :show-file-list="false"
+            :on-success="imageUploadSuccess"
+            :on-progress="uploadProgress"
+          >
+            <el-button size="small" type="primary">上传门头</el-button>
+            <span
+              slot="tip"
+              class="el-upload__tip"
+            >格式 png、jpg 500*500</span>
+          </el-upload>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            v-if="isEditFlag"
+            type="primary"
+            @click="saveEditEditMuse"
+          >保存</el-button>
+          <el-button
+            :type="isEditFlag ? 'danger' : 'primary'"
+            @click="toggleSave"
+          >{{ isEditFlag ? "取消" : "编辑" }}</el-button>
+        </el-form-item>
+      </el-form></el-col>
       <el-col :span="6">
-        <img v-if="enterpriseLogo && !isEditFlag" :src="enterpriseLogo" class="logo" />
+        <img v-if="enterpriseLogo && !isEditFlag" :src="enterpriseLogo" class="logo">
         <el-upload
           v-else-if="!enterpriseLogo || isEditFlag"
           class="logo-uploader"
-          action="/api/Store/UploadFile"
+          action="https://xsdt.xunsheng.org.cn/api/Store/UploadFile"
           :headers="headers"
           :show-file-list="false"
           :on-success="logoUploadSuccess"
           :on-progress="uploadProgress"
         >
-          <img v-if="enterpriseLogo" :src="enterpriseLogo" class="logo" />
+          <img v-if="enterpriseLogo" :src="enterpriseLogo" class="logo">
           <i v-else class="el-icon-plus logo-uploader-icon" />
           <div class="logo-tip">logo</div>
         </el-upload>
@@ -115,79 +115,79 @@
 </template>
 
 <script>
-import { getToken } from "@/utils/auth";
-import { editEditMuse } from "@/api/settings";
+import { getToken } from '@/utils/auth'
+import { editEditMuse } from '@/api/settings'
 export default {
-  name: "HomePageForm",
+  name: 'HomePageForm',
   props: {
     info: {
       type: Object,
-      default: {},
-    },
+      default: {}
+    }
   },
   data() {
     return {
-      headers: { Authorization: "Bearer " + getToken() },
-      uploadLoading: "",
-      enterpriseImage: "",
-      enterpriseAudio: "",
-      enterpriseVideo: "",
-      enterpriseLogo: "",
+      headers: { Authorization: 'Bearer ' + getToken() },
+      uploadLoading: '',
+      enterpriseImage: '',
+      enterpriseAudio: '',
+      enterpriseVideo: '',
+      enterpriseLogo: '',
       isEditFlag: false,
-      loading: "",
-    };
+      loading: ''
+    }
   },
   created() {
-    this.enterpriseImage = this.info.head;
-    this.enterpriseAudio = this.info.voice_url;
-    this.enterpriseVideo = this.info.video_url;
-    this.enterpriseLogo = this.info.logo;
+    this.enterpriseImage = this.info.head
+    this.enterpriseAudio = this.info.voice_url
+    this.enterpriseVideo = this.info.video_url
+    this.enterpriseLogo = this.info.logo
   },
   methods: {
     toggleSave() {
-      this.isEditFlag = !this.isEditFlag;
+      this.isEditFlag = !this.isEditFlag
     },
     saveEditEditMuse() {
       this.loading = this.$loading({
-        text: "保存中",
-      });
-      let params = {
+        text: '保存中'
+      })
+      const params = {
         muse_name: this.info.muse_name,
         address: this.info.address,
         voice_url: this.enterpriseAudio,
         video_url: this.enterpriseVideo,
         head: this.enterpriseImage,
         logo: this.enterpriseLogo,
-        slogan: this.info.slogan,
-      };
+        slogan: this.info.slogan
+      }
       editEditMuse(this.qs.stringify(params)).then((res) => {
-        this.loading.close();
-        this.isEditFlag = false;
-      });
+        this.loading.close()
+        this.isEditFlag = false
+      })
     },
     uploadProgress() {
       this.loading = this.$loading({
-        text: "上传中...",
-      });
+        text: '上传中...'
+      })
     },
     logoUploadSuccess(response, file, fileList) {
-      this.enterpriseLogo = response.data.file_path;
-      this.loading.close();
+      this.enterpriseLogo = response.data.file_path
+      this.loading.close()
     },
     imageUploadSuccess(response, file, fileList) {
-      this.enterpriseImage = response.data.file_path;
-      this.loading.close();
+      this.enterpriseImage = response.data.file_path
+      this.loading.close()
     },
     audioUploadSuccess(response, file, fileList) {
-      this.enterpriseAudio = response.data.file_path;
-      this.loading.close();
+      this.enterpriseAudio = response.data.file_path
+      this.loading.close()
     },
     videoUploadSuccess(response, file, fileList) {
-      this.enterpriseVideo = response.data.file_path;
-      this.loading.close();
-    },
-  },
-};
+      this.enterpriseVideo = response.data.file_path
+      this.loading.close()
+    }
+  }
+}
 </script>
 <style lang="scss">
 .pageform-container {

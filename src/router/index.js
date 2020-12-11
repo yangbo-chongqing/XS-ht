@@ -57,6 +57,20 @@ export const constantRoutes = [
         name: 'FunCode',
         component: () => import('@/views/codelist/funcode/index'),
         meta: { title: '功能码', icon: 'table' }
+      },
+      {
+        path: 'funcreate',
+        component: () => import('@/views/codelist/funcode/create'),
+        name: 'FunCreateArticle',
+        hidden: true,
+        meta: { title: '新增功能码' }
+      },
+      {
+        path: 'funedit',
+        component: () => import('@/views/codelist/funcode/edit'),
+        name: 'FunEntryEdit',
+        hidden: true,
+        meta: { title: '编辑功能码' }
       }
     ]
   },
@@ -87,19 +101,20 @@ export const constantRoutes = [
         path: 'administrator',
         name: 'Administrator',
         component: () => import('@/views/settings/administrator/index'),
-        meta: { title: '子管理员', icon: 'table' }
+        meta: { title: '子管理员', icon: 'el-icon-user' }
       },
       {
         path: 'account',
         name: 'Account',
         component: () => import('@/views/settings/account/index'),
-        meta: { title: '账户设置', icon: 'table' }
+        meta: { title: '账户设置', icon: 'el-icon-s-custom' }
       }
     ]
   },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
+export const asyncRoutes = []
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support
@@ -114,5 +129,5 @@ export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router
 }
-
 export default router
+

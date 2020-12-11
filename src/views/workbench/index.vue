@@ -13,6 +13,7 @@
 import adminContent from './admin'
 import chartContent from './chart'
 import { workbench } from '@/api/workbench'
+
 export default {
   name: 'WorkbenchCode',
   components: { adminContent, chartContent },

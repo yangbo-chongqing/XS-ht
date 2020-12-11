@@ -5,7 +5,7 @@
       <el-col
         :span="24"
       ><div class="editioninfo-item">
-        <label>当前版本:</label> <span>最新</span><span><el-link type="primary">跟换版本</el-link></span>
+        <label>当前版本:</label> <span>最新</span>
       </div></el-col>
       <el-col
         :span="24"
@@ -31,6 +31,7 @@ export default {
 <style lang="scss" scoped>
 .editioninfo-container {
   padding: 20px;
+  height: 200px;
   box-sizing: border-box;
   border: 1px solid #f5f5f5;
   box-shadow: 0px 0px 10px #f5f5f5;

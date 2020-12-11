@@ -1,6 +1,6 @@
 <template>
   <div class="entry-query">
-    <div class="entry-popover"></div>
+    <div class="entry-popover" @click="toggleShow" />
     <div class="entry-query-body">
       <el-row :gutter="20">
         <el-col :span="12">
@@ -10,7 +10,7 @@
                 class="entry-query-img"
                 src="@/assets/icon/noback_top_black.png"
                 alt=""
-              />
+              >
             </div>
             <div class="entry-query-phone-center">
               <div class="entry-query-phone-body">
@@ -18,7 +18,7 @@
                   class="query-iframe"
                   :src="infoUrl"
                   frameborder="0"
-                ></iframe>
+                />
               </div>
             </div>
             <div class="entry-query-phone-bottom">
@@ -26,34 +26,38 @@
                 class="entry-query-img"
                 src="@/assets/icon/noback_bottom_black.png"
                 alt=""
-              />
+              >
             </div>
           </div>
         </el-col>
-        <el-col :span="8"> </el-col>
+        <el-col :span="8" />
       </el-row>
     </div>
   </div>
 </template>
 
 <script>
-import { postEntryList, postGetRelics, postEdit } from "@/api/entrycode";
+import { postEntryList, postGetRelics, postEdit } from '@/api/entrycode'
 export default {
-  name: "EntryQuery",
+  name: 'EntryQuery',
   props: {
     infoUrl: {
       type: String,
       default:
-        "http://app2.xunsheng.org.cn/apph5/#/classinfos?mid=283&tk=2fc9c9ace50b382d6f57676d05a7306c&goods_id=107",
-    },
+        'http://app2.xunsheng.org.cn/apph5/#/classinfos?mid=283&tk=2fc9c9ace50b382d6f57676d05a7306c&goods_id=107'
+    }
   },
   data() {
     return {
-      codeImage: "",
-    };
+      codeImage: ''
+    }
   },
-  methods: {},
-};
+  methods: {
+    toggleShow() {
+      this.$emit('popoverEven')
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">

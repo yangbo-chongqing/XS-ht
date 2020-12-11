@@ -13,9 +13,13 @@
           <el-col
             :span="10"
           ><div>
-            <p class="msgscript-dy-info">每周扫码量统计（关注后在微信中接收消息）</p>
+            <p class="msgscript-dy-info">
+              每周扫码量统计（关注后在微信中接收消息）
+            </p>
             <div>
-              <p class="msgscript-dy-text">每周一推送上周二维码扫码量情况</p>
+              <p class="msgscript-dy-text">
+                每周一推送上周二维码扫码量情况
+              </p>
             </div>
           </div></el-col>
           <el-col :span="6">
@@ -23,6 +27,7 @@
               v-model="dyValue"
               active-color="#13ce66"
               inactive-color="#ff4949"
+              @change="toggleSwitch"
             />
           </el-col>
         </el-row></div></el-col>
@@ -31,11 +36,62 @@
 </template>
 
 <script>
+import { getGetMuse, getWarrant } from '@/api/settings'
+import { postAccountSettings } from '@/api/user'
+import { mapGetters } from 'vuex'
+import store from '@/store'
 export default {
   name: 'Msgscription',
+  computed: {
+    ...mapGetters(['userinfo'])
+  },
   data() {
     return {
-      dyValue: true
+      dyValue: false
+    }
+  },
+  created() {
+    this.dyValue = this.userinfo.user_info.notice == 1
+  },
+  methods: {
+    toggleSwitch() {
+      console.log(this.dyValue)
+      if (this.userinfo.user_info.wx_openid) {
+        const params = {
+          notice: this.dyValue ? 1 : 2
+        }
+        postAccountSettings(this.qs.stringify(params)).then((res) => {
+          if (this.dyValue) {
+            this.$message({
+              message: '订阅成功',
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              message: '取消订阅',
+              type: 'success'
+            })
+          }
+        })
+      } else {
+        this.dyValue = false
+        getWarrant().then((res) => {
+          this.$alert(
+            `<div style='text-align:center;'><img src='${res.data.img}' width='200px' /></div>`,
+            '订阅提醒',
+            {
+              dangerouslyUseHTMLString: true,
+              center: true,
+              beforeClose: async(action, instance, done) => {
+                await store.dispatch('user/getInfo')
+                done()
+              }
+            }
+          ).catch(() => {
+
+          })
+        })
+      }
     }
   }
 }
@@ -52,11 +108,11 @@ export default {
     color: #999;
     font-size: 13px;
   }
-  .msgscript-dy-info{
+  .msgscript-dy-info {
     font-size: 13px;
     margin: 10px 0;
   }
-  .msgscript-dy-text{
+  .msgscript-dy-text {
     font-size: 13px;
     color: #999;
   }

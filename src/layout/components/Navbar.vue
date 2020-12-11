@@ -8,7 +8,7 @@
 
     <breadcrumb class="breadcrumb-container" />
     <div class="right-menu">
-      <div class="avatar-hlpe"><i class="el-icon-question" />帮助</div>
+      <!-- <div class="avatar-hlpe"><i class="el-icon-question" />帮助</div> -->
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar" class="user-avatar">

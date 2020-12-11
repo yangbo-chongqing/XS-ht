@@ -1,9 +1,10 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 import md5 from 'js-md5'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 axios.defaults.timeout = 15000// 超时时间
+// axios.defaults.baseURL = 'https://xsdt.xunsheng.org.cn/'
 axios.interceptors.request.use(
   config => {
     const ts = parseInt(new Date().getTime() / 1000)
@@ -47,11 +48,26 @@ const http = function(options) {
         if (res.status == 200) {
           resolve(res)
         } else {
-          Message({
-            message: res.message,
-            type: 'error',
-            duration: 5 * 1000
-          })
+          if (res.status === 401) {
+            // to re-login
+            MessageBox.confirm('登录已过期请重新登录', {
+              confirmButtonText: '去登陆',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              store.dispatch('user/resetToken').then(() => {
+                location.reload()
+              })
+            })
+            return false
+          } else {
+            Message({
+              message: res.message,
+              type: 'error',
+              duration: 5 * 1000
+            })
+          }
+
           setTimeout(() => {
             resolve(res)
           }, 2000)

@@ -30,7 +30,7 @@
               <el-col :span="4">
                 <el-upload
                   class="upload-demo"
-                  action="/api/Store/UploadFile"
+                  action="https://xsdt.xunsheng.org.cn/api/Store/UploadFile"
                   :headers="headers"
                   :on-success="imageUploadSuccess"
                   :show-file-list="false"
@@ -45,7 +45,7 @@
               <el-col :span="4">
                 <el-upload
                   class="upload-demo"
-                  action="/api/Store/UploadFile"
+                  action="https://xsdt.xunsheng.org.cn/api/Store/UploadFile"
                   :headers="headers"
                   :show-file-list="false"
                   :on-success="audioUploadSuccess"
@@ -60,7 +60,7 @@
               <el-col :span="4">
                 <el-upload
                   class="upload-demo"
-                  action="/api/Store/UploadFile"
+                  action="https://xsdt.xunsheng.org.cn/api/Store/UploadFile"
                   :headers="headers"
                   :show-file-list="false"
                   :on-success="videoUploadSuccess"
@@ -128,8 +128,8 @@
               <el-button type="primary" @click="publish">生成二维码</el-button>
             </div>
             <div v-else class="create-btn">
-              <span><el-link type="primary">预览</el-link></span>
-              <span><el-link type="primary">下载</el-link></span>
+              <span><el-link type="primary" @click="togglePopover">预览</el-link></span>
+              <span><el-link type="primary" @click="downloadImg(codeSendImg, 'code')">下载</el-link></span>
               <div class="create-btn-yes">
                 <el-button type="primary" @click="goback">完成</el-button>
               </div>
@@ -406,292 +406,33 @@
                 </section>
               </div>
             </div>
-            <div class="styleLibTplWrapper" @click="setCheditor($event)">
-              <div>
-                <section
-                  style="
-                    font-size: 14px;
-                    line-height: 1.4;
-                    color: rgba(0, 0, 0, 0.87);
-                    font-weight: bold;
-                    text-align: center;
-                  "
-                >
-                  <p>产品名称</p>
-                </section>
-                <section
-                  style="
-                    font-size: 20px;
-                    line-height: 1.4;
-                    color: rgba(0, 0, 0, 0.87);
-                    font-weight: bold;
-                    text-align: center;
-                  "
-                >
-                  <p>产品介绍</p>
-                </section>
-              </div>
-              <div>
-                <section
-                  class="stylelib-wrapper"
-                  contenteditable="false"
-                  data-theme-color="#365f93"
-                  data-is-vip="undefined"
-                  data-change-color="on"
-                  data-key="text-tpl72"
-                >
-                  <section class="x-vipIcon">
-                    <section style="display: none" />
-                  </section>
-                  <section>
-                    <section
-                      data-stylelib-stylename="background-color"
-                      data-opacity-value="1/10"
-                      style="
-                        position: relative;
-                        padding: 16px;
-                        background-color: rgba(54, 95, 147, 0.1);
-                        color: rgba(0, 0, 0, 0.87);
-                        font-size: 14px;
-                        line-height: 1.5;
-                        overflow: hidden;
-                        border-radius: 8px;
-                      "
-                    >
-                      <section contenteditable="undefined">
-                        公司莎车西站铁路物流专用线项目新建信号综合楼框架主题混凝土浇筑顺利完成。
-                      </section>
-                    </section>
-                  </section>
-                </section>
-              </div>
-              <div>
-                <section>
-                  <br>
-                </section>
-                <section
-                  style="
-                    font-size: 14px;
-                    line-height: 1.4;
-                    color: rgba(0, 0, 0, 0.87);
-                    font-weight: bold;
-                    text-align: center;
-                  "
-                >
-                  <p>产品名称</p>
-                </section>
-                <section
-                  style="
-                    font-size: 20px;
-                    line-height: 1.4;
-                    color: rgba(0, 0, 0, 0.87);
-                    font-weight: bold;
-                    text-align: center;
-                  "
-                >
-                  <p>产品信息</p>
-                </section>
-              </div>
-              <div>
-                <section
-                  class="stylelib-wrapper stylelib-list"
-                  contenteditable="false"
-                  data-theme-color="#365f93"
-                  data-is-vip="undefined"
-                  data-change-color="on"
-                  data-key="text-tpl73"
-                >
-                  <section class="x-vipIcon">
-                    <section style="display: none" />
-                  </section>
-                  <section>
-                    <section
-                      class="stylelib-list-item"
-                      style="margin-bottom: 8px"
-                    >
-                      <section
-                        data-stylelib-stylename="background-color"
-                        data-opacity-value="3/20"
-                        style="
-                          font-size: 14px;
-                          font-weight: bold;
-                          padding: 12px 16px;
-                          color: rgba(0, 0, 0, 0.87);
-                          background-color: rgba(54, 95, 147, 0.15);
-                          line-height: 1.25;
-                        "
-                        contenteditable="undefined"
-                      >
-                        产品名称
-                      </section>
-                      <section
-                        data-stylelib-stylename="background-color"
-                        data-opacity-value="1/20"
-                        style="
-                          font-size: 13px;
-                          padding: 12px 16px;
-                          color: rgba(0, 0, 0, 0.87);
-                          background-color: rgba(54, 95, 147, 0.05);
-                          line-height: 1.25;
-                        "
-                        contenteditable="undefined"
-                      >
-                        油漆喷枪
-                      </section>
-                    </section>
-                    <section
-                      class="stylelib-list-item"
-                      style="margin-bottom: 8px"
-                    >
-                      <section
-                        data-stylelib-stylename="background-color"
-                        data-opacity-value="3/20"
-                        style="
-                          font-size: 14px;
-                          font-weight: bold;
-                          padding: 12px 16px;
-                          color: rgba(0, 0, 0, 0.87);
-                          background-color: rgba(54, 95, 147, 0.15);
-                          line-height: 1.25;
-                        "
-                        contenteditable="undefined"
-                      >
-                        产品品牌
-                      </section>
-                      <section
-                        data-stylelib-stylename="background-color"
-                        data-opacity-value="1/20"
-                        style="
-                          font-size: 13px;
-                          padding: 12px 16px;
-                          color: rgba(0, 0, 0, 0.87);
-                          background-color: rgba(54, 95, 147, 0.05);
-                          line-height: 1.25;
-                        "
-                        contenteditable="undefined"
-                      >
-                        草料二维码
-                      </section>
-                    </section>
-                    <section
-                      class="stylelib-list-item"
-                      style="margin-bottom: 8px"
-                    >
-                      <section
-                        data-stylelib-stylename="background-color"
-                        data-opacity-value="3/20"
-                        style="
-                          font-size: 14px;
-                          font-weight: bold;
-                          padding: 12px 16px;
-                          color: rgba(0, 0, 0, 0.87);
-                          background-color: rgba(54, 95, 147, 0.15);
-                          line-height: 1.25;
-                        "
-                        contenteditable="undefined"
-                      >
-                        产品型号
-                      </section>
-                      <section
-                        data-stylelib-stylename="background-color"
-                        data-opacity-value="1/20"
-                        style="
-                          font-size: 13px;
-                          padding: 12px 16px;
-                          color: rgba(0, 0, 0, 0.87);
-                          background-color: rgba(54, 95, 147, 0.05);
-                          line-height: 1.25;
-                        "
-                        contenteditable="undefined"
-                      >
-                        LUX-101
-                      </section>
-                    </section>
-                  </section>
-                </section>
-              </div>
-              <div>
-                <section>
-                  <br>
-                </section>
-                <section
-                  style="
-                    font-size: 14px;
-                    line-height: 1.4;
-                    color: rgba(0, 0, 0, 0.87);
-                    font-weight: bold;
-                    text-align: center;
-                  "
-                >
-                  <p>产品名称</p>
-                </section>
-                <section
-                  style="
-                    font-size: 20px;
-                    line-height: 1.4;
-                    color: rgba(0, 0, 0, 0.87);
-                    font-weight: bold;
-                    text-align: center;
-                  "
-                >
-                  <p>产品展示</p>
-                </section>
-              </div>
-              <div>
-                <section
-                  class="stylelib-wrapper"
-                  contenteditable="false"
-                  data-theme-color="#365f93"
-                  data-is-vip="undefined"
-                  data-change-color="on"
-                  data-key="text-tpl72"
-                >
-                  <section class="x-vipIcon">
-                    <section style="display: none" />
-                  </section>
-                  <section>
-                    <section
-                      data-stylelib-stylename="background-color"
-                      data-opacity-value="1/10"
-                      style="
-                        position: relative;
-                        padding: 16px;
-                        background-color: rgba(54, 95, 147, 0.1);
-                        color: rgba(0, 0, 0, 0.87);
-                        font-size: 14px;
-                        line-height: 1.5;
-                        overflow: hidden;
-                        border-radius: 8px;
-                      "
-                    >
-                      <section contenteditable="undefined">
-                        公司莎车西站铁路物流专用线项目新建信号综合楼框架主题混凝土浇筑顺利完成。
-                      </section>
-                    </section>
-                  </section>
-                </section>
-              </div>
-            </div>
           </el-tab-pane>
-          <el-tab-pane label="标题" name="second" />
+          <!-- <el-tab-pane label="标题" name="second" />
           <el-tab-pane label="正文" name="third">角色管理</el-tab-pane>
-          <el-tab-pane label="表格" name="fourth">定时任务补偿</el-tab-pane>
+          <el-tab-pane label="表格" name="fourth">定时任务补偿</el-tab-pane> -->
         </el-tabs>
       </div>
     </div>
+    <EntryQuery v-if="popoverFlag" @popoverEven="togglePopover" />
   </div>
 </template>
 
 <script>
+import { downloadIamge } from '@/utils/utils'
+import EntryQuery from '@/components/EntryQuery'
 import { Loading } from 'element-ui'
 import { getToken } from '@/utils/auth'
 import { postPublish, postEntryList } from '@/api/entrycode'
 export default {
   name: 'CreateArticle',
+  components: {
+    EntryQuery
+  },
   data() {
     return {
-      activeName: 'second',
+      activeName: 'first',
       headers: { Authorization: 'Bearer ' + getToken() },
+      popoverFlag: false,
       entryTipList: [],
       entryTipValue: '',
       checkList: [],
@@ -711,11 +452,11 @@ export default {
       editorConfig: {
         image_previewText: '',
         removeDialogTabs: 'image:advanced;image:Link',
-        filebrowserImageUploadUrl: '/api/UploadFile',
-        filebrowserBrowseUrl: '/api/UploadFile',
-        filebrowserUploadUrl: '/api/UploadFile',
+        filebrowserImageUploadUrl: 'https://xsdt.xunsheng.org.cn/api/Store/UploadFile',
+        filebrowserBrowseUrl: 'https://xsdt.xunsheng.org.cn/api/Store/UploadFile',
+        filebrowserUploadUrl: 'https://xsdt.xunsheng.org.cn/api/Store/UploadFile',
         extraPlugins: 'uploadimage',
-        uploadUrl: '/api/UploadFile',
+        uploadUrl: 'https://xsdt.xunsheng.org.cn/api/Store/UploadFile',
         forcePasteAsPlainText: false,
         allowedContent: true,
         removePlugins: 'elementspath',
@@ -751,6 +492,12 @@ export default {
     })
   },
   methods: {
+    togglePopover() {
+      this.popoverFlag = !this.popoverFlag
+    },
+    downloadImg(img, imgname) {
+      downloadIamge(img, imgname)
+    },
     checkChange() {
       console.log(this.checkList)
     },

@@ -5,6 +5,7 @@ import qs from 'qs'
 
 const getDefaultState = () => {
   return {
+    userinfo: '',
     token: getToken(),
     name: '',
     avatar: ''
@@ -16,6 +17,9 @@ const state = getDefaultState()
 const mutations = {
   RESET_STATE: (state) => {
     Object.assign(state, getDefaultState())
+  },
+  SET_USERINFO: (state, userinfo) => {
+    state.userinfo = userinfo
   },
   SET_TOKEN: (state, token) => {
     state.token = token
@@ -54,6 +58,7 @@ const actions = {
         // const { name, avatar } = data
         commit('SET_NAME', data.user_info.nickname)
         commit('SET_AVATAR', data.user_info.avatar)
+        commit('SET_USERINFO', data)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -65,6 +70,7 @@ const actions = {
   logout({ commit, state }) {
     removeToken() // must remove  token  first
     resetRouter()
+    commit('RESET_STATE')
   },
 
   // remove token

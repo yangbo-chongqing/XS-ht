@@ -91,7 +91,13 @@
           <template slot-scope="scope">
             <span
               class="el-link-btn"
-            ><el-link type="primary">预览</el-link></span>
+            ><el-link
+              type="primary"
+              @click="downloadImg(scope.row.mini_code, 'code')"
+            >下载</el-link></span>
+            <!-- <span
+              class="el-link-btn"
+            ><el-link type="primary" @click="togglePopover">预览</el-link></span> -->
             <span
               class="el-link-btn"
             ><el-link
@@ -102,7 +108,7 @@
               class="el-link-btn"
             ><el-link
               type="primary"
-              @click="delEntry(scope.row.id,scope)"
+              @click="delEntry(scope.row.id, scope)"
             >删除</el-link></span>
           </template>
         </el-table-column>
@@ -118,15 +124,17 @@
         />
       </div>
     </div>
-    <!-- <EntryQuery /> -->
+    <EntryQuery v-if="popoverFlag" @popoverEven="togglePopover" />
   </div>
 </template>
 <script>
+import { downloadIamge } from '@/utils/utils'
+import table2excel from 'js-table2excel'
 import { entryCodeList, postDelRelics } from '@/api/entrycode'
-import EntryQuery from "@/components/EntryQuery"
+import EntryQuery from '@/components/EntryQuery'
 export default {
   name: 'EntryCode',
-  components:{
+  components: {
     EntryQuery
   },
   data() {
@@ -140,13 +148,20 @@ export default {
       pages: 0,
       count: 0,
       page_size: 10,
-      keyword: ''
+      keyword: '',
+      popoverFlag: false
     }
   },
   created() {
     this.fetchData()
   },
   methods: {
+    togglePopover() {
+      this.popoverFlag = !this.popoverFlag
+    },
+    downloadImg(img, imgname) {
+      downloadIamge(img, imgname)
+    },
     // 删除词条
     delEntry(id, item) {
       this.$confirm('此操作将删除该词条, 是否继续?', '提示', {
@@ -216,34 +231,37 @@ export default {
     handleDownload() {
       if (this.multipleSelection.length) {
         this.downloadLoading = true
-        import('@/vendor/Export2Excel').then((excel) => {
-          const tHeader = ['二维码', '二维码名称', '分类', '创建时间']
-          const filterVal = [
-            {
-              title: '二维码',
-              key: 'mini_code',
-              type: 'image',
-              width: 50,
-              height: 50
-            },
-            'name',
-            'type_name',
-            'create_time'
-          ]
-          const list = this.multipleSelection.map((item, index) => {
-            item.type_name = item.type.type_name
-            return item
-          })
-          const data = this.formatJson(filterVal, list)
-          console.log(list)
-          excel.export_json_to_excel({
-            header: tHeader,
-            data,
-            filename: this.filename
-          })
-          this.$refs.multipleTable.clearSelection()
-          this.downloadLoading = false
+        const tHeader = [
+          {
+            title: '二维码名称',
+            key: 'name',
+            type: 'text'
+          },
+          {
+            title: '二维码',
+            key: 'mini_code',
+            type: 'image',
+            width: 100,
+            height: 100
+          },
+          {
+            title: '分类',
+            key: 'typename',
+            type: 'text'
+          },
+          {
+            title: '创建时间',
+            key: 'create_time',
+            type: 'text'
+          }
+        ]
+        this.multipleSelection.map((item, index) => {
+          item.typename = item.type.type_name
         })
+
+        console.log(this.multipleSelection)
+        table2excel(tHeader, this.multipleSelection, '词条码.xls')
+        this.downloadLoading = false
       } else {
         this.$message({
           message: '请选择导出的数据',

@@ -1,8 +1,8 @@
 <template>
   <div class="Account-container">
     <el-row :gutter="20">
-      <el-col :span="16"><accountInfo /></el-col>
-      <el-col :span="8"><editionInfo /></el-col>
+      <el-col :span="24"><accountInfo /></el-col>
+      <!-- <el-col :span="8"><editionInfo /></el-col> -->
       <el-col :span="24"><msgScription /></el-col>
     </el-row>
   </div>

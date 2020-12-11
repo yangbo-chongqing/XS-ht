@@ -398,10 +398,276 @@
                 </section>
               </div>
             </div>
+            <div class="styleLibTplWrapper" @click="setCheditor($event)">
+              <div>
+                <section
+                  style="
+                    font-size: 14px;
+                    line-height: 1.4;
+                    color: rgba(0, 0, 0, 0.87);
+                    font-weight: bold;
+                    text-align: center;
+                  "
+                >
+                  <p>产品名称</p>
+                </section>
+                <section
+                  style="
+                    font-size: 20px;
+                    line-height: 1.4;
+                    color: rgba(0, 0, 0, 0.87);
+                    font-weight: bold;
+                    text-align: center;
+                  "
+                >
+                  <p>产品介绍</p>
+                </section>
+              </div>
+              <div>
+                <section
+                  class="stylelib-wrapper"
+                  contenteditable="false"
+                  data-theme-color="#365f93"
+                  data-is-vip="undefined"
+                  data-change-color="on"
+                  data-key="text-tpl72"
+                >
+                  <section class="x-vipIcon">
+                    <section style="display: none" />
+                  </section>
+                  <section>
+                    <section
+                      data-stylelib-stylename="background-color"
+                      data-opacity-value="1/10"
+                      style="
+                        position: relative;
+                        padding: 16px;
+                        background-color: rgba(54, 95, 147, 0.1);
+                        color: rgba(0, 0, 0, 0.87);
+                        font-size: 14px;
+                        line-height: 1.5;
+                        overflow: hidden;
+                        border-radius: 8px;
+                      "
+                    >
+                      <section contenteditable="undefined">
+                        公司莎车西站铁路物流专用线项目新建信号综合楼框架主题混凝土浇筑顺利完成。
+                      </section>
+                    </section>
+                  </section>
+                </section>
+              </div>
+              <div>
+                <section>
+                  <br>
+                </section>
+                <section
+                  style="
+                    font-size: 14px;
+                    line-height: 1.4;
+                    color: rgba(0, 0, 0, 0.87);
+                    font-weight: bold;
+                    text-align: center;
+                  "
+                >
+                  <p>产品名称</p>
+                </section>
+                <section
+                  style="
+                    font-size: 20px;
+                    line-height: 1.4;
+                    color: rgba(0, 0, 0, 0.87);
+                    font-weight: bold;
+                    text-align: center;
+                  "
+                >
+                  <p>产品信息</p>
+                </section>
+              </div>
+              <div>
+                <section
+                  class="stylelib-wrapper stylelib-list"
+                  contenteditable="false"
+                  data-theme-color="#365f93"
+                  data-is-vip="undefined"
+                  data-change-color="on"
+                  data-key="text-tpl73"
+                >
+                  <section class="x-vipIcon">
+                    <section style="display: none" />
+                  </section>
+                  <section>
+                    <section
+                      class="stylelib-list-item"
+                      style="margin-bottom: 8px"
+                    >
+                      <section
+                        data-stylelib-stylename="background-color"
+                        data-opacity-value="3/20"
+                        style="
+                          font-size: 14px;
+                          font-weight: bold;
+                          padding: 12px 16px;
+                          color: rgba(0, 0, 0, 0.87);
+                          background-color: rgba(54, 95, 147, 0.15);
+                          line-height: 1.25;
+                        "
+                        contenteditable="undefined"
+                      >
+                        产品名称
+                      </section>
+                      <section
+                        data-stylelib-stylename="background-color"
+                        data-opacity-value="1/20"
+                        style="
+                          font-size: 13px;
+                          padding: 12px 16px;
+                          color: rgba(0, 0, 0, 0.87);
+                          background-color: rgba(54, 95, 147, 0.05);
+                          line-height: 1.25;
+                        "
+                        contenteditable="undefined"
+                      >
+                        油漆喷枪
+                      </section>
+                    </section>
+                    <section
+                      class="stylelib-list-item"
+                      style="margin-bottom: 8px"
+                    >
+                      <section
+                        data-stylelib-stylename="background-color"
+                        data-opacity-value="3/20"
+                        style="
+                          font-size: 14px;
+                          font-weight: bold;
+                          padding: 12px 16px;
+                          color: rgba(0, 0, 0, 0.87);
+                          background-color: rgba(54, 95, 147, 0.15);
+                          line-height: 1.25;
+                        "
+                        contenteditable="undefined"
+                      >
+                        产品品牌
+                      </section>
+                      <section
+                        data-stylelib-stylename="background-color"
+                        data-opacity-value="1/20"
+                        style="
+                          font-size: 13px;
+                          padding: 12px 16px;
+                          color: rgba(0, 0, 0, 0.87);
+                          background-color: rgba(54, 95, 147, 0.05);
+                          line-height: 1.25;
+                        "
+                        contenteditable="undefined"
+                      >
+                        草料二维码
+                      </section>
+                    </section>
+                    <section
+                      class="stylelib-list-item"
+                      style="margin-bottom: 8px"
+                    >
+                      <section
+                        data-stylelib-stylename="background-color"
+                        data-opacity-value="3/20"
+                        style="
+                          font-size: 14px;
+                          font-weight: bold;
+                          padding: 12px 16px;
+                          color: rgba(0, 0, 0, 0.87);
+                          background-color: rgba(54, 95, 147, 0.15);
+                          line-height: 1.25;
+                        "
+                        contenteditable="undefined"
+                      >
+                        产品型号
+                      </section>
+                      <section
+                        data-stylelib-stylename="background-color"
+                        data-opacity-value="1/20"
+                        style="
+                          font-size: 13px;
+                          padding: 12px 16px;
+                          color: rgba(0, 0, 0, 0.87);
+                          background-color: rgba(54, 95, 147, 0.05);
+                          line-height: 1.25;
+                        "
+                        contenteditable="undefined"
+                      >
+                        LUX-101
+                      </section>
+                    </section>
+                  </section>
+                </section>
+              </div>
+              <div>
+                <section>
+                  <br>
+                </section>
+                <section
+                  style="
+                    font-size: 14px;
+                    line-height: 1.4;
+                    color: rgba(0, 0, 0, 0.87);
+                    font-weight: bold;
+                    text-align: center;
+                  "
+                >
+                  <p>产品名称</p>
+                </section>
+                <section
+                  style="
+                    font-size: 20px;
+                    line-height: 1.4;
+                    color: rgba(0, 0, 0, 0.87);
+                    font-weight: bold;
+                    text-align: center;
+                  "
+                >
+                  <p>产品展示</p>
+                </section>
+              </div>
+              <div>
+                <section
+                  class="stylelib-wrapper"
+                  contenteditable="false"
+                  data-theme-color="#365f93"
+                  data-is-vip="undefined"
+                  data-change-color="on"
+                  data-key="text-tpl72"
+                >
+                  <section class="x-vipIcon">
+                    <section style="display: none" />
+                  </section>
+                  <section>
+                    <section
+                      data-stylelib-stylename="background-color"
+                      data-opacity-value="1/10"
+                      style="
+                        position: relative;
+                        padding: 16px;
+                        background-color: rgba(54, 95, 147, 0.1);
+                        color: rgba(0, 0, 0, 0.87);
+                        font-size: 14px;
+                        line-height: 1.5;
+                        overflow: hidden;
+                        border-radius: 8px;
+                      "
+                    >
+                      <section contenteditable="undefined">
+                        公司莎车西站铁路物流专用线项目新建信号综合楼框架主题混凝土浇筑顺利完成。
+                      </section>
+                    </section>
+                  </section>
+                </section>
+              </div>
+            </div>
           </el-tab-pane>
-          <!-- <el-tab-pane label="标题" name="second" />
+          <el-tab-pane label="标题" name="second" />
           <el-tab-pane label="正文" name="third">角色管理</el-tab-pane>
-          <el-tab-pane label="表格" name="fourth">定时任务补偿</el-tab-pane> -->
+          <el-tab-pane label="表格" name="fourth">定时任务补偿</el-tab-pane>
         </el-tabs>
       </div>
     </div>
@@ -424,7 +690,7 @@ export default {
     return {
       headers: { Authorization: 'Bearer ' + getToken() },
       popoverFlag: false,
-      activeName: 'first',
+      activeName: 'second',
       id: this.$route.query.id,
       entryTipList: [],
       entryTipValue: '',

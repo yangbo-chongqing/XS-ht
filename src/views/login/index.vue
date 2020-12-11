@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="login-body">
       <el-row :gutter="20">
-        <el-col :span="16">
+        <el-col :span="24">
           <el-form
             ref="loginForm"
             :model="loginForm"
@@ -58,7 +58,7 @@
             >登录</el-button>
           </el-form>
         </el-col>
-        <el-col :span="8">
+        <!-- <el-col :span="8">
           <div class="login-form">
             <div class="title-container">
               <h3 class="title">微信快捷登录</h3>
@@ -74,9 +74,8 @@
                 srcset=""
               >
             </div>
-            <!-- <div class="code-wx-text">微信扫一扫，快速登录</div> -->
           </div>
-        </el-col>
+        </el-col> -->
       </el-row>
     </div>
   </div>
@@ -114,10 +113,10 @@ export default {
     }
   },
   created() {
-    this.loginCredentials()
+    // this.loginCredentials()
   },
   destroyed() {
-    clearInterval(this.setInt)
+    // clearInterval(this.setInt)
   },
   methods: {
     // 获取二维码状态

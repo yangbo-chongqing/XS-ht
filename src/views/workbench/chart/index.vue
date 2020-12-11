@@ -36,7 +36,7 @@
     <div class="workbench-chart-body">
       <line-chart :chart-data="chartData" />
     </div>
-    <div class="workbench-chart-hlep">
+    <!-- <div class="workbench-chart-hlep">
       <div class="workbench-chart-hlep-title">帮助</div>
       <div class="workbench-chart-hlep-list">
         <el-row>
@@ -46,7 +46,7 @@
           <el-col :span="24"><div class=""> <el-link href="" target="_blank">怎么生成二维码?</el-link></div></el-col>
         </el-row>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
