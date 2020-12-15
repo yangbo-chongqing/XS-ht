@@ -49,7 +49,7 @@
             <div class="fun-create-code-form-btn-item"><el-button type="primary" size="medium">保存</el-button></div>
           </div>
     </div> -->
-    <designer :data="data" @activeChange="activeChange">
+    <designer  @activeChange="activeChange">
       <!-- 可根据实际场景设计属性配置项 -->
       <template v-slot="d">
         <parameter v-if="d.config" :data="d.config">
@@ -97,7 +97,6 @@
 import { getToken } from '@/utils/auth'
 import { postConfig } from '@/api/funcode'
 import designer from '@/components/designer'
-import demo from '@/examples/demo1'
 import parameter from '@/components/parameter'
 export default {
   name: 'CreateArticle',
@@ -112,7 +111,6 @@ export default {
       selIndex: '',
       formitemlist: [],
       formmblist: [],
-      data: demo,
       index: '',
       column: {}
     }

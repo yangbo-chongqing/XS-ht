@@ -10,15 +10,11 @@
                 class="entry-query-img"
                 src="@/assets/icon/noback_top_black.png"
                 alt=""
-              >
+              />
             </div>
             <div class="entry-query-phone-center">
               <div class="entry-query-phone-body">
-                <iframe
-                  class="query-iframe"
-                  :src="infoUrl"
-                  frameborder="0"
-                />
+                <iframe class="query-iframe" :src="infoUrl" frameborder="0" />
               </div>
             </div>
             <div class="entry-query-phone-bottom">
@@ -26,38 +22,64 @@
                 class="entry-query-img"
                 src="@/assets/icon/noback_bottom_black.png"
                 alt=""
-              >
+              />
             </div>
           </div>
         </el-col>
-        <el-col :span="8" />
+        <el-col :offset="2" :span="8">
+          <el-tabs>
+            <el-tab-pane label="小程序二维码" name="first">
+              <div class="qrcode-body">
+                <div class="qrcode" ref="qrCodeUrl"></div>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="网页二维码" name="second">
+              <div class="qrcode-body">
+                <div class="qrcode" ref="qrCodeUrl"></div>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+        </el-col>
       </el-row>
     </div>
   </div>
 </template>
 
 <script>
-import { postEntryList, postGetRelics, postEdit } from '@/api/entrycode'
+import { postEntryList, postGetRelics, postEdit } from "@/api/entrycode";
+import QRCode from "qrcodejs2";
 export default {
-  name: 'EntryQuery',
+  name: "EntryQuery",
   props: {
     infoUrl: {
       type: String,
-      default:
-        'http://app2.xunsheng.org.cn/apph5/#/classinfos?mid=283&tk=2fc9c9ace50b382d6f57676d05a7306c&goods_id=107'
-    }
+      default: "",
+    },
   },
   data() {
     return {
-      codeImage: ''
-    }
+      codeImage: "",
+    };
+  },
+  mounted() {
+    this.creatQrCode();
   },
   methods: {
     toggleShow() {
-      this.$emit('popoverEven')
-    }
-  }
-}
+      this.$emit("popoverEven");
+    },
+    creatQrCode() {
+      var qrcode = new QRCode(this.$refs.qrCodeUrl, {
+        text: this.infoUrl,
+        width: 150,
+        height: 150,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H,
+      });
+    },
+  },
+};
 </script>
 
 <style scoped lang="scss">
@@ -67,6 +89,23 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+  .qrcode-body {
+    width: 100%;
+    text-align: center;
+    p {
+      line-height: 40px;
+    }
+  }
+  .qrcode {
+    display: inline-block;
+    img {
+      width: 150px;
+      height: 150px;
+      background-color: #fff; //设置白色背景色
+      padding: 6px; // 利用padding的特性，挤出白边
+      box-sizing: border-box;
+    }
+  }
   .entry-query-body {
     width: 800px;
     height: 700px;
@@ -103,7 +142,7 @@ export default {
             width: 100%;
             height: 100%;
             border: 0;
-            &::-webkit-scrollbar{
+            &::-webkit-scrollbar {
               width: 0;
               height: 0;
             }

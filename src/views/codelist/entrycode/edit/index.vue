@@ -405,7 +405,7 @@
         </el-tabs>
       </div>
     </div>
-    <EntryQuery v-if="popoverFlag" @popoverEven="togglePopover" />
+    <EntryQuery v-if="popoverFlag" :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id='+id" @popoverEven="togglePopover" />
   </div>
 </template>
 
@@ -481,7 +481,7 @@ export default {
   },
   created() {
     this.fullscreenLoading = Loading.service({
-      target: document.querySelector('.create-code'),
+      target: '.create-code',
       text: '初始化中...'
     })
     this.GetRelics()

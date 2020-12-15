@@ -11,7 +11,7 @@
               <div class="code-img-tips">
                 <el-button type="warning" @click="delCodeImg">删除</el-button>
               </div>
-              <img :src="codeImage" width="100%" alt="">
+              <img :src="codeImage" width="100%" alt="" />
             </div>
             <div v-if="codeVideo" class="upload-info">
               <div class="code-img-tips">
@@ -33,13 +33,13 @@
                   action="https://xsdt.xunsheng.org.cn/api/Store/UploadFile"
                   :headers="headers"
                   :on-success="imageUploadSuccess"
+                  accept=".jpg,.png"
                   :show-file-list="false"
                   :on-progress="uploadProgress"
                 >
-                  <el-button
-                    size="small"
-                    type="primary"
-                  >图片<i class="el-icon-upload el-icon--right" /></el-button>
+                  <el-button size="small" type="primary"
+                    >图片<i class="el-icon-upload el-icon--right"
+                  /></el-button>
                 </el-upload>
               </el-col>
               <el-col :span="4">
@@ -48,13 +48,13 @@
                   action="https://xsdt.xunsheng.org.cn/api/Store/UploadFile"
                   :headers="headers"
                   :show-file-list="false"
+                  accept=".MPEG,.MP3,.MPEG-4,.MIDI,.WMA"
                   :on-success="audioUploadSuccess"
                   :on-progress="uploadProgress"
                 >
-                  <el-button
-                    size="small"
-                    type="primary"
-                  >音频<i class="el-icon-upload el-icon--right" /></el-button>
+                  <el-button size="small" type="primary"
+                    >音频<i class="el-icon-upload el-icon--right"
+                  /></el-button>
                 </el-upload>
               </el-col>
               <el-col :span="4">
@@ -62,14 +62,14 @@
                   class="upload-demo"
                   action="https://xsdt.xunsheng.org.cn/api/Store/UploadFile"
                   :headers="headers"
+                  accept=".MPEG,.baiAVI,.nAVI,.ASF,.MOV,.3GP,.mp4"
                   :show-file-list="false"
                   :on-success="videoUploadSuccess"
                   :on-progress="uploadProgress"
                 >
-                  <el-button
-                    size="small"
-                    type="primary"
-                  >视频<i class="el-icon-upload el-icon--right" /></el-button>
+                  <el-button size="small" type="primary"
+                    >视频<i class="el-icon-upload el-icon--right"
+                  /></el-button>
                 </el-upload>
               </el-col>
             </el-row>
@@ -109,7 +109,14 @@
               </div>
               <div v-if="entryTipList" class="entry-tip-list">
                 <el-checkbox-group v-model="checkList" @change="checkChange">
-                  <div><el-checkbox v-for="(item,index) in entryTipList" :key="index" :label="item.id">{{ item.name }}</el-checkbox></div>
+                  <div>
+                    <el-checkbox
+                      v-for="(item, index) in entryTipList"
+                      :key="index"
+                      :label="item.id"
+                      >{{ item.name }}</el-checkbox
+                    >
+                  </div>
                 </el-checkbox-group>
               </div>
             </div>
@@ -122,14 +129,24 @@
               src="@/assets/icon/create-codeno.png"
               alt=""
               srcset=""
-            >
-            <img v-else :src="codeSendImg" alt="" srcset="">
+            />
+            <img v-else :src="codeSendImg" alt="" srcset="" />
             <div v-if="!codeSendImg" class="create-btn">
               <el-button type="primary" @click="publish">生成二维码</el-button>
             </div>
             <div v-else class="create-btn">
-              <span><el-link type="primary" @click="togglePopover">预览</el-link></span>
-              <span><el-link type="primary" @click="downloadImg(codeSendImg, 'code')">下载</el-link></span>
+              <span
+                ><el-link type="primary" @click="togglePopover"
+                  >预览</el-link
+                ></span
+              >
+              <span
+                ><el-link
+                  type="primary"
+                  @click="downloadImg(codeSendImg, 'code')"
+                  >下载</el-link
+                ></span
+              >
               <div class="create-btn-yes">
                 <el-button type="primary" @click="goback">完成</el-button>
               </div>
@@ -201,7 +218,7 @@
               </div>
               <div>
                 <section>
-                  <br>
+                  <br />
                 </section>
                 <section
                   style="
@@ -346,7 +363,7 @@
               </div>
               <div>
                 <section>
-                  <br>
+                  <br />
                 </section>
                 <section
                   style="
@@ -413,111 +430,119 @@
         </el-tabs>
       </div>
     </div>
-    <EntryQuery v-if="popoverFlag" @popoverEven="togglePopover" />
+    <EntryQuery
+      v-if="popoverFlag"
+      :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id=' + id"
+      @popoverEven="togglePopover"
+    />
   </div>
 </template>
 
 <script>
-import { downloadIamge } from '@/utils/utils'
-import EntryQuery from '@/components/EntryQuery'
-import { Loading } from 'element-ui'
-import { getToken } from '@/utils/auth'
-import { postPublish, postEntryList } from '@/api/entrycode'
+import { downloadIamge } from "@/utils/utils";
+import EntryQuery from "@/components/EntryQuery";
+import { Loading } from "element-ui";
+import { getToken } from "@/utils/auth";
+import { postPublish, postEntryList } from "@/api/entrycode";
 export default {
-  name: 'CreateArticle',
+  name: "CreateArticle",
   components: {
-    EntryQuery
+    EntryQuery,
   },
   data() {
     return {
-      activeName: 'first',
-      headers: { Authorization: 'Bearer ' + getToken() },
+      activeName: "first",
+      id: "",
+      headers: { Authorization: "Bearer " + getToken() },
       popoverFlag: false,
       entryTipList: [],
-      entryTipValue: '',
+      entryTipValue: "",
       checkList: [],
       loading: false,
-      codeTitle: '',
-      codeImage: '',
-      codeVideo: '',
-      codeAudio: '',
-      uploadLoading: '',
+      codeTitle: "",
+      codeImage: "",
+      codeVideo: "",
+      codeAudio: "",
+      uploadLoading: "",
       isCkeditorFlag: false,
       codeImageFlag: false,
-      fullscreenLoading: '',
-      codeSendImg: '',
+      fullscreenLoading: "",
+      codeSendImg: "",
       isShowDoc: false,
       editor: null, // 编辑器实例
-      editorData: '',
+      editorData: "",
       editorConfig: {
-        image_previewText: '',
-        removeDialogTabs: 'image:advanced;image:Link',
-        filebrowserImageUploadUrl: 'https://xsdt.xunsheng.org.cn/api/Store/UploadFile',
-        filebrowserBrowseUrl: 'https://xsdt.xunsheng.org.cn/api/Store/UploadFile',
-        filebrowserUploadUrl: 'https://xsdt.xunsheng.org.cn/api/Store/UploadFile',
-        extraPlugins: 'uploadimage',
-        uploadUrl: 'https://xsdt.xunsheng.org.cn/api/Store/UploadFile',
+        image_previewText: "",
+        removeDialogTabs: "image:advanced;image:Link",
+        filebrowserImageUploadUrl:
+          "https://xsdt.xunsheng.org.cn/api/Store/UploadFile",
+        filebrowserBrowseUrl:
+          "https://xsdt.xunsheng.org.cn/api/Store/UploadFile",
+        filebrowserUploadUrl:
+          "https://xsdt.xunsheng.org.cn/api/Store/UploadFile",
+        extraPlugins: "uploadimage",
+        uploadUrl: "https://xsdt.xunsheng.org.cn/api/Store/UploadFile",
         forcePasteAsPlainText: false,
         allowedContent: true,
-        removePlugins: 'elementspath',
+        removePlugins: "elementspath",
         toolbarGroups: [
-          { name: 'clipboard', groups: ['undo', 'clipboard'] },
+          { name: "clipboard", groups: ["clipboard", "undo"] },
           {
-            name: 'editing',
-            groups: ['find', 'selection', 'spellchecker', 'editing']
+            name: "editing",
+            groups: ["find", "selection", "spellchecker", "editing"],
           },
-          { name: 'links', groups: ['links'] },
-          { name: 'insert', groups: ['insert'] },
-          { name: 'forms', groups: ['forms'] },
-          { name: 'tools', groups: ['tools'] },
-          { name: 'document', groups: ['mode', 'document', 'doctools'] },
-          { name: 'others', groups: ['others'] },
-          '/',
-          { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+          { name: "links", groups: ["links"] },
+          { name: "insert", groups: ["insert"] },
+          { name: "forms", groups: ["forms"] },
+          { name: "tools", groups: ["tools"] },
+          { name: "document", groups: ["mode", "document", "doctools"] },
+          { name: "others", groups: ["others"] },
+          { name: "basicstyles", groups: ["basicstyles", "cleanup"] },
           {
-            name: 'paragraph',
-            groups: ['list', 'indent', 'blocks', 'align', 'bidi', 'paragraph']
+            name: "paragraph",
+            groups: ["list", "indent", "blocks", "align", "bidi", "paragraph"],
           },
-          { name: 'styles', groups: ['styles'] },
-          { name: 'colors', groups: ['colors'] }
+          { name: "styles", groups: ["styles"] },
+          { name: "colors", groups: ["colors"] },
+          { name: "about", groups: ["about"] },
         ],
-        removeButtons: 'Underline,Subscript,Superscript,Source'
-      }
-    }
+        removeButtons: "Underline,Subscript,Superscript,Source,About",
+      },
+    };
   },
   created() {
     this.fullscreenLoading = Loading.service({
-      target: document.querySelector('.create-code'),
-      text: '初始化中...'
-    })
+      target: ".create-code",
+      text: "初始化中...",
+    });
   },
   methods: {
     togglePopover() {
-      this.popoverFlag = !this.popoverFlag
+      this.popoverFlag = !this.popoverFlag;
     },
     downloadImg(img, imgname) {
-      downloadIamge(img, imgname)
+      downloadIamge(img, imgname);
     },
     checkChange() {
-      console.log(this.checkList)
+      console.log(this.checkList);
     },
     // 查找相关
     remoteMethod() {
-      if (this.entryTipValue !== '') {
-        this.loading = true
+      if (this.entryTipValue !== "") {
+        this.loading = true;
         const params = {
           keyword: this.entryTipValue,
-          type: 1
-        }
+          type: 1,
+        };
         postEntryList(this.qs.stringify(params)).then((res) => {
-          this.entryTipList = res.data.list
-          this.loading = false
-        })
+          this.entryTipList = res.data.list;
+          this.loading = false;
+        });
       }
     },
     // 返回
     goback() {
-      this.$router.go(-1)
+      this.$router.go(-1);
     },
     // 点击上传生成二维码
     publish() {
@@ -527,53 +552,54 @@ export default {
         voice_url: this.codeAudio,
         video_url: this.codeVideo,
         content: this.editorData,
-        related_ids: this.checkList.toString()
-      }
-      const loading = this.$loading()
+        related_ids: this.checkList.toString(),
+      };
+      const loading = this.$loading();
       postPublish(this.qs.stringify(parmas)).then((res) => {
-        this.codeSendImg = res.data.file_path
-        loading.close()
-      })
+        this.codeSendImg = res.data.file_path;
+        this.id = res.data.id;
+        loading.close();
+      });
     },
     delCodeImg() {
-      this.codeImage = ''
+      this.codeImage = "";
     },
     delCodeVideo() {
-      this.codeVideo = ''
+      this.codeVideo = "";
     },
     delCodeAudio() {
-      this.codeAudio = ''
+      this.codeAudio = "";
     },
     imageUploadSuccess(response, file, fileList) {
-      this.codeImage = response.data.file_path
-      this.uploadLoading.close()
+      this.codeImage = response.data.file_path;
+      this.uploadLoading.close();
     },
     audioUploadSuccess(response, file, fileList) {
-      this.codeAudio = response.data.file_path
-      this.uploadLoading.close()
+      this.codeAudio = response.data.file_path;
+      this.uploadLoading.close();
     },
     videoUploadSuccess(response, file, fileList) {
-      this.codeVideo = response.data.file_path
-      this.uploadLoading.close()
+      this.codeVideo = response.data.file_path;
+      this.uploadLoading.close();
     },
     setCheditor(e) {
-      this.editorData = e.target.innerHTML
+      this.editorData = e.target.innerHTML;
     },
     uploadProgress() {
       this.uploadLoading = Loading.service({
-        text: '上传中...'
-      })
+        text: "上传中...",
+      });
     },
     onNamespaceLoaded(CKEDITOR) {},
     ckeditorReady() {
-      this.isCkeditorFlag = true
-      this.fullscreenLoading.close()
+      this.isCkeditorFlag = true;
+      this.fullscreenLoading.close();
     },
     handleClick(tab, event) {
-      console.log(tab, event)
-    }
-  }
-}
+      console.log(tab, event);
+    },
+  },
+};
 </script>
 <style lang="scss">
 .create-code {
@@ -601,10 +627,9 @@ export default {
     .entry-entry-item {
       color: #5387fd;
     }
-
   }
-  .entry-entry-add-body{
-    .entry-tip-list{
+  .entry-entry-add-body {
+    .entry-tip-list {
       margin-top: 15px;
     }
   }
@@ -620,10 +645,10 @@ export default {
     }
     .create-btn {
       margin-top: 10px;
-      .create-btn-yes{
+      .create-btn-yes {
         margin-top: 10px;
       }
-      span{
+      span {
         margin: 10px;
       }
     }

@@ -5,7 +5,6 @@ const __config_list__ = [
     size: 'mini',
     width: '200px',
     value: '',
-    disabled: false,
     labelWidth: '80px',
     placeholder: '请输入'
   }, {
@@ -14,16 +13,19 @@ const __config_list__ = [
     size: 'mini',
     width: '200px',
     value: '',
-    disabled: false,
     labelWidth: '80px',
     placeholder: '请输入文本'
+  }, {
+    type: 'file',
+    name: '图片',
+    width: '200px',
+    value: '',
   }, {
     type: 'select',
     name: '选择框',
     size: 'mini',
     width: '200px',
     value: '',
-    disabled: false,
     labelWidth: '80px',
     placeholder: '请选择',
     option: [
@@ -41,7 +43,6 @@ const __config_list__ = [
     size: 'mini',
     width: '200px',
     value: '',
-    disabled: false,
     labelWidth: '80px',
     placeholder: '请选择日期'
   }, {
@@ -49,24 +50,21 @@ const __config_list__ = [
     name: '开关',
     size: 'mini',
     value: '',
-    disabled: false,
-    labelWidth: 80
-  }, {
+    labelWidth: '80px',
+  },
+  {
     type: 'checkbox',
     name: '多选',
     size: 'mini',
     value: '',
-    disabled: false,
     labelWidth: '80px',
     option: [
       {
         label: '选择一',
         value: '1',
-        disabled: false
       }, {
         label: '选择二',
         value: '2',
-        disabled: false
       }
     ]
   }, {
@@ -74,20 +72,23 @@ const __config_list__ = [
     name: '单选',
     size: 'mini',
     value: '',
-    disabled: false,
     labelWidth: '80px',
     option: [
       {
         label: '选择一',
         value: '1',
-        disabled: false
       }, {
         label: '选择二',
         value: '2',
-        disabled: false
       }
     ]
-  }
+  },
+  {
+    type: 'button',
+    name: '按钮',
+    value: '',
+    labelWidth: '80px',
+  },
 ]
 
 import encoder from './encoder'
@@ -109,7 +110,7 @@ class modeler {
     }
   }
 
-  del(... types) {
+  del(...types) {
     types.forEach(type => {
       const index = this.__fn_search__(type)
       if (index >= 0) {

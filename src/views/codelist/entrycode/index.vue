@@ -95,9 +95,9 @@
               type="primary"
               @click="downloadImg(scope.row.mini_code, 'code')"
             >下载</el-link></span>
-            <!-- <span
+            <span
               class="el-link-btn"
-            ><el-link type="primary" @click="togglePopover">预览</el-link></span> -->
+            ><el-link type="primary" @click="togglePopover(scope.row.id)">预览</el-link></span>
             <span
               class="el-link-btn"
             ><el-link
@@ -124,7 +124,7 @@
         />
       </div>
     </div>
-    <EntryQuery v-if="popoverFlag" @popoverEven="togglePopover" />
+    <EntryQuery v-if="popoverFlag" :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id='+id" @popoverEven="togglePopover" />
   </div>
 </template>
 <script>
@@ -149,14 +149,15 @@ export default {
       count: 0,
       page_size: 10,
       keyword: '',
-      popoverFlag: false
+      popoverFlag: false,
     }
   },
   created() {
     this.fetchData()
   },
   methods: {
-    togglePopover() {
+    togglePopover(id) {
+      this.id=id;
       this.popoverFlag = !this.popoverFlag
     },
     downloadImg(img, imgname) {

@@ -53,7 +53,7 @@
             <el-col :span="8">
               <div class="workbench-code-item-link-body">
                 <el-link target="_blank" @click="downloadImg(item.mini_code,'code')">下载</el-link>
-                <!-- <el-link>预览</el-link> -->
+                <el-link @click="togglePopover(item.id)">预览</el-link>
                 <el-link @click="golinkpage('/codelist/edit', { id: item.id })">编辑</el-link>
               </div>
             </el-col>
@@ -61,14 +61,19 @@
         </div>
       </div>
     </div>
+    <EntryQuery v-if="popoverFlag" :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id='+id" @popoverEven="togglePopover" />
   </div>
 </template>
 
 <script>
 import { downloadIamge } from '@/utils/utils'
+import EntryQuery from '@/components/EntryQuery'
 import { array } from 'js-md5'
 export default {
   name: 'WorkbenchCode',
+  components: {
+    EntryQuery
+  },
   props: {
     relicsCount: {
       type: Number,
@@ -86,11 +91,17 @@ export default {
       srcList: [
         'https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png',
         'https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png'
-      ]
+      ],
+      popoverFlag:false,
+      id:''
     }
   },
   created() {},
   methods: {
+    togglePopover(id) {
+      this.id=id;
+      this.popoverFlag = !this.popoverFlag
+    },
     downloadImg(img, imgname) {
       downloadIamge(img, imgname)
     },

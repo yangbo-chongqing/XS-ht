@@ -3,19 +3,19 @@
     <el-form size="mini" :model="data" label-width="80px" inline style="width: 100%; padding: 0 10px">
       <!-- === start 通用配置项 === -->
       <div>
-        <el-divider content-position="left">通用</el-divider>
-        <el-form-item label="类型">
+        <!-- <el-divider content-position="left">通用</el-divider> -->
+        <!-- <el-form-item label="类型">
           <el-input v-model="data.type" disabled />
         </el-form-item>
         <el-form-item label="ID">
           <el-input v-model="data.key" />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="名称">
           <el-input v-model="data.name" />
         </el-form-item>
-        <el-form-item v-if="Object.keys(data).indexOf('value') >= 0" label="数据键">
+        <!-- <el-form-item v-if="Object.keys(data).indexOf('value') >= 0" label="数据键">
           <el-input v-model="data.value" />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item v-if="Object.keys(data).indexOf('size') >= 0" label="尺寸">
           <el-select v-model="data.size" placeholder="请选择尺寸">
             <el-option label="默认" value="" />

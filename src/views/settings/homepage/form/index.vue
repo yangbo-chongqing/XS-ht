@@ -26,6 +26,7 @@
             v-if="!enterpriseAudio || isEditFlag"
             class="upload-demo"
             action="https://xsdt.xunsheng.org.cn/api/Store/UploadFile"
+            accept=".mp3,.m4a"
             :headers="headers"
             :show-file-list="false"
             :on-success="audioUploadSuccess"
@@ -49,6 +50,7 @@
             v-if="!enterpriseVideo || isEditFlag"
             class="upload-demo"
             action="https://xsdt.xunsheng.org.cn/api/Store/UploadFile"
+            accept=".mp4"
             :headers="headers"
             :show-file-list="false"
             :on-success="videoUploadSuccess"
@@ -71,6 +73,7 @@
             class="upload-demo"
             action="https://xsdt.xunsheng.org.cn/api/Store/UploadFile"
             :headers="headers"
+            accept=".png,.jpg"
             :show-file-list="false"
             :on-success="imageUploadSuccess"
             :on-progress="uploadProgress"
@@ -79,7 +82,7 @@
             <span
               slot="tip"
               class="el-upload__tip"
-            >格式 png、jpg 500*500</span>
+            >格式 png、jpg 750*222</span>
           </el-upload>
         </el-form-item>
         <el-form-item>

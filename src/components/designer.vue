@@ -19,7 +19,7 @@
     <!-- === start 参数面板 === -->
     <el-aside class="dr-parameter">
       <el-tabs value="setter">
-        <!-- <el-tab-pane label="数据结构" name="data">
+        <el-tab-pane label="数据结构" name="data">
           <el-container>
             <div style="overflow: auto; width: 100%">
               <pre
@@ -27,7 +27,7 @@
               >{{ json }}</pre>
             </div>
           </el-container>
-        </el-tab-pane> -->
+        </el-tab-pane>
         <el-tab-pane label="配置项" name="setter" v-if="selector">
           <slot :config.sync="selector">
             <parameter v-if="selector" :data.sync="selector" />
@@ -117,6 +117,52 @@ export default {
     }
   },
   created() {
+    this.list = [
+  {
+    "type": "input",
+    "name": "姓名",
+    "size": "mini",
+    "width": "200px",
+    "value": "",
+    "labelWidth": "80px",
+    "placeholder": "请输入电话",
+    "key": "input_1607911108674"
+  },
+  {
+    "type": "input",
+    "name": "电话",
+    "size": "mini",
+    "width": "200px",
+    "value": "",
+    "labelWidth": "80px",
+    "placeholder": "请输入电话",
+    "key": "input_1607911116721"
+  },
+  {
+    "type": "file",
+    "name": "图片",
+    "width": "200px",
+    "value": "",
+    "key": "file_1607911134961"
+  },
+  {
+    "type": "textarea",
+    "name": "描述",
+    "size": "mini",
+    "width": "200px",
+    "value": "",
+    "labelWidth": "80px",
+    "placeholder": "请输入文本",
+    "key": "textarea_1607911127250"
+  },
+  {
+    "type": "button",
+    "name": "按钮",
+    "value": "",
+    "labelWidth": "80px",
+    "key": "button_1607911138408"
+  }
+]
     this.modeler = new modeler(this.data.button, this.data.build)
   },
   methods: {

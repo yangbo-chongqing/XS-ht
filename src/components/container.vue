@@ -66,7 +66,24 @@
             </div>
           </div>
         </div>
-
+         <!-- 图片 -->
+        <div v-else-if="item.type === 'file'" :key="item.key" style="margin: 2px">
+          <div
+            :class="{'dr-area mask': true, 'dr-active': (localSelector && localSelector.key === item.key)}"
+            style="height: 100%"
+            class="dr-mover"
+            @click.stop="selectCommand(index)"
+          >
+            <i class=" el-icon-rank" />
+            <i class="el-icon-document-copy" @click="copyCommand(index)" />
+            <i class="el-icon-close" @click="closeCommand(index)" />
+            <div style="overflow: auto">
+              <el-form-item :label-width="item.labelWidth" :size="item.size" :label="item.name">
+                <div class="plus-icon"><i class="el-icon-plus" ></i></div>
+              </el-form-item>
+            </div>
+          </div>
+        </div>
         <!-- 选择框 -->
         <div v-else-if="item.type === 'select'" :key="item.key" style="margin: 2px">
           <div
@@ -158,6 +175,23 @@
                 <el-radio-group v-model="local.radio">
                   <el-radio v-for="o in item.option" :key="o.value" :disabled="o.disabled" :label="o.label" />
                 </el-radio-group>
+              </el-form-item>
+            </div>
+          </div>
+        </div>
+        <!-- 按钮 -->
+        <div v-else-if="item.type === 'button'" :key="item.key" style="margin: 2px">
+          <div
+            :class="{'dr-area mask': true, 'dr-active': (localSelector && localSelector.key === item.key)}"
+            class="dr-mover"
+            @click.stop="selectCommand(index)"
+          >
+            <i class="el-icon-rank" />
+            <i class="el-icon-document-copy" @click="copyCommand(index)" />
+            <i class="el-icon-close" @click="closeCommand(index)" />
+            <div style="overflow: auto">
+              <el-form-item :label-width="item.labelWidth" :size="item.size">
+                <el-button :style="{width: item.Width}" type="primary">{{item.name}}</el-button>
               </el-form-item>
             </div>
           </div>
@@ -297,3 +331,17 @@ export default {
   }
 }
 </script>
+<style scoped lang="scss">
+  .plus-icon{
+    width: 80px;
+    height: 80px;
+    display: flex;
+    margin-top: 10px;
+    i{
+      font-size: 40px;
+      margin:auto;
+      color: #ccc;
+    }
+    border:1px solid #ccc
+  }
+</style>

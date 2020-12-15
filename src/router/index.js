@@ -28,8 +28,8 @@ export const constantRoutes = [
   {
     path: '/codelist',
     component: Layout,
-    redirect: '/codelist/entrycode',
     name: 'CodeList',
+    redirect: '/codelist/entrycode',
     meta: { title: '二维码列表', icon: 'el-icon-s-help' },
     children: [
       {
@@ -72,6 +72,56 @@ export const constantRoutes = [
         hidden: true,
         meta: { title: '编辑功能码' }
       }
+    ]
+  },
+  {
+    path: '/product',
+    component: Layout,
+    name: 'Product',
+    redirect: '/product/productcode',
+    meta: { title: '产品管理', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'productcode',
+        name: 'ProductCode',
+        component: () => import('@/views/product/productcode/index'),
+        meta: { title: '产品码', icon: 'table' },
+      },
+      {
+        path: 'productcreate',
+        component: () => import('@/views/product/productcode/create'),
+        name: 'ProductCreate',
+        hidden: true,
+        meta: { title: '新增产品码' }
+      },
+      {
+        path: 'productedit',
+        component: () => import('@/views/product/productcode/edit'),
+        name: 'ProductEdit',
+        hidden: true,
+        meta: { title: '修改产品码' }
+      },
+      {
+        path: 'instructions',
+        name: 'Instructions',
+        component: () => import('@/views/product/instructions/index'),
+        meta: { title: '说明书', icon: 'el-icon-bank-card' }
+      },
+      {
+        path: 'instructionscreate',
+        component: () => import('@/views/product/instructions/create'),
+        name: 'InstructionsCreate',
+        hidden: true,
+        meta: { title: '新增说明书' }
+      },
+      {
+        path: 'instructionsedit',
+        component: () => import('@/views/product/instructions/edit'),
+        name: 'InstructionsEdit',
+        hidden: true,
+        meta: { title: '修改说明书' }
+      },
+
     ]
   },
   {
