@@ -512,7 +512,6 @@ export default {
         content: this.editorData,
         related_ids: this.checkList.toString(),
       };
-      return false;
       const loading = this.$loading();
       postPublish(this.qs.stringify(parmas)).then((res) => {
         this.codeSendImg = res.data.file_path;
