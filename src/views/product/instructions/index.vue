@@ -2,7 +2,7 @@
   <div class="fun-code">
     <div class="fun-code-head">
       <el-row>
-        <el-col :span="14"><div class="entry-title">产品码</div></el-col>
+        <el-col :span="14"><div class="entry-title">说明书</div></el-col>
         <el-col :span="10">
           <el-row :gutter="20">
             <el-col :span="18">
@@ -10,7 +10,7 @@
                 <el-input
                   v-model="keyword"
                   type="search"
-                  placeholder="搜索产品码"
+                  placeholder="搜索说明书"
                   ><i slot="prefix" class="el-input__icon el-icon-search" />
                   <el-button slot="append" @click="onSearch">搜索</el-button>
                 </el-input>
@@ -21,7 +21,7 @@
                 <el-button
                   type="primary"
                   @click="golinkpage('/product/instructionscreate')"
-                  >新增产品码</el-button
+                  >新增说明书</el-button
                 >
               </div>
             </el-col>
@@ -44,9 +44,14 @@
             <el-tag>{{ scope.row.id }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="产品名称" align="center">
+        <el-table-column label="说明书名称" align="center">
           <template slot-scope="scope">
-            <span class="code-name">{{ scope.row.product_name }}</span>
+            <span class="code-name">{{ scope.row.manual_name }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="创建时间" align="center">
+          <template slot-scope="scope">
+            <span class="code-name">{{ scope.row.create_time }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center"  label="操作" width="220">

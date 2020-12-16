@@ -4,7 +4,7 @@ import md5 from 'js-md5'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 axios.defaults.timeout = 15000// 超时时间
-axios.defaults.baseURL = 'https://xsdt.xunsheng.org.cn/'
+// axios.defaults.baseURL = 'https://xsdt.xunsheng.org.cn/'
 axios.interceptors.request.use(
   config => {
     const ts = parseInt(new Date().getTime() / 1000)

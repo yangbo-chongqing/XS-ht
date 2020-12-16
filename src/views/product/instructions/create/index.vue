@@ -6,24 +6,7 @@
     <div class="fun-table-body">
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="关联产品">
-          <el-select
-            v-model="form.ids"
-            multiple
-            filterable
-            remote
-            reserve-keyword
-            placeholder="请输入关键词搜索"
-            :remote-method="remoteMethod"
-            :loading="loading"
-          >
-            <el-option
-              v-for="item in options"
-              :key="item.id"
-              :label="item.unique+'/'+item.name"
-              :value="item.id"
-            >
-            </el-option>
-          </el-select>
+          <el-input v-model="form.manual_name" placeholder="请输入说明书名称"></el-input>
         </el-form-item>
         <el-form-item label="说明书">
           <el-upload
@@ -59,7 +42,7 @@ export default {
     return {
       headers: { Authorization: "Bearer " + getToken() },
       form: {
-        ids: [],
+        manual_name: '',
         fileList: [],
       },
       dialogVisible: false,
@@ -73,9 +56,9 @@ export default {
   created() {},
   methods: {
     onSubmit() {
-      if(this.form.ids.length==0){
+      if(!this.form.manual_name){
         this.$message({
-            message: '请关联产品',
+            message: '请填写说明说名称',
             type: "error",
           });
           return false;
@@ -91,7 +74,7 @@ export default {
         text: "保存中",
       });
       let params = {
-        product_ids: this.form.ids.toString(),
+        manual_name: this.form.manual_name,
         file: this.form.fileList[0].response.data.file_path,
       };
       manualCreate(this.qs.stringify(params)).then((res) => {
@@ -101,7 +84,7 @@ export default {
             message: res.message,
             type: "success",
           });
-          this.form.ids = [];
+          this.form.manual_name = '';
           this.form.fileList = [];
           this.options = [];
         }

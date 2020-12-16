@@ -74,7 +74,7 @@
               </el-col>
             </el-row>
           </div>
-          <div v-show="isCkeditorFlag" class="cheditor-body">
+          <div class="cheditor-body">
             <div
               :class="isShowDoc ? 'cheditor-mybtn active' : 'cheditor-mybtn'"
               @click="isShowDoc = !isShowDoc"
@@ -82,12 +82,7 @@
               <i class="el-icon-document" />
               <p>快速排版</p>
             </div>
-            <ckeditor
-              v-model="editorData"
-              :config="editorConfig"
-              @ready="ckeditorReady"
-              @namespaceloaded="onNamespaceLoaded"
-            />
+            <ckeditor4 v-model="editorData" :mobHtml="mobHtml"></ckeditor4>
             <div class="entry-entry-tip">
               <div class="entry-entry-item">
                 <i class="el-icon-plus" /> 相关词条
@@ -444,11 +439,13 @@ import { downloadIamge } from "@/utils/utils";
 import EntryQuery from "@/components/EntryQuery";
 import { Loading } from "element-ui";
 import { getToken } from "@/utils/auth";
-import { postPublish, postEntryList } from "@/api/entrycode";
+import { postPublish, postEntryList,RelicsList } from "@/api/entrycode";
+import ckeditor4 from '@/components/ckeditor4'
 export default {
   name: "CreateArticle",
   components: {
     EntryQuery,
+    ckeditor4
   },
   data() {
     return {
@@ -470,52 +467,12 @@ export default {
       fullscreenLoading: "",
       codeSendImg: "",
       isShowDoc: false,
+      mobHtml:'',
       editor: null, // 编辑器实例
       editorData: "",
-      editorConfig: {
-        image_previewText: "",
-        removeDialogTabs: "image:advanced;image:Link",
-        filebrowserImageUploadUrl:
-          "https://xsdt.xunsheng.org.cn/api/Store/UploadFile",
-        filebrowserBrowseUrl:
-          "https://xsdt.xunsheng.org.cn/api/Store/UploadFile",
-        filebrowserUploadUrl:
-          "https://xsdt.xunsheng.org.cn/api/Store/UploadFile",
-        extraPlugins: "uploadimage",
-        uploadUrl: "https://xsdt.xunsheng.org.cn/api/Store/UploadFile",
-        forcePasteAsPlainText: false,
-        allowedContent: true,
-        removePlugins: "elementspath",
-        toolbarGroups: [
-          { name: "clipboard", groups: ["clipboard", "undo"] },
-          {
-            name: "editing",
-            groups: ["find", "selection", "spellchecker", "editing"],
-          },
-          { name: "links", groups: ["links"] },
-          { name: "insert", groups: ["insert"] },
-          { name: "forms", groups: ["forms"] },
-          { name: "tools", groups: ["tools"] },
-          { name: "document", groups: ["mode", "document", "doctools"] },
-          { name: "others", groups: ["others"] },
-          { name: "basicstyles", groups: ["basicstyles", "cleanup"] },
-          {
-            name: "paragraph",
-            groups: ["list", "indent", "blocks", "align", "bidi", "paragraph"],
-          },
-          { name: "styles", groups: ["styles"] },
-          { name: "colors", groups: ["colors"] },
-          { name: "about", groups: ["about"] },
-        ],
-        removeButtons: "Underline,Subscript,Superscript,Source,About",
-      },
     };
   },
   created() {
-    this.fullscreenLoading = Loading.service({
-      target: ".create-code",
-      text: "初始化中...",
-    });
   },
   methods: {
     togglePopover() {
@@ -555,6 +512,7 @@ export default {
         content: this.editorData,
         related_ids: this.checkList.toString(),
       };
+      return false;
       const loading = this.$loading();
       postPublish(this.qs.stringify(parmas)).then((res) => {
         this.codeSendImg = res.data.file_path;
@@ -584,7 +542,7 @@ export default {
       this.uploadLoading.close();
     },
     setCheditor(e) {
-      this.editorData = e.target.innerHTML;
+      this.mobHtml = e.target.innerHTML;
     },
     uploadProgress() {
       this.uploadLoading = Loading.service({
@@ -690,9 +648,9 @@ export default {
     position: relative;
     .add-document-list {
       width: 320px;
-      position: absolute;
-      left: -330px;
-      top: 0;
+      position: fixed;
+      left: 230px;
+      top: 70px;
       background: white;
       padding: 20px;
       box-sizing: border-box;

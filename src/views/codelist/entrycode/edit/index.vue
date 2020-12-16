@@ -74,7 +74,7 @@
               </el-col>
             </el-row>
           </div>
-          <div v-show="isCkeditorFlag" class="cheditor-body">
+          <div  class="cheditor-body">
             <div
               :class="isShowDoc ? 'cheditor-mybtn active' : 'cheditor-mybtn'"
               @click="isShowDoc = !isShowDoc"
@@ -82,12 +82,7 @@
               <i class="el-icon-document" />
               <p>快速排版</p>
             </div>
-            <ckeditor
-              v-model="editorData"
-              :config="editorConfig"
-              @ready="ckeditorReady"
-              @namespaceloaded="onNamespaceLoaded"
-            />
+            <ckeditor4 v-model="editorData" :mobHtml="mobHtml"></ckeditor4>
             <div class="entry-entry-tip">
               <div class="entry-entry-item">
                 <i class="el-icon-plus" /> 相关词条
@@ -414,11 +409,13 @@ import { downloadIamge } from '@/utils/utils'
 import { Loading } from 'element-ui'
 import { getToken } from '@/utils/auth'
 import { postEntryList, postGetRelics, postEdit } from '@/api/entrycode'
+import ckeditor4 from '@/components/ckeditor4'
 import EntryQuery from '@/components/EntryQuery'
 export default {
   name: 'EntryEdit',
   components: {
-    EntryQuery
+    EntryQuery,
+    ckeditor4
   },
   data() {
     return {
@@ -442,48 +439,12 @@ export default {
       isShowDoc: false,
       editor: null, // 编辑器实例
       editorData: '',
+      mobHtml:'',
       isEdit: false,
-      editorConfig: {
-        image_previewText: '',
-        removeDialogTabs: 'image:advanced;image:Link',
-        filebrowserImageUploadUrl: '/api/UploadFile',
-        filebrowserBrowseUrl: '/api/UploadFile',
-        filebrowserUploadUrl: '/api/UploadFile',
-        extraPlugins: 'uploadimage',
-        uploadUrl: '/api/UploadFile',
-        forcePasteAsPlainText: false,
-        allowedContent: true,
-        removePlugins: 'elementspath',
-        toolbarGroups: [
-          { name: 'clipboard', groups: ['undo', 'clipboard'] },
-          {
-            name: 'editing',
-            groups: ['find', 'selection', 'spellchecker', 'editing']
-          },
-          { name: 'links', groups: ['links'] },
-          { name: 'insert', groups: ['insert'] },
-          { name: 'forms', groups: ['forms'] },
-          { name: 'tools', groups: ['tools'] },
-          { name: 'document', groups: ['mode', 'document', 'doctools'] },
-          { name: 'others', groups: ['others'] },
-          '/',
-          { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
-          {
-            name: 'paragraph',
-            groups: ['list', 'indent', 'blocks', 'align', 'bidi', 'paragraph']
-          },
-          { name: 'styles', groups: ['styles'] },
-          { name: 'colors', groups: ['colors'] }
-        ],
-        removeButtons: 'Underline,Subscript,Superscript,Source'
-      }
+      
     }
   },
   created() {
-    this.fullscreenLoading = Loading.service({
-      target: '.create-code',
-      text: '初始化中...'
-    })
     this.GetRelics()
   },
   methods: {
@@ -574,7 +535,7 @@ export default {
       this.uploadLoading.close()
     },
     setCheditor(e) {
-      this.editorData = e.target.innerHTML
+      this.mobHtml = e.target.innerHTML
     },
     uploadProgress() {
       this.uploadLoading = Loading.service({
@@ -681,9 +642,9 @@ export default {
     position: relative;
     .add-document-list {
       width: 320px;
-      position: absolute;
-      left: -330px;
-      top: 0;
+      position: fixed;
+      left: 230px;
+      top: 70px;
       background: white;
       padding: 20px;
       box-sizing: border-box;

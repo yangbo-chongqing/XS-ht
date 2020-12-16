@@ -28,7 +28,7 @@
         <el-form-item label="说明书">
           <el-upload
             class="upload-demo"
-            action="/api/Store/UploadFile"
+            action="https://xsdt.xunsheng.org.cn/api/Store/UploadFile"
             :headers="headers"
             accept=".pdf"
             :limit="1"

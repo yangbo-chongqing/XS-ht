@@ -1,4 +1,12 @@
 import request from '@/utils/request'
+//词条列表
+export function RelicsList(data) {
+  return request({
+    url: '/api/Store/RelicsList',
+    method: 'post',
+    data
+  })
+}
 // 数据统计
 export function postStatistics(data) {
   return request({
