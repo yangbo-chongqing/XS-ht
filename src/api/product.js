@@ -47,3 +47,27 @@ export function manualCreate(data) {
     data
   })
 }
+//查询说明书
+export function manualDetails(data) {
+  return request({
+    url: '/api/manual/details',
+    method: 'post',
+    data
+  })
+}
+//修改说明书
+export function manualEdit(data) {
+  return request({
+    url: '/api/manual/edit',
+    method: 'post',
+    data
+  })
+}
+//生成二维码
+export function preview(data) {
+  return request({
+    url: '/api/Store/preview',
+    method: 'post',
+    data
+  })
+}

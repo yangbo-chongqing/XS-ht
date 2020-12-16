@@ -27,15 +27,15 @@
           </div>
         </el-col>
         <el-col :offset="2" :span="8">
-          <el-tabs>
+          <el-tabs v-model="tabIndex">
             <el-tab-pane label="小程序二维码" name="first">
               <div class="qrcode-body">
-                <div class="qrcode" ref="qrCodeUrl"></div>
+                <img :src="miniCodeImage" alt="" srcset="">
               </div>
             </el-tab-pane>
             <el-tab-pane label="网页二维码" name="second">
               <div class="qrcode-body">
-                <div class="qrcode" ref="qrCodeUrl"></div>
+                <img :src="codeImage" alt="" srcset="">
               </div>
             </el-tab-pane>
           </el-tabs>
@@ -47,7 +47,7 @@
 
 <script>
 import { postEntryList, postGetRelics, postEdit } from "@/api/entrycode";
-import QRCode from "qrcodejs2";
+import { preview } from "@/api/product";
 export default {
   name: "EntryQuery",
   props: {
@@ -55,28 +55,35 @@ export default {
       type: String,
       default: "",
     },
+    id:{
+      type:Number
+    }
   },
   data() {
     return {
       codeImage: "",
+      miniCodeImage:"",
+      tabIndex:"first"
     };
   },
   mounted() {
-    this.creatQrCode();
+    this.previewCode();
   },
   methods: {
+    previewCode(){
+      let params = {
+        type:1,
+        id:this.id
+      }
+      preview(this.qs.stringify(params)).then((res)=>{
+        if(res.status == 200){
+          this.codeImage = res.data.img;
+          this.miniCodeImage = res.data.mini_code;
+        }
+      })
+    },
     toggleShow() {
       this.$emit("popoverEven");
-    },
-    creatQrCode() {
-      var qrcode = new QRCode(this.$refs.qrCodeUrl, {
-        text: this.infoUrl,
-        width: 150,
-        height: 150,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H,
-      });
     },
   },
 };
@@ -92,15 +99,9 @@ export default {
   .qrcode-body {
     width: 100%;
     text-align: center;
-    p {
-      line-height: 40px;
-    }
-  }
-  .qrcode {
-    display: inline-block;
     img {
-      width: 150px;
-      height: 150px;
+      width: 200px;
+      height: 200px;
       background-color: #fff; //设置白色背景色
       padding: 6px; // 利用padding的特性，挤出白边
       box-sizing: border-box;

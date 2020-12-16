@@ -51,16 +51,16 @@
         </el-table-column>
         <el-table-column align="center"  label="操作" width="220">
           <template slot-scope="scope">
-            <span class="el-link-btn"
+            <!-- <span class="el-link-btn"
               ><el-link
                 type="primary"
                 >下载二维码</el-link
               ></span
-            >
+            > -->
             <span class="el-link-btn"
               ><el-link
                 type="primary"
-                @click="golinkpage('/product/productedit', { id: scope.row.id })"
+                @click="golinkpage('/product/instructionsedit', { id: scope.row.id })"
                 >编辑</el-link
               ></span
             >

@@ -12,6 +12,19 @@
       @start="startCommand"
       @end="endCommand"
     >
+      <!-- 输入框 -->
+        <div style="margin: 2px">
+          <div
+            style="height: 100%"
+            class="dr-mover"
+          >
+            <div style="overflow: auto">
+              <el-form-item>
+                <el-input placeholder="请输入表单标题" />
+              </el-form-item>
+            </div>
+          </div>
+        </div>
       <template v-for="(item, index) in data">
 
         <!-- 容器 -->

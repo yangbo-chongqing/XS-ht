@@ -61,7 +61,7 @@
         </div>
       </div>
     </div>
-    <EntryQuery v-if="popoverFlag" :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id='+id" @popoverEven="togglePopover" />
+    <EntryQuery v-if="popoverFlag" :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id='+id" :id="id" @popoverEven="togglePopover" />
   </div>
 </template>
 

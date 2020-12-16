@@ -2,8 +2,21 @@
   <el-container class="dr-designer">
     <!-- === start 左侧模块面板 === -->
     <el-aside class="dr-modeler" width="200px">
-      <draggable :list="modeler.list" v-bind="{group:{name: 'viewer',pull:'clone',put:false},sort: false}" :move="moveCommand">
-        <div v-for="(item, index) in modeler.list" :key="index" class="dr-module-item">{{ item.name }}</div>
+      <draggable
+        :list="modeler.list"
+        v-bind="{
+          group: { name: 'viewer', pull: 'clone', put: false },
+          sort: false,
+        }"
+        :move="moveCommand"
+      >
+        <div
+          v-for="(item, index) in modeler.list"
+          :key="index"
+          class="dr-module-item"
+        >
+          {{ item.name }}
+        </div>
       </draggable>
     </el-aside>
     <!-- === end 左侧模块面板 === -->
@@ -11,23 +24,30 @@
     <!-- === start 中间视图面板 === -->
     <el-main class="dr-viewer" width="500px">
       <el-form>
-        <container :map="data.viewer" root :selector.sync="selector" :data="list" style="min-height: 100%" />
+        <container
+          :map="data.viewer"
+          root
+          :selector.sync="selector"
+          :data="list"
+          style="min-height: 100%"
+        />
       </el-form>
     </el-main>
     <!-- === end 中间视图面板 === -->
 
     <!-- === start 参数面板 === -->
     <el-aside class="dr-parameter">
+      <el-button type="primary">保存</el-button>
       <el-tabs value="setter">
-        <el-tab-pane label="数据结构" name="data">
+        <!-- <el-tab-pane label="数据结构" name="data">
           <el-container>
             <div style="overflow: auto; width: 100%">
-              <pre
-                style="font-family: 'Courier New', serif; padding: 5px"
-              >{{ json }}</pre>
+              <pre style="font-family: 'Courier New', serif; padding: 5px">{{
+                json
+              }}</pre>
             </div>
           </el-container>
-        </el-tab-pane>
+        </el-tab-pane> -->
         <el-tab-pane label="配置项" name="setter" v-if="selector">
           <slot :config.sync="selector">
             <parameter v-if="selector" :data.sync="selector" />
@@ -54,11 +74,19 @@
     <!-- === end 代码展示区 === -->
 
     <!-- === start 预览展示区 === -->
-    <el-dialog id="preview_dialog" width="90%" class="preview_dialog" title="预览展示" :visible.sync="previewVisible">
+    <el-dialog
+      id="preview_dialog"
+      width="90%"
+      class="preview_dialog"
+      title="预览展示"
+      :visible.sync="previewVisible"
+    >
       <div id="preview" />
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" @click="previewVisible = false">关闭</el-button>
-        <el-button size="mini" type="primary" @click="metadata">获取数据</el-button>
+        <el-button size="mini" type="primary" @click="metadata"
+          >获取数据</el-button
+        >
       </div>
     </el-dialog>
     <!-- === end 预览展示区 === -->
@@ -66,34 +94,40 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import formatter from 'vue-beautify'
-import draggable from 'vuedraggable'
-import container from './container'
-import parameter from './parameter'
-import CodeDialog from './code_dialog'
-import modeler from './config'
+import Vue from "vue";
+import formatter from "vue-beautify";
+import draggable from "vuedraggable";
+import container from "./container";
+import parameter from "./parameter";
+import CodeDialog from "./code_dialog";
+import modeler from "./config";
 export default {
-  name: 'Designer',
+  name: "Designer",
   components: {
     draggable,
     container,
     parameter,
-    CodeDialog
+    CodeDialog,
   },
   props: {
     data: {
       type: Object,
-      default() { return {} }
+      default() {
+        return {};
+      },
     },
     width: {
       type: String,
-      default() { return '100%' }
+      default() {
+        return "100%";
+      },
     },
     height: {
       type: String,
-      default() { return '100%' }
-    }
+      default() {
+        return "100%";
+      },
+    },
   },
   data() {
     return {
@@ -103,113 +137,125 @@ export default {
       codeVisible: false,
       previewVisible: false,
       template: undefined,
-      preview: undefined
-    }
+      preview: undefined,
+    };
   },
   computed: {
     json() {
-      return JSON.stringify(this.list, null, 2)
-    }
+      return JSON.stringify(this.list, null, 2);
+    },
   },
   watch: {
     selector(val) {
-      this.$emit('activeChange', val)
-    }
+      this.$emit("activeChange", val);
+    },
   },
   created() {
     this.list = [
-  {
-    "type": "input",
-    "name": "姓名",
-    "size": "mini",
-    "width": "200px",
-    "value": "",
-    "labelWidth": "80px",
-    "placeholder": "请输入电话",
-    "key": "input_1607911108674"
-  },
-  {
-    "type": "input",
-    "name": "电话",
-    "size": "mini",
-    "width": "200px",
-    "value": "",
-    "labelWidth": "80px",
-    "placeholder": "请输入电话",
-    "key": "input_1607911116721"
-  },
-  {
-    "type": "file",
-    "name": "图片",
-    "width": "200px",
-    "value": "",
-    "key": "file_1607911134961"
-  },
-  {
-    "type": "textarea",
-    "name": "描述",
-    "size": "mini",
-    "width": "200px",
-    "value": "",
-    "labelWidth": "80px",
-    "placeholder": "请输入文本",
-    "key": "textarea_1607911127250"
-  },
-  {
-    "type": "button",
-    "name": "按钮",
-    "value": "",
-    "labelWidth": "80px",
-    "key": "button_1607911138408"
-  }
-]
-    this.modeler = new modeler(this.data.button, this.data.build)
+      {
+        type: "input",
+        name: "姓名",
+        size: "mini",
+        width: "200px",
+        value: "",
+        labelWidth: "80px",
+        placeholder: "请输入电话",
+        key: "input_1607911108674",
+      },
+      {
+        type: "input",
+        name: "电话",
+        size: "mini",
+        width: "200px",
+        value: "",
+        labelWidth: "80px",
+        placeholder: "请输入电话",
+        key: "input_1607911116721",
+      },
+      {
+        type: "file",
+        name: "图片",
+        width: "200px",
+        value: "",
+        key: "file_1607911134961",
+      },
+      {
+        type: "textarea",
+        name: "描述",
+        size: "mini",
+        width: "200px",
+        value: "",
+        labelWidth: "80px",
+        placeholder: "请输入文本",
+        key: "textarea_1607911127250",
+      },
+      {
+        type: "button",
+        name: "按钮",
+        value: "",
+        labelWidth: "80px",
+        key: "button_1607911138408",
+      },
+    ];
+    this.modeler = new modeler(this.data.button, this.data.build);
   },
   methods: {
     moveCommand(e) {
       // 容器之间不能同级拖入
-      if (e.draggedContext.element.type === 'container' && e.relatedContext.element) {
-        return false
+      if (
+        e.draggedContext.element.type === "container" &&
+        e.relatedContext.element
+      ) {
+        return false;
       }
       // 其他组件不能与容器同级拖入
       if (e.relatedContext.list) {
-        return !e.relatedContext.list.filter(item => item.type === 'container').length > 0
+        return (
+          !e.relatedContext.list.filter((item) => item.type === "container")
+            .length > 0
+        );
       }
     },
     addCommand(e) {
-      console.log('addCommand', e)
+      console.log("addCommand", e);
     },
     handleCode() {
-      const buildMap = this.modeler.build(this.list)
-      const dataStr = JSON.stringify(buildMap.data()).replace(/"([^"]+)":/g, '$1:')
-      const code = `<template>${buildMap.template}</template><script>export default { data() { return ${dataStr} }}${'</'}script><style></style>`
-      return formatter(code)
+      const buildMap = this.modeler.build(this.list);
+      const dataStr = JSON.stringify(buildMap.data()).replace(
+        /"([^"]+)":/g,
+        "$1:"
+      );
+      const code = `<template>${
+        buildMap.template
+      }</template><script>export default { data() { return ${dataStr} }}${"</"}script><style></style>`;
+      return formatter(code);
     },
     generator() {
-      this.template = this.handleCode()
-      this.codeVisible = true
+      this.template = this.handleCode();
+      this.codeVisible = true;
     },
     previewer() {
-      this.previewVisible = true
-      const self = this
-      Vue.nextTick(function() {
+      this.previewVisible = true;
+      const self = this;
+      Vue.nextTick(function () {
         // DOM 更新了
-        const element = self.$el.querySelector('#preview_dialog')
-        const children = element.querySelector('#preview')
+        const element = self.$el.querySelector("#preview_dialog");
+        const children = element.querySelector("#preview");
         if (!children) {
-          element.querySelector('.el-dialog__body').innerHTML = '<div id="preview"/>'
+          element.querySelector(".el-dialog__body").innerHTML =
+            '<div id="preview"/>';
         }
-        const _Vue_ = Vue.extend(self.modeler.build(self.list))
-        self.preview = new _Vue_().$mount('#preview')
-      })
+        const _Vue_ = Vue.extend(self.modeler.build(self.list));
+        self.preview = new _Vue_().$mount("#preview");
+      });
     },
     metadata() {
-      this.$alert(JSON.stringify(this.preview.data) || '{ }', '数据获取')
-    }
-  }
-}
+      this.$alert(JSON.stringify(this.preview.data) || "{ }", "数据获取");
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-  @import './index';
+@import "./index";
 </style>

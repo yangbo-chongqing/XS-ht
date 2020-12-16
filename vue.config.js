@@ -39,8 +39,6 @@ module.exports = {
     proxy: {
       '/api': {
         target: 'http://xsdt.xunsheng.org.cn',
-        // target: 'http://test.xunsheng.org.cn',
-        // target:'http://118.178.94.250',
         changeOrigin: true
       }
     }

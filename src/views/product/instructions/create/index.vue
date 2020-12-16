@@ -12,14 +12,14 @@
             filterable
             remote
             reserve-keyword
-            placeholder="请输入关键词"
+            placeholder="请输入关键词搜索"
             :remote-method="remoteMethod"
             :loading="loading"
           >
             <el-option
               v-for="item in options"
               :key="item.id"
-              :label="item.name"
+              :label="item.unique+'/'+item.name"
               :value="item.id"
             >
             </el-option>
@@ -40,23 +40,6 @@
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传PDF文件</div>
           </el-upload>
-          <!-- <el-upload
-            class="upload-demo"
-            action="/api/Store/UploadFile"
-            :headers="headers"
-            v-if="!form.dialogImageUrl"
-            :on-success="imageUploadSuccess"
-            :on-progress="uploadProgress"
-            :show-file-list="false"
-          >
-            <div class="upload-box"><i class="el-icon-plus"></i></div>
-          </el-upload>
-          <div class="upload-box" v-else>
-            <img :src="form.dialogImageUrl" alt="" /><span
-              @click="form.dialogImageUrl = ''"
-              ><i class="el-icon-close"></i
-            ></span>
-          </div> -->
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">立即创建</el-button>
@@ -77,7 +60,6 @@ export default {
       headers: { Authorization: "Bearer " + getToken() },
       form: {
         ids: [],
-        unique: "",
         fileList: [],
       },
       dialogVisible: false,
@@ -91,6 +73,20 @@ export default {
   created() {},
   methods: {
     onSubmit() {
+      if(this.form.ids.length==0){
+        this.$message({
+            message: '请关联产品',
+            type: "error",
+          });
+          return false;
+      }
+      if(this.form.fileList.length==0){
+        this.$message({
+            message: '请上传说明书',
+            type: "error",
+          });
+          return false;
+      }
       let loading = this.$loading({
         text: "保存中",
       });
@@ -105,33 +101,30 @@ export default {
             message: res.message,
             type: "success",
           });
-          this.back();
+          this.form.ids = [];
+          this.form.fileList = [];
+          this.options = [];
         }
       });
     },
     remoteMethod(query) {
       if (query !== "") {
+        console.log(query);
         this.loading = true;
         let parmas = {
           manual: 1,
-          keyword: this.query,
+          keyword: query,
         };
         productList(this.qs.stringify(parmas)).then((res) => {
           this.loading = false;
           this.options = res.data.data;
         });
-        // setTimeout(() => {
-        //   this.loading = false;
-        //   this.options = this.list.filter((item) => {
-        //     return item.label.toLowerCase().indexOf(query.toLowerCase()) > -1;
-        //   });
-        // }, 200);
       } else {
         this.options = [];
       }
     },
     handleRemove(file, fileList) {
-      this.form.fileList = "";
+      this.form.fileList = fileList;
     },
     handlePictureCardPreview(file) {
       this.dialogVisible = true;
@@ -143,6 +136,7 @@ export default {
     },
     uploadProgress() {
       this.uploadLoading = Loading.service({
+        target:'.fun-code',
         text: "上传中...",
       });
     },
@@ -155,6 +149,9 @@ export default {
 <style lang="scss" scoped>
 .fun-code {
   background: white;
+  .el-select{
+    display: block;
+  }
   .back-box {
     padding: 10px;
     box-sizing: border-box;

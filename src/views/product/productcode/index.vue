@@ -81,6 +81,7 @@
             <span class="el-link-btn"
               ><el-link
                 type="primary"
+                @click="downloadImg(scope.row.id,scope.row.name)"
                 >下载二维码</el-link
               ></span
             >
@@ -109,7 +110,8 @@
 </template>
 
 <script>
-import { productList,productEdit } from "@/api/product";
+import { productList,productEdit,preview } from "@/api/product";
+import { downloadIamge } from '@/utils/utils'
 export default {
   name: "ProductCode",
   data() {
@@ -126,6 +128,17 @@ export default {
     this.fetchData();
   },
   methods: {
+    downloadImg(id,name) {
+      let params = {
+        type:0,
+        id:id
+      }
+      preview(this.qs.stringify(params)).then((res)=>{
+        if(res.status == 200){
+          downloadIamge(res.data.img, name)
+        }
+      })
+    },
     onSearch() {
       this.page = 1;
       this.fetchData();
