@@ -73,14 +73,15 @@ export default {
       removeButtons:
         "Source,Save,Templates,NewPage,ExportPdf,Preview,Print,Replace,Find,Scayt,SelectAll,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,About,CopyFormatting,RemoveFormat,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Anchor,Flash,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe",
     });
-    // 设置初始内容
-    self.ckeditor.setData(self.value);
+    
     // 监听内容变更事件
     self.ckeditor.on("change", function () {
       self.$emit("input", self.ckeditor.getData());
     });
     //加载完毕
     self.ckeditor.on("instanceReady", function () {
+      // 设置初始内容
+    self.ckeditor.setData(self.value);
       let links = document.querySelector(".cke_button__myplug");
       links.removeAttribute("onclick");
       links.addEventListener("click", function () {

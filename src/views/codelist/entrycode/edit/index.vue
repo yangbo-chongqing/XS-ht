@@ -82,7 +82,7 @@
               <i class="el-icon-document" />
               <p>快速排版</p>
             </div>
-            <ckeditor4 v-model="editorData" :mobHtml="mobHtml"></ckeditor4>
+            <ckeditor4 v-model="editorData" :value="editorData" :mobHtml="mobHtml"></ckeditor4>
             <div class="entry-entry-tip">
               <div class="entry-entry-item">
                 <i class="el-icon-plus" /> 相关词条
@@ -98,13 +98,45 @@
                   <el-button
                     slot="append"
                     icon="el-icon-search"
-                    @click="remoteMethod"
+                    @click="remoteMethod(1)"
                   />
                 </el-input>
               </div>
               <div v-if="entryTipList" class="entry-tip-list">
                 <el-checkbox-group v-model="checkList" @change="checkChange">
                   <div><el-checkbox v-for="(item,index) in entryTipList" :key="index" :label="item.id">{{ item.name }}</el-checkbox></div>
+                </el-checkbox-group>
+              </div>
+            </div>
+            <div class="entry-entry-tip">
+              <div class="entry-entry-item">
+                <i class="el-icon-plus" /> Ta说
+              </div>
+            </div>
+            <div class="entry-entry-add-body">
+              <div style="margin-top: 15px">
+                <el-input
+                  v-model="entryHisValue"
+                  placeholder="请输入词条名"
+                  class="input-with-select"
+                >
+                  <el-button
+                    slot="append"
+                    icon="el-icon-search"
+                    @click="remoteMethod(0)"
+                  />
+                </el-input>
+              </div>
+              <div v-if="entryHisList" class="entry-tip-list">
+                <el-checkbox-group v-model="checkHisList">
+                  <div>
+                    <el-checkbox
+                      v-for="(item, index) in entryHisList"
+                      :key="index"
+                      :label="item.id"
+                      >{{ item.name }}</el-checkbox
+                    >
+                  </div>
                 </el-checkbox-group>
               </div>
             </div>
@@ -424,8 +456,11 @@ export default {
       activeName: 'first',
       id: this.$route.query.id,
       entryTipList: [],
-      entryTipValue: '',
+      entryHisList:[],
+      entryTipValue: "",
       checkList: [],
+      checkHisList:[],
+      entryHisValue:"",
       loading: false,
       codeTitle: '',
       codeImage: '',
@@ -444,8 +479,10 @@ export default {
       
     }
   },
-  created() {
-    this.GetRelics()
+  mounted(){
+    this.$nextTick(()=>{
+      this.GetRelics()
+    })
   },
   methods: {
     togglePopover() {
@@ -468,27 +505,34 @@ export default {
         this.codeVideo = res.data.relics_info.video_url
         this.codeAudio = res.data.relics_info.voice_url
         this.editorData = res.data.relics_info.content
+        console.log(this.editorData);
         this.codeSendImg = res.data.relics_info.mini_code
         this.entryTipList = res.data.relics_info.related_list
+        this.entryHisList = res.data.relics_info.history_list
         res.data.relics_info.related_list.map((item, index) => {
           this.checkList.push(item.id)
+        })
+        res.data.relics_info.history_list.map((item, index) => {
+          this.checkHisList.push(item.id)
         })
       })
     },
 
     // 查找相关
-    remoteMethod() {
-      if (this.entryTipValue !== '') {
-        this.loading = true
+    remoteMethod(type) {
+        this.loading = true;
         const params = {
-          keyword: this.entryTipValue,
-          type: 1
-        }
+          keyword:type==1?this.entryTipValue:this.entryHisValue,
+          type: type,
+        };
         postEntryList(this.qs.stringify(params)).then((res) => {
-          this.entryTipList = res.data.list
-          this.loading = false
-        })
-      }
+          if(type==1){
+           this.entryTipList = res.data.list;
+          }else{
+            this.entryHisList = res.data.list;
+          }
+          this.loading = false;
+        });
     },
     // 返回
     goback() {
@@ -503,7 +547,8 @@ export default {
         voice_url: this.codeAudio,
         video_url: this.codeVideo,
         content: this.editorData,
-        related_ids: this.checkList.toString()
+        related_ids: this.checkList.toString(),
+        history_ids: this.checkHisList.toString(),
       }
       const loading = this.$loading()
       postEdit(this.qs.stringify(parmas)).then((res) => {

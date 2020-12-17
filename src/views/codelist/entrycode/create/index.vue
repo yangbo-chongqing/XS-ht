@@ -98,15 +98,47 @@
                   <el-button
                     slot="append"
                     icon="el-icon-search"
-                    @click="remoteMethod"
+                    @click="remoteMethod(1)"
                   />
                 </el-input>
               </div>
               <div v-if="entryTipList" class="entry-tip-list">
-                <el-checkbox-group v-model="checkList" @change="checkChange">
+                <el-checkbox-group v-model="checkList">
                   <div>
                     <el-checkbox
                       v-for="(item, index) in entryTipList"
+                      :key="index"
+                      :label="item.id"
+                      >{{ item.name }}</el-checkbox
+                    >
+                  </div>
+                </el-checkbox-group>
+              </div>
+            </div>
+            <div class="entry-entry-tip">
+              <div class="entry-entry-item">
+                <i class="el-icon-plus" /> Ta说
+              </div>
+            </div>
+            <div class="entry-entry-add-body">
+              <div style="margin-top: 15px">
+                <el-input
+                  v-model="entryHisValue"
+                  placeholder="请输入词条名"
+                  class="input-with-select"
+                >
+                  <el-button
+                    slot="append"
+                    icon="el-icon-search"
+                    @click="remoteMethod(0)"
+                  />
+                </el-input>
+              </div>
+              <div v-if="entryHisList" class="entry-tip-list">
+                <el-checkbox-group v-model="checkHisList">
+                  <div>
+                    <el-checkbox
+                      v-for="(item, index) in entryHisList"
                       :key="index"
                       :label="item.id"
                       >{{ item.name }}</el-checkbox
@@ -454,8 +486,11 @@ export default {
       headers: { Authorization: "Bearer " + getToken() },
       popoverFlag: false,
       entryTipList: [],
+      entryHisList:[],
       entryTipValue: "",
       checkList: [],
+      checkHisList:[],
+      entryHisValue:"",
       loading: false,
       codeTitle: "",
       codeImage: "",
@@ -485,18 +520,20 @@ export default {
       console.log(this.checkList);
     },
     // 查找相关
-    remoteMethod() {
-      if (this.entryTipValue !== "") {
+    remoteMethod(type) {
         this.loading = true;
         const params = {
-          keyword: this.entryTipValue,
-          type: 1,
+          keyword:type==1?this.entryTipValue:this.entryHisValue,
+          type: type,
         };
         postEntryList(this.qs.stringify(params)).then((res) => {
-          this.entryTipList = res.data.list;
+          if(type==1){
+           this.entryTipList = res.data.list;
+          }else{
+            this.entryHisList = res.data.list;
+          }
           this.loading = false;
         });
-      }
     },
     // 返回
     goback() {
@@ -511,6 +548,7 @@ export default {
         video_url: this.codeVideo,
         content: this.editorData,
         related_ids: this.checkList.toString(),
+        history_ids: this.checkHisList.toString(),
       };
       const loading = this.$loading();
       postPublish(this.qs.stringify(parmas)).then((res) => {
