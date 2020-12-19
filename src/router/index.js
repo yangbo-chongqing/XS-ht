@@ -39,6 +39,26 @@ export const constantRoutes = [
         meta: { title: '词条码', icon: 'el-icon-bank-card' }
       },
       {
+        path: 'entrytype',
+        name: 'EntryType',
+        component: () => import('@/views/codelist/entrytype/index'),
+        meta: { title: '词条分类', icon: 'el-icon-collection' }
+      },
+      {
+        path: 'entrytypecreate',
+        component: () => import('@/views/codelist/entrytype/create'),
+        name: 'CreateArticle',
+        hidden: true,
+        meta: { title: '新增词条分类' }
+      },
+      {
+        path: 'entrytypeedit',
+        component: () => import('@/views/codelist/entrytype/edit'),
+        name: 'EntryEdit',
+        hidden: true,
+        meta: { title: '编辑词条分类' }
+      },
+      {
         path: 'create',
         component: () => import('@/views/codelist/entrycode/create'),
         name: 'CreateArticle',

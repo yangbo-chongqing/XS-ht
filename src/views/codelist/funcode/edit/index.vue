@@ -30,7 +30,7 @@
               <el-col :span="4">
                 <el-upload
                   class="upload-demo"
-                  action="https://xsdt.xunsheng.org.cn/api/Store/UploadFile"
+                  action="/api/store/upload"
                   :on-success="imageUploadSuccess"
                   :headers="headers"
                   :show-file-list="false"
@@ -45,7 +45,7 @@
               <el-col :span="4">
                 <el-upload
                   class="upload-demo"
-                  action="https://xsdt.xunsheng.org.cn/api/Store/UploadFile"
+                  action="/api/store/upload"
                   :show-file-list="false"
                   :headers="headers"
                   :on-success="audioUploadSuccess"
@@ -60,7 +60,7 @@
               <el-col :span="4">
                 <el-upload
                   class="upload-demo"
-                  action="https://xsdt.xunsheng.org.cn/api/Store/UploadFile"
+                  action="/api/store/upload"
                   :show-file-list="false"
                   :headers="headers"
                   :on-success="videoUploadSuccess"

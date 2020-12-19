@@ -1,5 +1,6 @@
 <template>
   <div class="entry-query">
+    
     <div class="entry-popover" @click="toggleShow" />
     <div class="entry-query-body">
       <el-row :gutter="20">
@@ -118,7 +119,7 @@ export default {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 101;
+    z-index: 1011;
     .entry-query-phone {
       background: white;
       width: 100%;
@@ -159,7 +160,7 @@ export default {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.6);
-    z-index: 100;
+    z-index: 1010;
   }
 }
 </style>

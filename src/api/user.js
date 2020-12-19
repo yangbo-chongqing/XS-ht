@@ -2,22 +2,21 @@ import request from '@/utils/request'
 // 修改用户信息
 export function postAccountSettings(data) {
   return request({
-    url: '/api/Store/AccountSettings',
+    url: '/api/store/account/edit',
     method: 'post',
     data
   })
 }
 export function login(data) {
   return request({
-    url: '/api/Store/PhoneLogin',
+    url: '/api/store/phone/login',
     method: 'post',
     data
   })
 }
-
 export function getInfo() {
   return request({
-    url: '/api/Store/UserInfo',
+    url: '/api/store/user/detail',
     method: 'post'
   })
 }
@@ -32,7 +31,7 @@ export function LoginCredentials(data) {
 // 获取二维码状态
 export function GetCodeStatus(data) {
   return request({
-    url: '/api/Store/GetCodeStatus',
+    url: '/api/store/code/status',
     method: 'post',
     data
   })

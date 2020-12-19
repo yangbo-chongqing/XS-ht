@@ -11,7 +11,7 @@
         <el-form-item label="说明书">
           <el-upload
             class="upload-demo"
-            action="/api/Store/UploadFile"
+            action="/api/store/upload"
             :headers="headers"
             accept=".pdf"
             :limit="1"

@@ -67,7 +67,7 @@
               <img
                 v-if="codeKey"
                 :src="
-                  'http://testsydt.xunsheng.org.cn/api/Store/LoginCode?key=' +
+                  'http://testsydt.xunsheng.org.cn/api/store/login/code?key=' +
                     codeKey
                 "
                 alt=""

@@ -24,7 +24,7 @@
         <el-form-item label="产品图标">
           <el-upload
             class="upload-demo"
-            action="/api/Store/UploadFile"
+            action="/api/store/upload"
             :headers="headers"
             accept=".jpg,.png"
             v-if="!form.dialogImageUrl"
