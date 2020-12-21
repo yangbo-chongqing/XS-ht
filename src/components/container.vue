@@ -20,7 +20,7 @@
           >
             <div style="overflow: auto">
               <el-form-item>
-                <el-input placeholder="请输入表单标题" />
+                <el-input  placeholder="请输入表单标题" />
               </el-form-item>
             </div>
           </div>

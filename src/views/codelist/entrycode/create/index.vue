@@ -6,10 +6,10 @@
           <el-form ref="form" label-width="80px" label-position="top">
             <div class="create-code-body-title">
               <el-form-item label="词条名称">
-                <el-input v-model="codeTitle" placeholder="请输入词条名称" />
+                <el-input v-model="codeTitle" clearable placeholder="请输入词条名称" />
               </el-form-item>
             </div>
-            <div class="create-code-body-title">
+            <div class="create-code-body-title create-tips">
               <el-form-item label="词条分类">
                 <el-select v-model="typeCheck" placeholder="请选择">
                   <el-option
@@ -21,6 +21,9 @@
                   </el-option>
                 </el-select>
                 <!-- <el-button type="primary" @click="golinkpage('/codelist/entrytypecreate')" :style="{'margin-left':'10px'}" icon="el-icon-plus"></el-button> -->
+              </el-form-item>
+              <el-form-item label="是否隐藏(主页列表不显示)">
+                <el-checkbox v-model="endtyshowflag" label="隐藏"></el-checkbox>
               </el-form-item>
             </div>
             <el-form-item label="词条封面">
@@ -34,7 +37,6 @@
                   <div class="upload-info-img">
                     <img :src="codeImage" width="100%" alt="" />
                   </div>
-                  
                 </div>
                 <div v-if="codeVideo" class="upload-info">
                   <div class="code-img-tips">
@@ -118,7 +120,11 @@
               ></ue>
               <div class="create-code-body-title">
                 <el-form-item label="排序">
-                  <el-input v-model="codeSort" type="number" placeholder="数值越小越排前" />
+                  <el-input
+                    v-model="codeSort"
+                    type="number"
+                    placeholder="数值越小越排前"
+                  />
                 </el-form-item>
               </div>
               <div class="entry-entry-tip">
@@ -155,7 +161,7 @@
               </div>
               <div class="entry-entry-tip">
                 <div class="entry-entry-item">
-                  <i class="el-icon-plus" /> Ta说
+                  <i class="el-icon-plus" /> 我与
                 </div>
               </div>
               <div class="entry-entry-add-body">
@@ -198,7 +204,9 @@
             />
             <img v-else :src="codeSendImg" alt="" srcset="" />
             <div v-if="!codeSendImg" class="create-btn">
-              <el-button type="primary" @click="publish(2)">生成二维码</el-button>
+              <el-button type="primary" @click="publish(2)"
+                >生成二维码</el-button
+              >
             </div>
             <div v-else class="create-btn">
               <span
@@ -497,6 +505,60 @@
         </el-tabs>
       </div>
     </div>
+    <div class="select-entry-popover" v-if="entryXFlag" @click="entryXFlag = false"></div>
+    <div class="select-entry-body" v-if="entryXFlag">
+      <div>
+
+      </div>
+      <el-input
+        placeholder="请输入"
+        v-model="entryTipValue"
+        class="input-with-select"
+        @keyup.enter.native="fetchData"
+      >
+        <el-button
+          slot="append"
+          icon="el-icon-search"
+          @click="fetchData"
+        ></el-button>
+      </el-input>
+      <div>
+        <el-table
+          ref="multipleTable"
+          v-loading="listLoading"
+          :data="list"
+          element-loading-text="拼命加载中"
+          border
+          fit
+          highlight-current-row
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection" width="40" align="center" />
+          <el-table-column label="二维码名称">
+            <template slot-scope="scope">
+              <span class="code-name">{{ scope.row.name }}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div>
+          <div class="entry-pagination" v-if="list">
+            <el-pagination
+              background
+              :current-page.sync="page"
+              layout="prev, pager, next"
+              :total="count"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+            />
+          </div>
+        </div>
+        <div class="entry-popover-btn-body">
+          <el-button type="primary" plain>确定</el-button>
+          <el-button plain @click="entryXFlag = false">取消</el-button>
+        </div>
+      </div>
+    </div>
+
     <EntryQuery
       v-if="popoverFlag"
       :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id=' + id"
@@ -516,7 +578,8 @@ import {
   postTypeList,
   postEntryList,
   RelicsList,
-  postEdit
+  entryCodeList,
+  postEdit,
 } from "@/api/entrycode";
 import ue from "@/components/ue";
 export default {
@@ -531,8 +594,12 @@ export default {
       id: "",
       headers: { Authorization: "Bearer " + getToken() },
       popoverFlag: false,
+      list: null,
+      listLoading: true,
+      multipleSelection: [],
       entryTipList: [],
       entryHisList: [],
+      endtyshowflag: false,
       entryTipValue: "",
       checkList: [],
       checkHisList: [],
@@ -545,6 +612,7 @@ export default {
       uploadLoading: "",
       isCkeditorFlag: false,
       codeImageFlag: false,
+      multipleSelection:'',
       fullscreenLoading: "",
       codeSendImg: "",
       isShowDoc: false,
@@ -553,8 +621,14 @@ export default {
       editorData: "",
       loadFlag: false,
       typeCheck: 0,
-      codeSort:0,
+      codeSort: 0,
       options: [],
+      count:'',
+      page:1,
+      page_size:10,
+      pages:'',
+      type:1,
+      entryXFlag:true
     };
   },
   created() {},
@@ -562,9 +636,40 @@ export default {
     this.$nextTick(() => {
       this.loadFlag = true;
       this.queryType();
+      this.fetchData(this.type);
     });
   },
   methods: {
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    handleSizeChange(size) {
+      this.page = size;
+      this.fetchData(this.type);
+    },
+    handleCurrentChange(size) {
+      this.page = size;
+      this.fetchData(this.type);
+    },
+    //查询所有
+    fetchData(type) {
+      this.type = type;
+      this.listLoading = true;
+      const params = {
+        page: this.page,
+        page_size: this.page_size,
+        keyword: this.keyword,
+        keyword: type == 1 ? this.entryTipValue : this.entryHisValue,
+        type: type,
+        scenes:1
+      };
+      postEntryList(this.qs.stringify(params)).then((res) => {
+        this.pages = res.data.list.last_page;
+        this.count = res.data.list.total;
+        this.list = res.data.list.data;
+        this.listLoading = false;
+      });
+    },
     //查询分类
     queryType() {
       const params = {
@@ -614,11 +719,12 @@ export default {
         voice_url: this.codeAudio,
         video_url: this.codeVideo,
         content: this.editorData,
-        sort:this.codeSort,
-        type_id:this.typeCheck,
+        sort: this.codeSort,
+        type_id: this.typeCheck,
         related_ids: this.checkList.toString(),
         history_ids: this.checkHisList.toString(),
-        state:state//1发布2草稿
+        hide: this.endtyshowflag ? 1 : 0,
+        state: state, //1发布2草稿
       };
       const loading = this.$loading();
       postPublish(this.qs.stringify(parmas)).then((res) => {
@@ -640,7 +746,8 @@ export default {
         type_id: this.typeCheck,
         related_ids: this.checkList.toString(),
         history_ids: this.checkHisList.toString(),
-        state:state//1发布2草稿
+        hide: this.endtyshowflag ? 1 : 0,
+        state: state, //1发布2草稿
       };
       const loading = this.$loading();
       postEdit(this.qs.stringify(parmas)).then((res) => {
@@ -648,8 +755,10 @@ export default {
           this.isEdit = true;
         }
         loading.close();
-        if(state == 1){
-          this.golinkpage('/codelist/entrycode',{keyword:localStorage.getItem('entrykeyword')});
+        if (state == 1) {
+          this.golinkpage("/codelist/entrycode", {
+            keyword: localStorage.getItem("entrykeyword"),
+          });
         }
       });
     },
@@ -694,9 +803,9 @@ export default {
       this.$router.push({
         path: page,
         query: {
-          ...obj
-        }
-      })
+          ...obj,
+        },
+      });
     },
   },
 };
@@ -706,6 +815,11 @@ export default {
   .edui-editor-toolbarbox {
     padding-left: 75px;
     box-sizing: border-box;
+  }
+
+  .create-tips {
+    display: flex;
+    justify-content: space-between;
   }
   .el-tabs__content {
     height: 635px;
@@ -721,6 +835,32 @@ export default {
 .create-code {
   max-height: 90vh;
   overflow-y: scroll;
+  .select-entry-body {
+    width: 500px;
+    height: 800px;
+    background: white;
+    border-radius: 10px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1021;
+    padding: 20px;
+    box-sizing: border-box;
+    .entry-popover-btn-body{
+      text-align: center;
+      margin-top: 15px;
+    }
+  }
+  .select-entry-popover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1020;
+  }
   .entry-entry-tip {
     margin-top: 20px;
     .entry-entry-item {
@@ -793,7 +933,7 @@ export default {
     }
   }
   .upload-info {
-    .upload-info-img{
+    .upload-info-img {
       width: 100%;
       max-height: 250px;
       overflow: hidden;

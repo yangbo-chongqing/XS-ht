@@ -25823,8 +25823,7 @@
           catcherActionUrl = me.getActionUrl(me.getOpt("catcherActionName")),
           catcherUrlPrefix = me.getOpt("catcherUrlPrefix"),
           catcherFieldName = me.getOpt("catcherFieldName");
-
-        console.log(catcherLocalDomain);
+    
         var remoteImages = [],
           loadingIMG =  me.options.themePath + me.options.theme + '/images/spacer.gif',
           imgs = me.document.querySelectorAll('[style*="url"],img'),
@@ -25897,7 +25896,7 @@
               var catchSuccessList = [];
               /* 抓取失败时显示的图片 */
               var failIMG = me.options.themePath + me.options.theme + '/images/img-cracked.png';
-              console.log(imgs);
+    
               for (i = 0; ci = imgs[i++];) {
                 oldSrc = ci.getAttribute("_src") || ci.src || "";
                 oldBgIMG = ci.getAttribute("data-background") || "";

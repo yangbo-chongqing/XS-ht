@@ -1,41 +1,71 @@
 <template>
-  <div class="sidebar-logo-container" :class="{'collapse':collapse}">
+  <div class="sidebar-logo-container" :class="{ collapse: collapse }">
     <transition name="sidebarLogoFade">
-      <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 v-else class="sidebar-title">{{ title }} </h1>
+      <router-link
+        v-if="collapse"
+        key="collapse"
+        class="sidebar-logo-link"
+        to="/"
+      >
+        <img v-if="logo" :src="logo" class="sidebar-logo" />
+        <h1 v-else class="sidebar-title">{{ title }}</h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 class="sidebar-title">{{ title }} </h1>
+        <div class="logo-body">
+          <img v-if="logo" :src="logo" class="sidebar-logo" />
+          <h1 class="sidebar-title">{{ title }}</h1>
+        </div>
       </router-link>
     </transition>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
-  name: 'SidebarLogo',
+  name: "SidebarLogo",
   props: {
     collapse: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
+  },
+  computed: {
+    ...mapGetters(["userinfo"]),
+  },
+  created() {
+    this.userinfo.muse_list.map((item) => {
+      if (item.select == 1) {
+        this.logo = item.logo;
+        this.title = item.muse_name;
+      }
+    });
   },
   data() {
     return {
-      title: '寻声地图',
-      logo: 'http://www.xunsheng.org.cn/img/logo-white.png?v=2018'
-    }
-  }
-}
+      title: "寻声地图",
+      logo: "http://www.xunsheng.org.cn/img/logo-white.png?v=2018",
+    };
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 .sidebarLogoFade-enter-active {
   transition: opacity 1.5s;
 }
-
+.logo-body{
+  display:flex;
+  align-items: center;
+  img{
+    flex-shrink: 0;
+  }
+  h1{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
 .sidebarLogoFade-enter,
 .sidebarLogoFade-leave-to {
   opacity: 0;
@@ -64,7 +94,7 @@ export default {
     & .sidebar-title {
       display: inline-block;
       margin: 0;
-      color: #409EFF;
+      color: #409eff;
       font-weight: 600;
       line-height: 50px;
       font-size: 16px;
@@ -80,7 +110,6 @@ export default {
       margin-right: 0px;
       height: 15px;
     }
-
   }
 }
 </style>

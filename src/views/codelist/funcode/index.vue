@@ -10,6 +10,7 @@
                 <el-input
                   v-model="keyword"
                   type="search"
+                  clearable
                   placeholder="搜索表单名称或编号"
                 ><i slot="prefix" class="el-input__icon el-icon-search" />
                   <el-button slot="append" @click="onSearch">搜索</el-button>

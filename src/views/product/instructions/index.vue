@@ -11,6 +11,7 @@
                   v-model="keyword"
                   type="search"
                   placeholder="搜索说明书"
+                  clearable
                   ><i slot="prefix" class="el-input__icon el-icon-search" />
                   <el-button slot="append" @click="onSearch">搜索</el-button>
                 </el-input>

@@ -9,6 +9,7 @@
               <el-input
                 placeholder="请输入"
                 v-model="keyword"
+                clearable
                 class="input-with-select"
                 @keyup.enter.native="onSearch"
               >
@@ -53,7 +54,7 @@
         <div class="entry-table-tips-item">
           <el-select v-model="tipValue" @change="tipsChange" placeholder="标签">
             <el-option
-              v-for="(item,index) in tipData"
+              v-for="(item, index) in tipData"
               :key="index"
               :value="item"
             >
@@ -61,7 +62,12 @@
           </el-select>
         </div>
         <div class="entry-table-tips-item">
-          <el-checkbox v-model="checked1" @change="ctypeChange" label="草稿" border></el-checkbox>
+          <el-checkbox
+            v-model="checked1"
+            @change="ctypeChange"
+            label="草稿"
+            border
+          ></el-checkbox>
         </div>
       </div>
       <el-table
@@ -75,9 +81,13 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="40" align="center" />
-        <el-table-column label="排序" width="90" align="center">
+        <el-table-column label="排序" width="100" align="center">
           <template slot-scope="scope">
-            <el-input v-model="scope.row.sort" @blur="editSort(scope.row.id,scope.row.sort)" placeholder="排序"></el-input>
+            <el-input
+              v-model="scope.row.sort"
+              @blur="editSort(scope.row.id, scope.row.sort)"
+              placeholder="排序"
+            ></el-input>
           </template>
         </el-table-column>
         <el-table-column label="二维码名称">
@@ -178,7 +188,7 @@ import {
   postDelRelics,
   postlabelCreate,
   postlabelDel,
-  relicsRevise
+  relicsRevise,
 } from "@/api/entrycode";
 import { getGetMuse } from "@/api/settings";
 import EntryQuery from "@/components/EntryQuery";
@@ -198,13 +208,13 @@ export default {
       pages: 0,
       count: 0,
       page_size: 10,
-      keyword: this.$route.query.keyword || '',
+      keyword: this.$route.query.keyword || "",
       popoverFlag: false,
       checked1: false,
-      draft:0,
-      entryselect: '1',
+      draft: 0,
+      entryselect: "1",
       tipValue: "",
-      tipData: ['标签'],
+      tipData: ["标签"],
     };
   },
   created() {
@@ -213,25 +223,25 @@ export default {
   },
   methods: {
     //修改排序
-    editSort(id,sortnum){
+    editSort(id, sortnum) {
       let params = {
-        id:id,
-        sort:sortnum
-      }
-      relicsRevise(this.qs.stringify(params)).then((res)=>{
-        if(res.status == 200){
+        id: id,
+        sort: sortnum,
+      };
+      relicsRevise(this.qs.stringify(params)).then((res) => {
+        if (res.status == 200) {
           this.$message({
-            type:'success',
-            message:'修改成功请手动刷新'
-          })
+            type: "success",
+            message: "修改成功请手动刷新",
+          });
         }
-      })
+      });
     },
     //查询所有分组
     GetMuse() {
       getGetMuse().then((res) => {
-       this.tipData = this.tipData.concat(res.data.muse_info.label)
-      })
+        this.tipData = this.tipData.concat(res.data.muse_info.label);
+      });
     },
     //删除分组
     deltips(scope, index) {
@@ -248,7 +258,6 @@ export default {
           });
           this.GetMuse();
         }
-        
       });
     },
     // 添加分组
@@ -258,20 +267,24 @@ export default {
         cancelButtonText: "取消",
         inputPlaceholder: "添加分组",
         beforeClose: (action, instance, done) => {
-          const params = {
-            name: instance.inputValue,
-            id: scope.row.id,
-          };
-          postlabelCreate(this.qs.stringify(params)).then((res) => {
-            if (res.status == 200) {
-              this.$message({
-                type: "success",
-                message: "添加成功",
-              });
-              this.list[scope.$index].label.push(instance.inputValue);
-              this.GetMuse();
-            }
-          });
+          console.log(action);
+          if (action == "confirm") {
+            const params = {
+              name: instance.inputValue,
+              id: scope.row.id,
+            };
+            postlabelCreate(this.qs.stringify(params)).then((res) => {
+              if (res.status == 200) {
+                this.$message({
+                  type: "success",
+                  message: "添加成功",
+                });
+                this.list[scope.$index].label.push(instance.inputValue);
+                this.GetMuse();
+              }
+            });
+          }
+
           done();
         },
       }).catch(() => {});
@@ -324,8 +337,8 @@ export default {
       this.page = 1;
       this.checked1 = false;
       this.draft = 0;
-      this.tipValue='标签'
-      localStorage.setItem('entrykeyword',this.keyword)
+      this.tipValue = "标签";
+      localStorage.setItem("entrykeyword", this.keyword);
       this.fetchData();
     },
     handleSizeChange(size) {
@@ -337,12 +350,12 @@ export default {
       this.fetchData();
     },
     //草稿查询切换
-    ctypeChange(){
-      this.draft = this.checked1?1:0;
+    ctypeChange() {
+      this.draft = this.checked1 ? 1 : 0;
       this.fetchData();
     },
     //分组切换查询
-    tipsChange(){
+    tipsChange() {
       this.fetchData();
     },
     fetchData() {
@@ -351,9 +364,9 @@ export default {
         page: this.page,
         page_size: this.page_size,
         keyword: this.keyword,
-        label:this.tipValue=='标签'?'':this.tipValue,
-        draft:this.draft,
-        type:this.entryselect
+        label: this.tipValue == "标签" ? "" : this.tipValue,
+        draft: this.draft,
+        type: this.entryselect,
       };
       entryCodeList(this.qs.stringify(params)).then((res) => {
         console.log(res.data.relics_list);
@@ -418,6 +431,13 @@ export default {
   .el-select .el-input {
     width: 110px;
   }
+  .entry-table{
+.el-input__inner{
+    border: none;
+    text-align: center;
+  }
+  }
+  
   .input-with-select .el-input-group__prepend {
     background-color: #fff;
   }

@@ -27,6 +27,11 @@
                 ></el-button>
               </el-form-item>
             </div>
+            <div class="create-code-body-title">
+              <el-form-item label="是否隐藏">
+                 <el-checkbox v-model="endtyshowflag" label="隐藏"></el-checkbox>
+              </el-form-item>
+            </div>
             <el-form-item label="词条封面">
               <div class="create-code-body-upload">
                 <div v-if="codeImage" class="upload-info">
@@ -163,7 +168,7 @@
               </div>
               <div class="entry-entry-tip">
                 <div class="entry-entry-item">
-                  <i class="el-icon-plus" /> Ta说
+                  <i class="el-icon-plus" /> 我与
                 </div>
               </div>
               <div class="entry-entry-add-body">
@@ -532,6 +537,7 @@ export default {
       popoverFlag: false,
       activeName: "first",
       id: this.$route.query.id,
+      endtyshowflag:false,
       entryTipList: [],
       entryHisList: [],
       entryTipValue: "",
@@ -603,6 +609,7 @@ export default {
         this.typeCheck = res.data.relics_info.type_id;
         this.entryTipList = res.data.relics_info.related_list;
         this.entryHisList = res.data.relics_info.history_list;
+        this.endtyshowflag = res.data.relics_info.hide==0?false:true
         res.data.relics_info.related_list.map((item, index) => {
           this.checkList.push(item.id);
         });
@@ -646,6 +653,7 @@ export default {
         type_id: this.typeCheck,
         related_ids: this.checkList.toString(),
         history_ids: this.checkHisList.toString(),
+        hide:this.endtyshowflag?1:0,
         state:state//1发布2草稿
       };
       const loading = this.$loading();

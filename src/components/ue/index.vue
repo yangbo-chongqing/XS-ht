@@ -106,7 +106,6 @@ export default {
           entry: "添加词条链接",
         },
         catchRemoteImageEnable:true,
-        catcherLocalDomain:['voice.xunsheng.org.cn'],
         // 初始容器高度
         initialFrameHeight: 500,
         // 初始容器宽度
