@@ -6,7 +6,11 @@
           <el-form ref="form" label-width="80px" label-position="top">
             <div class="create-code-body-title">
               <el-form-item label="词条名称">
-                <el-input v-model="codeTitle" clearable placeholder="请输入词条名称" />
+                <el-input
+                  v-model="codeTitle"
+                  clearable
+                  placeholder="请输入词条名称"
+                />
               </el-form-item>
             </div>
             <div class="create-code-body-title create-tips">
@@ -505,41 +509,51 @@
         </el-tabs>
       </div>
     </div>
-    <div class="select-entry-popover" v-if="entryXFlag" @click="entryXFlag = false"></div>
+    <div class="select-entry-popover" v-if="entryXFlag"></div>
     <div class="select-entry-body" v-if="entryXFlag">
       <div>
-
-      </div>
-      <el-input
-        placeholder="请输入"
-        v-model="entryTipValue"
-        class="input-with-select"
-        @keyup.enter.native="fetchData"
-      >
-        <el-button
-          slot="append"
-          icon="el-icon-search"
-          @click="fetchData"
-        ></el-button>
-      </el-input>
-      <div>
-        <el-table
-          ref="multipleTable"
-          v-loading="listLoading"
-          :data="list"
-          element-loading-text="拼命加载中"
-          border
-          fit
-          highlight-current-row
-          @selection-change="handleSelectionChange"
+        <el-input
+          placeholder="请输入"
+          v-model="entryTipValue"
+          class="input-with-select"
+          @keyup.enter.native="fetchData"
         >
-          <el-table-column type="selection" width="40" align="center" />
-          <el-table-column label="二维码名称">
-            <template slot-scope="scope">
-              <span class="code-name">{{ scope.row.name }}</span>
-            </template>
-          </el-table-column>
-        </el-table>
+          <el-button
+            slot="append"
+            icon="el-icon-search"
+            @click="fetchData"
+          ></el-button>
+        </el-input>
+      </div>
+      <div class="multipleSelection-body" v-if="multipleSelection">
+        <span v-for="(item, index) in multipleSelection" :key="item.id">
+          {{ item.name }}
+          <i class="el-icon-close" @click="entrySelDel(index, item)"></i>
+        </span>
+      </div>
+      <div class="popover-table">
+        <!-- @row-click="btnRow" -->
+        <el-checkbox-group v-model="multipleSelection" @change="mychange">
+          <el-table
+            ref="multipleTable"
+            v-loading="listLoading"
+            :data="list"
+            element-loading-text="拼命加载中"
+            border
+          >
+            <el-table-column label="关联词条">
+              <template slot-scope="scope">
+                <el-checkbox :label="scope.row">
+                  <div class="scope-body">
+                    <span class="code-name">{{ scope.row.name }}</span>
+                  </div>
+                </el-checkbox>
+                <span>相互关联</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-checkbox-group>
+
         <div>
           <div class="entry-pagination" v-if="list">
             <el-pagination
@@ -612,7 +626,6 @@ export default {
       uploadLoading: "",
       isCkeditorFlag: false,
       codeImageFlag: false,
-      multipleSelection:'',
       fullscreenLoading: "",
       codeSendImg: "",
       isShowDoc: false,
@@ -623,12 +636,14 @@ export default {
       typeCheck: 0,
       codeSort: 0,
       options: [],
-      count:'',
-      page:1,
-      page_size:10,
-      pages:'',
-      type:1,
-      entryXFlag:true
+      count: "",
+      page: 1,
+      page_size: 10,
+      pages: "",
+      type: 1,
+      entryXFlag: true,
+      flag: false,
+      entrySelData: [],
     };
   },
   created() {},
@@ -640,8 +655,12 @@ export default {
     });
   },
   methods: {
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
+    mychange() {
+      console.log(this.multipleSelection);
+    },
+    //删除选中的相关数据
+    entrySelDel(index, item) {
+      this.multipleSelection.splice(index, 1);
     },
     handleSizeChange(size) {
       this.page = size;
@@ -661,9 +680,12 @@ export default {
         keyword: this.keyword,
         keyword: type == 1 ? this.entryTipValue : this.entryHisValue,
         type: type,
-        scenes:1
+        scenes: 1,
       };
       postEntryList(this.qs.stringify(params)).then((res) => {
+        res.data.list.data.map((item) => {
+          item.flag = false;
+        });
         this.pages = res.data.list.last_page;
         this.count = res.data.list.total;
         this.list = res.data.list.data;
@@ -816,10 +838,24 @@ export default {
     padding-left: 75px;
     box-sizing: border-box;
   }
-
   .create-tips {
     display: flex;
     justify-content: space-between;
+  }
+  .el-table__row {
+    .cell {
+      display: flex;
+      justify-content: space-between;
+      span {
+        flex-shrink: 0;
+      }
+    }
+  }
+  .el-checkbox {
+    width: 100%;
+  }
+  .el-checkbox__label {
+    width: 100%;
   }
   .el-tabs__content {
     height: 635px;
@@ -835,6 +871,32 @@ export default {
 .create-code {
   max-height: 90vh;
   overflow-y: scroll;
+  .multipleSelection-body {
+    width: 100%;
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    span {
+      flex-shrink: 0;
+      background: #ccc;
+      color: #ffffff;
+      padding: 2px 5px;
+      margin-right: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      i {
+        cursor: pointer;
+      }
+    }
+  }
+  .scope-body {
+    display: flex;
+    justify-content: space-between;
+    .code-name {
+      width: 100%;
+    }
+  }
   .select-entry-body {
     width: 500px;
     height: 800px;
@@ -847,7 +909,10 @@ export default {
     z-index: 1021;
     padding: 20px;
     box-sizing: border-box;
-    .entry-popover-btn-body{
+    .popover-table {
+      margin-top: 15px;
+    }
+    .entry-popover-btn-body {
       text-align: center;
       margin-top: 15px;
     }
