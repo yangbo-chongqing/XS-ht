@@ -516,12 +516,12 @@
           placeholder="请输入"
           v-model="entryTipValue"
           class="input-with-select"
-          @keyup.enter.native="fetchData"
+          @keyup.enter.native="fetchData(type)"
         >
           <el-button
             slot="append"
             icon="el-icon-search"
-            @click="fetchData"
+            @click="fetchData(type)"
           ></el-button>
         </el-input>
       </div>
@@ -548,7 +548,8 @@
                     <span class="code-name">{{ scope.row.name }}</span>
                   </div>
                 </el-checkbox>
-                <span>相互关联</span>
+                <span class="entry-toggle" @click="entryToggle(scope.row)" v-if="!scope.row.flag"><i class="el-icon-finished" size="30" /></span>
+                <span class="entry-toggle" @click="entryToggle(scope.row)" v-else><i class="el-icon-finished red" size="30" /></span>
               </template>
             </el-table-column>
           </el-table>
@@ -655,6 +656,9 @@ export default {
     });
   },
   methods: {
+    entryToggle(row){
+      row.flag = !row.flag
+    },
     mychange() {
       console.log(this.multipleSelection);
     },
@@ -852,7 +856,7 @@ export default {
     }
   }
   .el-checkbox {
-    width: 100%;
+    width: 70%;
   }
   .el-checkbox__label {
     width: 100%;
@@ -871,6 +875,15 @@ export default {
 .create-code {
   max-height: 90vh;
   overflow-y: scroll;
+  .entry-toggle{
+    .red{
+      color: #5387fd;
+    }
+    i{
+      font-size: 20px;
+      color: #999;
+    }
+  }
   .multipleSelection-body {
     width: 100%;
     margin-top: 15px;
