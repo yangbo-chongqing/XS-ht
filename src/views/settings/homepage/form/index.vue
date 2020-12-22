@@ -114,10 +114,11 @@
         </el-upload>
         <div class="home-code" v-if="homeCode">
           <img :src="homeCode" class="logo" />
-          <span><el-link type="primary" @click="downloadImg(homeCode, 'code')">下载二维码</el-link></span>
+          <span><el-link type="primary" @click="dialogVisible = true">下载二维码</el-link></span>
         </div>
       </el-col>
     </el-row>
+    <codedown :dialogVisible="dialogVisible" />
   </div>
 </template>
 
@@ -126,9 +127,13 @@ import { getToken } from "@/utils/auth";
 import { downloadIamge } from '@/utils/utils'
 import { editEditMuse } from "@/api/settings";
 import { preview } from "@/api/product";
+import codedown from "@/components/codeDown/index";
 import { mapGetters } from "vuex";
 export default {
   name: "HomePageForm",
+  components:{
+    codedown
+  },
   computed: {
     ...mapGetters(["userinfo"]),
   },
@@ -149,6 +154,7 @@ export default {
       isEditFlag: false,
       loading: "",
       homeCode: "",
+      dialogVisible:false
     };
   },
   created() {
