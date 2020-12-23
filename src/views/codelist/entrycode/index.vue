@@ -285,6 +285,22 @@ export default {
       tipData: [{ tag_name: "标签" }],
     };
   },
+  beforeRouteEnter(to, from, next) {
+      if(from.name === 'EntryEdit' || from.name === 'CreateArticle') { //判断是从哪个路由过来的，若是detail页面不需要刷新获取新数据，直接用之前缓存的数据即可
+          to.meta.isBack = true;
+      }
+      next();
+  },
+  activated() {
+    if(!this.$route.meta.isBack) {
+      this.page = 1;
+      // 如果isBack是false，表明需要获取新数据，否则就不再请求，直接使用缓存的数据
+      this.fetchData();
+      this.GetMuse();
+    }
+    // 恢复成默认的false，避免isBack一直是true，导致下次无法获取数据
+    this.$route.meta.isBack = false
+  },
   created() {
     this.fetchData();
     this.GetMuse();

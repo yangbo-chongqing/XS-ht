@@ -36,7 +36,7 @@ export const constantRoutes = [
         path: 'entrycode',
         name: 'EntryCode',
         component: () => import('@/views/codelist/entrycode/index'),
-        meta: { title: '词条码', icon: 'el-icon-bank-card', noCache: false }
+        meta: { title: '词条码', icon: 'el-icon-bank-card', noCache: false,isBack: false }
       },
       {
         path: 'entrytype',

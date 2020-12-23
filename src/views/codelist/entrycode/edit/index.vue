@@ -628,6 +628,7 @@ export default {
       progressFlag: false, // 关闭进度条
     };
   },
+  
   mounted() {
     this.$nextTick(() => {
       this.queryType();
