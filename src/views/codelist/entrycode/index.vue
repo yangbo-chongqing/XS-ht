@@ -52,11 +52,18 @@
           </el-button>
         </div>
         <div class="entry-table-tips-item">
-          <el-select v-model="tipValue" @change="tipsChange" placeholder="标签">
+          <el-select
+            v-model="tipValue"
+            @visible-change="(v) => visibleChange(v, 'cascader', cascaderClick)"
+            ref="cascader"
+            @change="tipsChange"
+            placeholder="标签"
+          >
             <el-option
               v-for="(item, index) in tipData"
               :key="index"
-              :value="item"
+              :value="item.id"
+              :label="item.tag_name"
             >
             </el-option>
           </el-select>
@@ -103,9 +110,9 @@
             <div class="code-ftype">
               标签：<span
                 class="tips"
-                v-for="(lableel, index) in scope.row.label"
-                :key="index + 'lableel'"
-                >{{ lableel
+                v-for="(lableel, index) in scope.row.tag"
+                :key="lableel.id"
+                >{{ lableel.tag_name
                 }}<i
                   class="del-tip el-icon-close"
                   @click="deltips(scope, index)"
@@ -172,6 +179,59 @@
         />
       </div>
     </div>
+    <el-dialog
+      title="添加标签"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <div>
+        <el-input
+          type="text"
+          placeholder="添加标签"
+          v-model="entryTipVal"
+          maxlength="10"
+          show-word-limit
+        >
+        </el-input>
+      </div>
+      <div class="entry-his-tips" v-if="entryTipHisList">
+        <p>最近使用</p>
+        <div class="entry-his-tips-item">
+          <span
+            v-for="item in entryTipHisList"
+            :key="item.id"
+            @click="setTabCreate(item)"
+            >{{ item.tag_name }}</span
+          >
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="createTag">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="标签管理" :visible.sync="dialogTableVisible">
+      <el-table :data="gridData" height="450" border>
+        <el-table-column property="tag_name" label="标签名称"></el-table-column>
+        <el-table-column
+          property="tag_object_count"
+          label="二维码数量"
+        ></el-table-column>
+        <el-table-column label="操作" width="140">
+          <template slot-scope="scope">
+            <div class="tag-btn-box">
+              <span><el-link type="primary">重命名</el-link></span>
+              <span
+                ><el-link type="primary" @click="delTag(scope)"
+                  >删除</el-link
+                ></span
+              >
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
     <EntryQuery
       v-if="popoverFlag"
       :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id=' + id"
@@ -186,9 +246,10 @@ import table2excel from "js-table2excel";
 import {
   entryCodeList,
   postDelRelics,
-  postlabelCreate,
-  postlabelDel,
+  postTagCreate,
+  postTagDel,
   relicsRevise,
+  postTagList,
 } from "@/api/entrycode";
 import { getGetMuse } from "@/api/settings";
 import EntryQuery from "@/components/EntryQuery";
@@ -203,6 +264,8 @@ export default {
       listLoading: true,
       multipleSelection: [],
       downloadLoading: false,
+      dialogVisible: false,
+      dialogTableVisible: false,
       filename: "",
       page: 1,
       pages: 0,
@@ -214,7 +277,12 @@ export default {
       draft: 0,
       entryselect: "1",
       tipValue: "",
-      tipData: ["标签"],
+      entryTipVal: "",
+      entryId: "",
+      tag_id: "",
+      entryTipHisList: "",
+      gridData: [],
+      tipData: [{ tag_name: "标签" }],
     };
   },
   created() {
@@ -222,6 +290,100 @@ export default {
     this.GetMuse();
   },
   methods: {
+    //标签管理按钮
+    cascaderClick() {
+      this.dialogTableVisible = true;
+      const params = {
+        type: 0,
+      };
+      //查询是否存在历史记录
+      postTagList(this.qs.stringify(params)).then((res) => {
+        if (res.status == 200) {
+          this.gridData = res.data.list;
+        }
+      });
+    },
+    //下拉列表添加管理按钮
+    visibleChange(visible, refName, onClick) {
+      if (visible) {
+        const ref = this.$refs[refName];
+        let popper = ref.$refs.popper;
+        if (popper.$el) popper = popper.$el;
+        if (
+          !Array.from(popper.children).some(
+            (v) => v.className === "el-cascader-menu__list"
+          )
+        ) {
+          const el = document.createElement("ul");
+          el.className = "el-cascader-menu__list";
+          el.style =
+            "border-top: solid 1px #E4E7ED; padding:0; color: #606266;";
+          el.innerHTML = `<li class="el-cascader-node" style="height:38px;line-height: 38px">
+<i class="el-icon-menu"></i>
+<span class="el-cascader-node__label">分组管理</span>
+</li>`;
+          popper.appendChild(el);
+          el.onclick = () => {
+            // 底部按钮的点击事件 点击后想触发的逻辑也可以直接写在这
+            onClick && onClick();
+            // 以下代码实现点击后弹层隐藏 不需要可以删掉
+            if (ref.toggleDropDownVisible) {
+              ref.toggleDropDownVisible(false);
+            } else {
+              ref.visible = false;
+            }
+          };
+        }
+      }
+    },
+    //点击历史记录设置添加标签
+    setTabCreate(item) {
+      this.tag_id = item.id;
+      this.entryTipVal = item.tag_name;
+    },
+    //添加标签
+    createTag() {
+      const params = {
+        tag_name: this.entryTipVal,
+        tag_id: this.tag_id,
+        relics_id: this.entryId,
+      };
+      postTagCreate(this.qs.stringify(params)).then((res) => {
+        if (res.status == 200) {
+          this.dialogVisible = false;
+          this.tag_id = "";
+          this.entryTipVal = "";
+          this.$message({
+            type: "success",
+            message: "添加成功",
+          });
+          this.list[scope.$index].tag.push(instance.inputValue);
+          this.GetMuse();
+        }
+      });
+    },
+    //标签关闭操作
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then((_) => {
+          done();
+        })
+        .catch((_) => {});
+    },
+    // 添加分组
+    addTips(scope) {
+      this.entryId = scope.row.id;
+      this.dialogVisible = true;
+      const params = {
+        type: 1,
+      };
+      //查询是否存在历史记录
+      postTagList(this.qs.stringify(params)).then((res) => {
+        if (res.status == 200) {
+          this.entryTipHisList = res.data.list;
+        }
+      });
+    },
     //修改排序
     editSort(id, sortnum) {
       let params = {
@@ -239,19 +401,66 @@ export default {
     },
     //查询所有分组
     GetMuse() {
-      getGetMuse().then((res) => {
-        this.tipData = this.tipData.concat(res.data.muse_info.label);
+      const params = {
+        type: 0,
+      };
+      //查询是否存在历史记录
+      postTagList(this.qs.stringify(params)).then((res) => {
+        if (res.status == 200) {
+          this.tipData = [{ tag_name: "标签" }];
+          this.tipData = this.tipData.concat(res.data.list);
+        }
       });
     },
-    //删除分组
-    deltips(scope, index) {
+    //删除标签
+    delTag(item) {
       let params = {
-        name: scope.row.label[index],
-        id: scope.row.id,
+        tag_id: item.row.id,
       };
-      postlabelDel(this.qs.stringify(params)).then((res) => {
+      this.$prompt(
+        "一旦删除标签，这些二维码上的标签会被删除，请谨慎操作！",
+        `确定删除：标签 「${item.row.tag_name}」，该标签下共有 ${item.row.tag_object_count} 个二维码`,
+        {
+          confirmButtonClass: "btnFalses",
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          inputPlaceholder: "请输入'删除'确认删除",
+          beforeClose: (action, instance, done) => {
+            if (action == "confirm") {
+              if (instance.inputValue != "删除") {
+                this.$message({
+                  type: "success",
+                  message: "文字输出成功！请输入'删除'",
+                });
+              } else {
+                postTagDel(this.qs.stringify(params)).then((res) => {
+                  if (res.status == 200) {
+                    this.gridData.splice(item.$index, 1);
+                    this.$message({
+                      type: "success",
+                      message: "删除成功",
+                    });
+                    this.GetMuse();
+                    done();
+                  }
+                });
+              }
+            } else {
+              done();
+            }
+          },
+        }
+      ).catch(() => {});
+    },
+    //删除词条上标签
+    deltips(item, index) {
+      let params = {
+        relics_id: item.row.id,
+        tag_id: item.row.tag[index].id,
+      };
+      postTagDel(this.qs.stringify(params)).then((res) => {
         if (res.status == 200) {
-          this.list[scope.$index].label.splice(index, 1);
+          this.list[item.$index].tag.splice(index, 1);
           this.$message({
             type: "success",
             message: "删除成功",
@@ -259,35 +468,6 @@ export default {
           this.GetMuse();
         }
       });
-    },
-    // 添加分组
-    addTips(scope) {
-      this.$prompt("", "添加分组", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        inputPlaceholder: "添加分组",
-        beforeClose: (action, instance, done) => {
-          console.log(action);
-          if (action == "confirm") {
-            const params = {
-              name: instance.inputValue,
-              id: scope.row.id,
-            };
-            postlabelCreate(this.qs.stringify(params)).then((res) => {
-              if (res.status == 200) {
-                this.$message({
-                  type: "success",
-                  message: "添加成功",
-                });
-                this.list[scope.$index].label.push(instance.inputValue);
-                this.GetMuse();
-              }
-            });
-          }
-
-          done();
-        },
-      }).catch(() => {});
     },
     togglePopover(id) {
       this.id = id;
@@ -427,17 +607,25 @@ export default {
 };
 </script>
 <style lang="scss">
+.btnFalses {
+  background: red !important;
+  border-color: red !important;
+  color: #fff !important;
+}
 .entry-code {
   .el-select .el-input {
     width: 110px;
   }
-  .entry-table{
-.el-input__inner{
-    border: none;
-    text-align: center;
+
+  .el-table__row {
+    .el-input__inner {
+      border: none;
+      text-align: center;
+    }
   }
+.el-message-box__message{
+    color: red;
   }
-  
   .input-with-select .el-input-group__prepend {
     background-color: #fff;
   }
@@ -448,6 +636,29 @@ export default {
   background: white;
   padding: 20px;
   box-sizing: border-box;
+  
+  .tag-btn-box {
+    display: flex;
+    justify-content: space-around;
+  }
+  .entry-his-tips {
+    margin-top: 15px;
+    .entry-his-tips-item {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 15px;
+      span {
+        background: rgba(0, 0, 0, 0.04);
+        font-size: 12px;
+        color: #333;
+        padding: 3px 5px;
+        border-radius: 3px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        cursor: pointer;
+      }
+    }
+  }
   .entry-table-tips-btn {
     margin: 15px 0;
     &::after {

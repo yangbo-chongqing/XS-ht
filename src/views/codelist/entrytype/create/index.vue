@@ -1,6 +1,6 @@
 <template>
   <div class="fun-code">
-    <div class="back-box" @click="back">
+    <div class="back-box" v-if="backFlag" @click="back">
       <i class="el-icon-arrow-left"></i> 返回列表
     </div>
     <div class="fun-table-body">
@@ -25,6 +25,12 @@ import { getToken } from "@/utils/auth";
 import { Loading } from "element-ui";
 export default {
   name: "InstructionsCreate",
+  props:{
+    backFlag:{
+      type:Boolean,
+      default:true
+    }
+  },
   data() {
     return {
       headers: { Authorization: "Bearer " + getToken() },
@@ -64,6 +70,9 @@ export default {
             message: res.message,
             type: "success",
           });
+          if(!this.backFlag){
+            this.$emit('createType')
+          }
           this.form.name = '';
           this.form.sort = 0;
         }

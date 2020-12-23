@@ -74,6 +74,8 @@ export default {
             "cleardoc", //清空文档
             "simpleupload",//单图上传
             "insertimage", //图上传
+            "music",
+            "insertvideo",
             "link", //超链接
             "entry", //词条
             "justifyleft", //居左对齐

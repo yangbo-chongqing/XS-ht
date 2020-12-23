@@ -22,7 +22,7 @@ export const constantRoutes = [
       path: 'workbench',
       name: 'Workbench',
       component: () => import('@/views/workbench/index'),
-      meta: { title: '工作台', icon: 'dashboard' }
+      meta: { title: '工作台', icon: 'dashboard',noCache: true }
     }]
   },
   {
@@ -36,41 +36,41 @@ export const constantRoutes = [
         path: 'entrycode',
         name: 'EntryCode',
         component: () => import('@/views/codelist/entrycode/index'),
-        meta: { title: '词条码', icon: 'el-icon-bank-card' }
+        meta: { title: '词条码', icon: 'el-icon-bank-card', noCache: false }
       },
       {
         path: 'entrytype',
         name: 'EntryType',
         component: () => import('@/views/codelist/entrytype/index'),
-        meta: { title: '词条分类', icon: 'el-icon-collection' }
+        meta: { title: '词条分类', icon: 'el-icon-collection',noCache: true }
       },
       {
         path: 'entrytypecreate',
         component: () => import('@/views/codelist/entrytype/create'),
         name: 'CreateArticle',
         hidden: true,
-        meta: { title: '新增词条分类' }
+        meta: { title: '新增词条分类',noCache: true }
       },
       {
         path: 'entrytypeedit',
         component: () => import('@/views/codelist/entrytype/edit'),
         name: 'EntryEdit',
         hidden: true,
-        meta: { title: '编辑词条分类' }
+        meta: { title: '编辑词条分类',noCache: true }
       },
       {
         path: 'create',
         component: () => import('@/views/codelist/entrycode/create'),
         name: 'CreateArticle',
         hidden: true,
-        meta: { title: '新增二维码' }
+        meta: { title: '新增二维码',noCache: true }
       },
       {
         path: 'edit',
         component: () => import('@/views/codelist/entrycode/edit'),
         name: 'EntryEdit',
         hidden: true,
-        meta: { title: '编辑词条' }
+        meta: { title: '编辑词条',noCache: true }
       },
       // {
       //   path: 'funcode',
@@ -83,14 +83,14 @@ export const constantRoutes = [
         component: () => import('@/views/codelist/funcode/create'),
         name: 'FunCreateArticle',
         hidden: true,
-        meta: { title: '新增功能码' }
+        meta: { title: '新增功能码',noCache: true }
       },
       {
         path: 'funedit',
         component: () => import('@/views/codelist/funcode/edit'),
         name: 'FunEntryEdit',
         hidden: true,
-        meta: { title: '编辑功能码' }
+        meta: { title: '编辑功能码',noCache: true }
       }
     ]
   },
@@ -151,7 +151,7 @@ export const constantRoutes = [
       path: 'scancode',
       name: 'ScanCode',
       component: () => import('@/views/scancode/index'),
-      meta: { title: '扫码量统计', icon: 'dashboard' }
+      meta: { title: '扫码量统计', icon: 'dashboard',noCache: true }
     }]
   },
   {
@@ -165,19 +165,19 @@ export const constantRoutes = [
         path: 'homepage',
         name: 'HomePage',
         component: () => import('@/views/settings/homepage/index'),
-        meta: { title: '企业主页', icon: 'table' }
+        meta: { title: '企业主页', icon: 'table',noCache: true }
       },
       {
         path: 'administrator',
         name: 'Administrator',
         component: () => import('@/views/settings/administrator/index'),
-        meta: { title: '子管理员', icon: 'el-icon-user' }
+        meta: { title: '子管理员', icon: 'el-icon-user',noCache: true }
       },
       {
         path: 'account',
         name: 'Account',
         component: () => import('@/views/settings/account/index'),
-        meta: { title: '账户设置', icon: 'el-icon-s-custom' }
+        meta: { title: '账户设置', icon: 'el-icon-s-custom',noCache: true }
       }
     ]
   },

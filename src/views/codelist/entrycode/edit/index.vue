@@ -1,6 +1,10 @@
 <template>
   <div class="create-code">
+    
     <div class="create-code-body">
+      <div class="back-box" @click="goback">
+        <i class="el-icon-arrow-left"></i> 返回列表
+      </div>
       <el-row :gutter="20">
         <el-col :span="18">
           <el-form ref="form" label-width="80px" label-position="top">
@@ -71,7 +75,7 @@
                       :on-success="imageUploadSuccess"
                       accept=".jpg,.png"
                       :show-file-list="false"
-                      :on-progress="uploadProgress"
+                      :on-change="uploadProgress"
                     >
                       <el-button size="small" type="primary"
                         >图片<i class="el-icon-upload el-icon--right"
@@ -86,7 +90,7 @@
                       :show-file-list="false"
                       accept=".MPEG,.MP3,.MPEG-4,.MIDI,.WMA"
                       :on-success="audioUploadSuccess"
-                      :on-progress="uploadProgress"
+                      :on-change="uploadProgress"
                     >
                       <el-button size="small" type="primary"
                         >音频<i class="el-icon-upload el-icon--right"
@@ -101,7 +105,7 @@
                       accept=".MPEG,.baiAVI,.nAVI,.ASF,.MOV,.3GP,.mp4"
                       :show-file-list="false"
                       :on-success="videoUploadSuccess"
-                      :on-progress="uploadProgress"
+                      :on-change="uploadProgress"
                     >
                       <el-button size="small" type="primary"
                         >视频<i class="el-icon-upload el-icon--right"
@@ -109,6 +113,7 @@
                     </el-upload>
                   </el-col>
                 </el-row>
+                <el-progress v-if="progressFlag" :percentage="loadProgress"></el-progress>
               </div>
             </el-form-item>
             <div class="cheditor-body" v-if="loadFlag">
@@ -135,67 +140,35 @@
                 </el-form-item>
               </div>
               <div class="entry-entry-tip">
-                <div class="entry-entry-item">
+                <div class="entry-entry-item" @click="openPopver(1)">
                   <i class="el-icon-plus" /> 相关词条
                 </div>
               </div>
               <div class="entry-entry-add-body">
-                <div style="margin-top: 15px">
-                  <el-input
-                    v-model="entryTipValue"
-                    placeholder="请输入词条名"
-                    class="input-with-select"
-                  >
-                    <el-button
-                      slot="append"
-                      icon="el-icon-search"
-                      @click="remoteMethod(1)"
-                    />
-                  </el-input>
-                </div>
-                <div v-if="entryTipList" class="entry-tip-list">
-                  <el-checkbox-group v-model="checkList">
-                    <div>
-                      <el-checkbox
-                        v-for="(item, index) in entryTipList"
-                        :key="index"
-                        :label="item.id"
-                        >{{ item.name }}</el-checkbox
-                      >
-                    </div>
-                  </el-checkbox-group>
+                <div class="multipleSelection-body" v-if="checkList">
+                  <span v-for="(item, index) in checkList" :key="item.id">
+                    {{ item.name }}
+                    <i
+                      class="el-icon-close"
+                      @click="checkListDel(index, item)"
+                    ></i>
+                  </span>
                 </div>
               </div>
               <div class="entry-entry-tip">
-                <div class="entry-entry-item">
+                <div class="entry-entry-item" @click="openPopver(2)">
                   <i class="el-icon-plus" /> 我与
                 </div>
               </div>
               <div class="entry-entry-add-body">
-                <div style="margin-top: 15px">
-                  <el-input
-                    v-model="entryHisValue"
-                    placeholder="请输入词条名"
-                    class="input-with-select"
-                  >
-                    <el-button
-                      slot="append"
-                      icon="el-icon-search"
-                      @click="remoteMethod(0)"
-                    />
-                  </el-input>
-                </div>
-                <div v-if="entryHisList" class="entry-tip-list">
-                  <el-checkbox-group v-model="checkHisList">
-                    <div>
-                      <el-checkbox
-                        v-for="(item, index) in entryHisList"
-                        :key="index"
-                        :label="item.id"
-                        >{{ item.name }}</el-checkbox
-                      >
-                    </div>
-                  </el-checkbox-group>
+                <div class="multipleSelection-body" v-if="checkHisList">
+                  <span v-for="(item, index) in checkHisList" :key="item.id">
+                    {{ item.name }}
+                    <i
+                      class="el-icon-close"
+                      @click="checkHisListDel(index, item)"
+                    ></i>
+                  </span>
                 </div>
               </div>
             </div>
@@ -504,6 +477,84 @@
         </el-tabs>
       </div>
     </div>
+    <div class="select-entry-popover" v-if="entryXFlag"></div>
+    <div class="select-entry-body" v-if="entryXFlag">
+      <div>
+        <el-input
+          placeholder="请输入"
+          v-model="entryTipValue"
+          class="input-with-select"
+          @keyup.enter.native="fetchData(type)"
+        >
+          <el-button
+            slot="append"
+            icon="el-icon-search"
+            @click="fetchData(type)"
+          ></el-button>
+        </el-input>
+      </div>
+      <div class="multipleSelection-body" v-if="multipleSelection">
+        <span v-for="(item, index) in multipleSelection" :key="item.id">
+          {{ item.name }}
+          <i class="el-icon-close" @click="entrySelDel(index, item)"></i>
+        </span>
+      </div>
+      <div class="popover-table">
+        <!-- @row-click="btnRow" -->
+        <el-checkbox-group v-model="multipleSelection">
+          <el-table
+            ref="multipleTable"
+            v-loading="listLoading"
+            :data="list"
+            element-loading-text="拼命加载中"
+            border
+          >
+            <el-table-column :label="type == 1 ? '关联词条' : '我与'">
+              <template slot-scope="scope">
+                <el-checkbox :label="scope.row">
+                  <div class="scope-body">
+                    <span class="code-name">{{ scope.row.name }}</span>
+                  </div>
+                </el-checkbox>
+                <div v-if="type == 1">
+                  <span
+                    class="entry-toggle"
+                    @click="entryToggle(scope.row)"
+                    v-if="!scope.row.flag"
+                    ><i class="el-icon-finished" size="30"
+                  /></span>
+                  <span
+                    class="entry-toggle"
+                    @click="entryToggle(scope.row)"
+                    v-else
+                    ><i class="el-icon-finished red" size="30"
+                  /></span>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-checkbox-group>
+
+        <div>
+          <div class="entry-pagination" v-if="list">
+            <el-pagination
+              background
+              :current-page.sync="page"
+              layout="prev, pager, next"
+              :total="count"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+            />
+          </div>
+        </div>
+        <div class="entry-popover-btn-body">
+          <el-button type="primary" plain @click="savePopover(type)"
+            >确定</el-button
+          >
+          <el-button plain @click="closePopover()">取消</el-button>
+        </div>
+      </div>
+    </div>
     <EntryQuery
       v-if="popoverFlag"
       :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id=' + id"
@@ -537,7 +588,9 @@ export default {
       popoverFlag: false,
       activeName: "first",
       id: this.$route.query.id,
+      list: null,
       endtyshowflag:false,
+      multipleSelection: [],
       entryTipList: [],
       entryHisList: [],
       entryTipValue: "",
@@ -563,6 +616,16 @@ export default {
       typeCheck: 0,
       codeSort: 0,
       options: [],
+      count: "",
+      page: 1,
+      page_size: 10,
+      pages: "",
+      type: 1,
+      entryXFlag: false,
+      flag: false,
+      entrySelData: [],
+      loadProgress: 0, // 动态显示进度条
+      progressFlag: false, // 关闭进度条
     };
   },
   mounted() {
@@ -572,6 +635,53 @@ export default {
     });
   },
   methods: {
+    //模态窗确定
+    savePopover(type) {
+      if (type == 1) {
+        this.checkList = this.multipleSelection;
+      }else{
+        this.checkHisList = this.multipleSelection;
+      }
+      this.closePopover();
+    },
+    //模态窗取消
+    closePopover() {
+      this.entryXFlag = false;
+    },
+    //打开模态窗
+    openPopver(type) {
+      this.type = type;
+      if(type == 1){
+        this.multipleSelection = this.checkList;
+      }else{
+        this.multipleSelection = this.checkHisList;
+      }
+      this.entryXFlag = true;
+      this.fetchData(type);
+    },
+    entryToggle(row) {
+      row.flag = !row.flag;
+    },
+    //删除选中的相关数据
+    entrySelDel(index, item) {
+      this.multipleSelection.splice(index, 1);
+    },
+    //相关删除
+    checkListDel(index, item) {
+      this.checkList.splice(index, 1);
+    },
+    //我与删除
+    checkHisListDel(index, item) {
+      this.checkHisList.splice(index, 1);
+    },
+    handleSizeChange(size) {
+      this.page = size;
+      this.fetchData(this.type);
+    },
+    handleCurrentChange(size) {
+      this.page = size;
+      this.fetchData(this.type);
+    },
     //查询分类
     queryType() {
       const params = {
@@ -607,33 +717,37 @@ export default {
         this.codeSendImg = res.data.relics_info.mini_code;
         this.codeSort = res.data.relics_info.sort;
         this.typeCheck = res.data.relics_info.type_id;
-        this.entryTipList = res.data.relics_info.related_list;
-        this.entryHisList = res.data.relics_info.history_list;
+        res.data.relics_info.related_list.map((item)=>{
+          item.flag = false;
+        })
+        this.checkList = res.data.relics_info.related_list;
+        console.log(this.checkList);
+        this.checkHisList = res.data.relics_info.history_list;
         this.endtyshowflag = res.data.relics_info.hide==0?false:true
-        res.data.relics_info.related_list.map((item, index) => {
-          this.checkList.push(item.id);
-        });
-        res.data.relics_info.history_list.map((item, index) => {
-          this.checkHisList.push(item.id);
-        });
         this.loadFlag = true;
       });
     },
 
     // 查找相关
-    remoteMethod(type) {
-      this.loading = true;
+    fetchData(type) {
+      this.type = type;
+      this.listLoading = true;
       const params = {
-        keyword: type == 1 ? this.entryTipValue : this.entryHisValue,
+        page: this.page,
+        page_size: this.page_size,
+        keyword: this.keyword,
+        keyword: this.entryTipValue,
         type: type,
+        scenes: 1,
       };
       postEntryList(this.qs.stringify(params)).then((res) => {
-        if (type == 1) {
-          this.entryTipList = res.data.list;
-        } else {
-          this.entryHisList = res.data.list;
-        }
-        this.loading = false;
+        res.data.list.data.map((item) => {
+          item.flag = false;
+        });
+        this.pages = res.data.list.last_page;
+        this.count = res.data.list.total;
+        this.list = res.data.list.data;
+        this.listLoading = false;
       });
     },
     // 返回
@@ -642,19 +756,28 @@ export default {
     },
     // 编辑
     entryEdit(state) {
+      let related_ids = [];
+      let history_ids = [];
+      this.checkList.map((item)=>{
+        let flag = item.flag?1:0;
+        related_ids.push(item.id+'.'+flag);
+      })
+      this.checkHisList.map((item)=>{
+        history_ids.push(item.id);
+      })
       const parmas = {
         id: this.id,
-        name: this.codeTitle,
+       name: this.codeTitle,
         image: this.codeImage,
         voice_url: this.codeAudio,
         video_url: this.codeVideo,
         content: this.editorData,
         sort: this.codeSort,
         type_id: this.typeCheck,
-        related_ids: this.checkList.toString(),
-        history_ids: this.checkHisList.toString(),
-        hide:this.endtyshowflag?1:0,
-        state:state//1发布2草稿
+        related_ids: related_ids.toString(),
+        history_ids: history_ids.toString(),
+        hide: this.endtyshowflag ? 1 : 0,
+        state: state, //1发布2草稿
       };
       const loading = this.$loading();
       postEdit(this.qs.stringify(parmas)).then((res) => {
@@ -662,8 +785,10 @@ export default {
           this.isEdit = true;
         }
         loading.close();
-        if(state == 1){
-          this.golinkpage('/codelist/entrycode',{keyword:localStorage.getItem('entrykeyword')});
+        if (state == 1) {
+          this.golinkpage("/codelist/entrycode", {
+            keyword: localStorage.getItem("entrykeyword"),
+          });
         }
       });
     },
@@ -686,23 +811,33 @@ export default {
     },
     imageUploadSuccess(response, file, fileList) {
       this.codeImage = response.data.file_path;
-      this.uploadLoading.close();
     },
     audioUploadSuccess(response, file, fileList) {
       this.codeAudio = response.data.file_path;
-      this.uploadLoading.close();
     },
     videoUploadSuccess(response, file, fileList) {
       this.codeVideo = response.data.file_path;
-      this.uploadLoading.close();
     },
     setCheditor(e) {
       this.mobHtml = e.target.innerHTML;
     },
-    uploadProgress() {
-      this.uploadLoading = Loading.service({
-        text: "上传中...",
-      });
+    uploadProgress(file, fileList) {
+      if (file.status === "ready") {
+        this.loadProgress = 0;
+        this.progressFlag = true; // 显示进度条
+        let intval = setInterval(() => {
+          if (this.loadProgress >= 99) {
+            clearInterval(intval);
+          }
+          this.loadProgress += 1;
+        }, 20);
+      }
+      if (file.status === "success") {
+        this.loadProgress = 100;
+      }
+      setTimeout(() => {
+        this.progressFlag = false;
+      }, 1000); // 一秒后关闭进度条
     },
     onNamespaceLoaded(CKEDITOR) {},
     ckeditorReady() {
@@ -721,6 +856,25 @@ export default {
     padding-left: 75px;
     box-sizing: border-box;
   }
+  .create-tips {
+    display: flex;
+    justify-content: space-between;
+  }
+  .el-table__row {
+    .cell {
+      display: flex;
+      justify-content: space-between;
+      span {
+        flex-shrink: 0;
+      }
+    }
+  }
+  .el-checkbox {
+    width: 70%;
+  }
+  .el-checkbox__label {
+    width: 100%;
+  }
   .el-tabs__content {
     height: 635px;
     overflow-y: scroll;
@@ -735,6 +889,76 @@ export default {
 .create-code {
   max-height: 90vh;
   overflow-y: scroll;
+  .back-box {
+    padding: 10px 0;
+    box-sizing: border-box;
+    color: #999;
+    cursor: pointer;
+  }
+  .entry-toggle {
+    .red {
+      color: #5387fd;
+    }
+    i {
+      font-size: 20px;
+      color: #999;
+    }
+  }
+  .multipleSelection-body {
+    width: 100%;
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    span {
+      flex-shrink: 0;
+      background: #ccc;
+      color: #ffffff;
+      padding: 2px 5px;
+      margin-right: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      i {
+        cursor: pointer;
+      }
+    }
+  }
+  .scope-body {
+    display: flex;
+    justify-content: space-between;
+    .code-name {
+      width: 100%;
+    }
+  }
+  .select-entry-body {
+    width: 500px;
+    height: 800px;
+    background: white;
+    border-radius: 10px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1021;
+    padding: 20px;
+    box-sizing: border-box;
+    .popover-table {
+      margin-top: 15px;
+    }
+    .entry-popover-btn-body {
+      text-align: center;
+      margin-top: 15px;
+    }
+  }
+  .select-entry-popover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1020;
+  }
   .entry-entry-tip {
     margin-top: 20px;
     .entry-entry-item {
@@ -807,7 +1031,7 @@ export default {
     }
   }
   .upload-info {
-    .upload-info-img{
+    .upload-info-img {
       width: 100%;
       max-height: 250px;
       overflow: hidden;

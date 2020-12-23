@@ -15,6 +15,10 @@
             <el-input v-if="isEditFlag" v-model="info.slogan" />
             <p v-else>{{ info.slogan ? info.slogan : "暂无" }}</p>
           </el-form-item>
+          <el-form-item label="企业简介">
+            <el-input type="textarea" v-if="isEditFlag" v-model="info.introduction" />
+            <p v-else>{{ info.introduction ? info.introduction : "暂无" }}</p>
+          </el-form-item>
           <el-form-item label="企业音频">
             <audio v-if="enterpriseAudio" controls :src="enterpriseAudio" />
             <el-upload
@@ -48,13 +52,12 @@
               :headers="headers"
               :show-file-list="false"
               :on-success="videoUploadSuccess"
-              :on-progress="uploadProgress"
+              :on-change="uploadProgress"
             >
               <el-button size="small" type="primary">上传视频</el-button>
               <span slot="tip" class="el-upload__tip">格式 mp4 小于20M</span>
             </el-upload>
           </el-form-item>
-
           <el-form-item label="门头">
             <img
               v-if="enterpriseImage"
@@ -70,7 +73,7 @@
               accept=".png,.jpg"
               :show-file-list="false"
               :on-success="imageUploadSuccess"
-              :on-progress="uploadProgress"
+              :on-change="uploadProgress"
             >
               <el-button size="small" type="primary">上传门头</el-button>
               <span slot="tip" class="el-upload__tip"
@@ -78,6 +81,7 @@
               >
             </el-upload>
           </el-form-item>
+          <el-progress v-if="progressFlag" :percentage="loadProgress"></el-progress>
           <el-form-item>
             <el-button
               v-if="isEditFlag"
@@ -106,7 +110,7 @@
           :headers="headers"
           :show-file-list="false"
           :on-success="logoUploadSuccess"
-          :on-progress="uploadProgress"
+          :on-change="uploadProgress"
         >
           <img v-if="enterpriseLogo" :src="enterpriseLogo" class="logo" />
           <i v-else class="el-icon-plus logo-uploader-icon" />
@@ -149,6 +153,8 @@ export default {
       isEditFlag: false,
       loading: "",
       homeCode: "",
+      loadProgress: 0, // 动态显示进度条
+      progressFlag: false, // 关闭进度条
     };
   },
   created() {
@@ -187,6 +193,7 @@ export default {
         video_url: this.enterpriseVideo,
         head: this.enterpriseImage,
         logo: this.enterpriseLogo,
+        introduction:this.info.introduction,
         slogan: this.info.slogan,
       };
       editEditMuse(this.qs.stringify(params)).then((res) => {
@@ -194,26 +201,35 @@ export default {
         this.isEditFlag = false;
       });
     },
-    uploadProgress() {
-      this.loading = this.$loading({
-        text: "上传中...",
-      });
+    uploadProgress(file, fileList) {
+      if (file.status === "ready") {
+        this.loadProgress = 0;
+        this.progressFlag = true; // 显示进度条
+        let intval = setInterval(() => {
+          if (this.loadProgress >= 99) {
+            clearInterval(intval);
+          }
+          this.loadProgress += 1;
+        }, 20);
+      }
+      if (file.status === "success") {
+        this.loadProgress = 100;
+      }
+      setTimeout(() => {
+        this.progressFlag = false;
+      }, 1000); // 一秒后关闭进度条
     },
     logoUploadSuccess(response, file, fileList) {
       this.enterpriseLogo = response.data.file_path;
-      this.loading.close();
     },
     imageUploadSuccess(response, file, fileList) {
       this.enterpriseImage = response.data.file_path;
-      this.loading.close();
     },
     audioUploadSuccess(response, file, fileList) {
       this.enterpriseAudio = response.data.file_path;
-      this.loading.close();
     },
     videoUploadSuccess(response, file, fileList) {
       this.enterpriseVideo = response.data.file_path;
-      this.loading.close();
     },
   },
 };

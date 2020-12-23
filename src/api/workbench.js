@@ -7,3 +7,11 @@ export function workbench(data) {
     data
   })
 }
+//获取帮助文档
+export function newsDetails(data) {
+  return request({
+    url: '/api/store/news/details',
+    method: 'post',
+    data
+  })
+}

@@ -4,7 +4,7 @@
       <adminContent :relics-count="relicsCount" :relics-list="relicsList" />
     </div>
     <div class="workbench-right">
-      <chartContent :code-obj="codeObj" :chart-data="chartData" />
+      <chartContent :code-obj="codeObj" :chart-data="chartData" :news-list="newsList" />
     </div>
   </div>
 </template>
@@ -22,7 +22,8 @@ export default {
       relicsCount: 0,
       relicsList: [],
       codeObj: {},
-      chartData: []
+      chartData: [],
+      newsList:[]
     }
   },
   created() {
@@ -39,6 +40,7 @@ export default {
           yesterday: res.data.yesterday,
           nowadays: res.data.nowadays
         }
+        this.newsList = res.data.news_list
         this.chartData = res.data.info_list
       })
     }

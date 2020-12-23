@@ -1,6 +1,9 @@
 <template>
   <div class="create-code">
     <div class="create-code-body">
+      <div class="back-box" @click="goback">
+        <i class="el-icon-arrow-left"></i> 返回列表
+      </div>
       <el-row :gutter="20">
         <el-col :span="18">
           <el-form ref="form" label-width="80px" label-position="top">
@@ -24,7 +27,12 @@
                   >
                   </el-option>
                 </el-select>
-                <!-- <el-button type="primary" @click="golinkpage('/codelist/entrytypecreate')" :style="{'margin-left':'10px'}" icon="el-icon-plus"></el-button> -->
+                <el-button
+                  type="primary"
+                  @click="createEntryTypeFlag = true"
+                  :style="{ 'margin-left': '10px' }"
+                  icon="el-icon-plus"
+                ></el-button>
               </el-form-item>
               <el-form-item label="是否隐藏(主页列表不显示)">
                 <el-checkbox v-model="endtyshowflag" label="隐藏"></el-checkbox>
@@ -68,7 +76,7 @@
                       :on-success="imageUploadSuccess"
                       accept=".jpg,.png"
                       :show-file-list="false"
-                      :on-progress="uploadProgress"
+                      :on-change="uploadProgress"
                     >
                       <el-button size="small" type="primary"
                         >图片<i class="el-icon-upload el-icon--right"
@@ -83,7 +91,7 @@
                       :show-file-list="false"
                       accept=".MPEG,.MP3,.MPEG-4,.MIDI,.WMA"
                       :on-success="audioUploadSuccess"
-                      :on-progress="uploadProgress"
+                      :on-change="uploadProgress"
                     >
                       <el-button size="small" type="primary"
                         >音频<i class="el-icon-upload el-icon--right"
@@ -98,7 +106,7 @@
                       accept=".MPEG,.baiAVI,.nAVI,.ASF,.MOV,.3GP,.mp4"
                       :show-file-list="false"
                       :on-success="videoUploadSuccess"
-                      :on-progress="uploadProgress"
+                      :on-change="uploadProgress"
                     >
                       <el-button size="small" type="primary"
                         >视频<i class="el-icon-upload el-icon--right"
@@ -106,6 +114,10 @@
                     </el-upload>
                   </el-col>
                 </el-row>
+                <el-progress
+                  v-if="progressFlag"
+                  :percentage="loadProgress"
+                ></el-progress>
               </div>
             </el-form-item>
             <div class="cheditor-body" v-if="loadFlag">
@@ -132,67 +144,35 @@
                 </el-form-item>
               </div>
               <div class="entry-entry-tip">
-                <div class="entry-entry-item">
+                <div class="entry-entry-item" @click="openPopver(1)">
                   <i class="el-icon-plus" /> 相关词条
                 </div>
               </div>
               <div class="entry-entry-add-body">
-                <div style="margin-top: 15px">
-                  <el-input
-                    v-model="entryTipValue"
-                    placeholder="请输入词条名"
-                    class="input-with-select"
-                  >
-                    <el-button
-                      slot="append"
-                      icon="el-icon-search"
-                      @click="remoteMethod(1)"
-                    />
-                  </el-input>
-                </div>
-                <div v-if="entryTipList" class="entry-tip-list">
-                  <el-checkbox-group v-model="checkList">
-                    <div>
-                      <el-checkbox
-                        v-for="(item, index) in entryTipList"
-                        :key="index"
-                        :label="item.id"
-                        >{{ item.name }}</el-checkbox
-                      >
-                    </div>
-                  </el-checkbox-group>
+                <div class="multipleSelection-body" v-if="checkList">
+                  <span v-for="(item, index) in checkList" :key="item.id">
+                    {{ item.name }}
+                    <i
+                      class="el-icon-close"
+                      @click="checkListDel(index, item)"
+                    ></i>
+                  </span>
                 </div>
               </div>
               <div class="entry-entry-tip">
-                <div class="entry-entry-item">
+                <div class="entry-entry-item" @click="openPopver(2)">
                   <i class="el-icon-plus" /> 我与
                 </div>
               </div>
               <div class="entry-entry-add-body">
-                <div style="margin-top: 15px">
-                  <el-input
-                    v-model="entryHisValue"
-                    placeholder="请输入词条名"
-                    class="input-with-select"
-                  >
-                    <el-button
-                      slot="append"
-                      icon="el-icon-search"
-                      @click="remoteMethod(0)"
-                    />
-                  </el-input>
-                </div>
-                <div v-if="entryHisList" class="entry-tip-list">
-                  <el-checkbox-group v-model="checkHisList">
-                    <div>
-                      <el-checkbox
-                        v-for="(item, index) in entryHisList"
-                        :key="index"
-                        :label="item.id"
-                        >{{ item.name }}</el-checkbox
-                      >
-                    </div>
-                  </el-checkbox-group>
+                <div class="multipleSelection-body" v-if="checkHisList">
+                  <span v-for="(item, index) in checkHisList" :key="item.id">
+                    {{ item.name }}
+                    <i
+                      class="el-icon-close"
+                      @click="checkHisListDel(index, item)"
+                    ></i>
+                  </span>
                 </div>
               </div>
             </div>
@@ -503,9 +483,6 @@
               </div>
             </div>
           </el-tab-pane>
-          <!-- <el-tab-pane label="标题" name="second" />
-          <el-tab-pane label="正文" name="third">角色管理</el-tab-pane>
-          <el-tab-pane label="表格" name="fourth">定时任务补偿</el-tab-pane> -->
         </el-tabs>
       </div>
     </div>
@@ -533,7 +510,7 @@
       </div>
       <div class="popover-table">
         <!-- @row-click="btnRow" -->
-        <el-checkbox-group v-model="multipleSelection" @change="mychange">
+        <el-checkbox-group v-model="multipleSelection">
           <el-table
             ref="multipleTable"
             v-loading="listLoading"
@@ -541,15 +518,27 @@
             element-loading-text="拼命加载中"
             border
           >
-            <el-table-column label="关联词条">
+            <el-table-column :label="type == 1 ? '关联词条' : '我与'">
               <template slot-scope="scope">
                 <el-checkbox :label="scope.row">
                   <div class="scope-body">
                     <span class="code-name">{{ scope.row.name }}</span>
                   </div>
                 </el-checkbox>
-                <span class="entry-toggle" @click="entryToggle(scope.row)" v-if="!scope.row.flag"><i class="el-icon-finished" size="30" /></span>
-                <span class="entry-toggle" @click="entryToggle(scope.row)" v-else><i class="el-icon-finished red" size="30" /></span>
+                <div v-if="type == 1">
+                  <span
+                    class="entry-toggle"
+                    @click="entryToggle(scope.row)"
+                    v-if="!scope.row.flag"
+                    ><i class="el-icon-finished" size="30"
+                  /></span>
+                  <span
+                    class="entry-toggle"
+                    @click="entryToggle(scope.row)"
+                    v-else
+                    ><i class="el-icon-finished red" size="30"
+                  /></span>
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -568,12 +557,21 @@
           </div>
         </div>
         <div class="entry-popover-btn-body">
-          <el-button type="primary" plain>确定</el-button>
-          <el-button plain @click="entryXFlag = false">取消</el-button>
+          <el-button type="primary" plain @click="savePopover(type)"
+            >确定</el-button
+          >
+          <el-button plain @click="closePopover()">取消</el-button>
         </div>
       </div>
     </div>
+    <el-dialog
+      title="添加分类"
+      :visible.sync="createEntryTypeFlag"
+      width="30%"
+    >
+      <entrytype @createType="createEntryTypeFlag=false" :back-flag='false' />
 
+    </el-dialog>
     <EntryQuery
       v-if="popoverFlag"
       :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id=' + id"
@@ -588,6 +586,7 @@ import { downloadIamge } from "@/utils/utils";
 import EntryQuery from "@/components/EntryQuery";
 import { Loading } from "element-ui";
 import { getToken } from "@/utils/auth";
+import entrytype from "@/views/codelist/entrytype/create/index";
 import {
   postPublish,
   postTypeList,
@@ -602,6 +601,7 @@ export default {
   components: {
     EntryQuery,
     ue,
+    entrytype
   },
   data() {
     return {
@@ -634,7 +634,7 @@ export default {
       editor: null, // 编辑器实例
       editorData: "",
       loadFlag: false,
-      typeCheck: 0,
+      typeCheck: "",
       codeSort: 0,
       options: [],
       count: "",
@@ -642,9 +642,12 @@ export default {
       page_size: 10,
       pages: "",
       type: 1,
-      entryXFlag: true,
+      entryXFlag: false,
       flag: false,
       entrySelData: [],
+      loadProgress: 0, // 动态显示进度条
+      progressFlag: false, // 关闭进度条
+      createEntryTypeFlag: false,
     };
   },
   created() {},
@@ -652,19 +655,47 @@ export default {
     this.$nextTick(() => {
       this.loadFlag = true;
       this.queryType();
-      this.fetchData(this.type);
     });
   },
   methods: {
-    entryToggle(row){
-      row.flag = !row.flag
+    //模态窗确定
+    savePopover(type) {
+      if (type == 1) {
+        this.checkList = this.multipleSelection;
+      } else {
+        this.checkHisList = this.multipleSelection;
+      }
+      this.closePopover();
     },
-    mychange() {
-      console.log(this.multipleSelection);
+    //模态窗取消
+    closePopover() {
+      this.entryXFlag = false;
+    },
+    //打开模态窗
+    openPopver(type) {
+      this.type = type;
+      if (type == 1) {
+        this.multipleSelection = this.checkList;
+      } else {
+        this.multipleSelection = this.checkHisList;
+      }
+      this.entryXFlag = true;
+      this.fetchData(type);
+    },
+    entryToggle(row) {
+      row.flag = !row.flag;
     },
     //删除选中的相关数据
     entrySelDel(index, item) {
       this.multipleSelection.splice(index, 1);
+    },
+    //相关删除
+    checkListDel(index, item) {
+      this.checkList.splice(index, 1);
+    },
+    //我与删除
+    checkHisListDel(index, item) {
+      this.checkHisList.splice(index, 1);
     },
     handleSizeChange(size) {
       this.page = size;
@@ -682,7 +713,7 @@ export default {
         page: this.page,
         page_size: this.page_size,
         keyword: this.keyword,
-        keyword: type == 1 ? this.entryTipValue : this.entryHisValue,
+        keyword: this.entryTipValue,
         type: type,
         scenes: 1,
       };
@@ -714,9 +745,6 @@ export default {
     downloadImg(img, imgname) {
       downloadIamge(img, imgname);
     },
-    checkChange() {
-      console.log(this.checkList);
-    },
     // 查找相关
     remoteMethod(type) {
       this.loading = true;
@@ -739,6 +767,15 @@ export default {
     },
     // 点击上传生成二维码
     publish(state) {
+      let related_ids = [];
+      let history_ids = [];
+      this.checkList.map((item) => {
+        let flag = item.flag ? 1 : 0;
+        related_ids.push(item.id + "." + flag);
+      });
+      this.checkHisList.map((item) => {
+        history_ids.push(item.id);
+      });
       const parmas = {
         name: this.codeTitle,
         image: this.codeImage,
@@ -747,8 +784,8 @@ export default {
         content: this.editorData,
         sort: this.codeSort,
         type_id: this.typeCheck,
-        related_ids: this.checkList.toString(),
-        history_ids: this.checkHisList.toString(),
+        related_ids: related_ids.toString(),
+        history_ids: history_ids.toString(),
         hide: this.endtyshowflag ? 1 : 0,
         state: state, //1发布2草稿
       };
@@ -761,6 +798,15 @@ export default {
     },
     // 编辑
     entryEdit(state) {
+      let related_ids = [];
+      let history_ids = [];
+      this.checkList.map((item) => {
+        let flag = item.flag ? 1 : 0;
+        related_ids.push(item.id + "." + flag);
+      });
+      this.checkHisList.map((item) => {
+        history_ids.push(item.id);
+      });
       const parmas = {
         id: this.id,
         name: this.codeTitle,
@@ -770,8 +816,8 @@ export default {
         content: this.editorData,
         sort: this.codeSort,
         type_id: this.typeCheck,
-        related_ids: this.checkList.toString(),
-        history_ids: this.checkHisList.toString(),
+        related_ids: related_ids.toString(),
+        history_ids: history_ids.toString(),
         hide: this.endtyshowflag ? 1 : 0,
         state: state, //1发布2草稿
       };
@@ -799,23 +845,33 @@ export default {
     },
     imageUploadSuccess(response, file, fileList) {
       this.codeImage = response.data.file_path;
-      this.uploadLoading.close();
     },
     audioUploadSuccess(response, file, fileList) {
       this.codeAudio = response.data.file_path;
-      this.uploadLoading.close();
     },
     videoUploadSuccess(response, file, fileList) {
       this.codeVideo = response.data.file_path;
-      this.uploadLoading.close();
     },
     setCheditor(e) {
       this.mobHtml = e.target.innerHTML;
     },
-    uploadProgress() {
-      this.uploadLoading = Loading.service({
-        text: "上传中...",
-      });
+    uploadProgress(file, fileList) {
+      if (file.status === "ready") {
+        this.loadProgress = 0;
+        this.progressFlag = true; // 显示进度条
+        let intval = setInterval(() => {
+          if (this.loadProgress >= 99) {
+            clearInterval(intval);
+          }
+          this.loadProgress += 1;
+        }, 20);
+      }
+      if (file.status === "success") {
+        this.loadProgress = 100;
+      }
+      setTimeout(() => {
+        this.progressFlag = false;
+      }, 1000); // 一秒后关闭进度条
     },
     onNamespaceLoaded(CKEDITOR) {},
     ckeditorReady() {
@@ -834,6 +890,13 @@ export default {
       });
     },
   },
+  watch:{
+    createEntryTypeFlag(val){
+      if(!val){
+        this.queryType();
+      }
+    }
+  }
 };
 </script>
 <style lang="scss">
@@ -875,11 +938,17 @@ export default {
 .create-code {
   max-height: 90vh;
   overflow-y: scroll;
-  .entry-toggle{
-    .red{
+  .back-box {
+    padding: 10px 0;
+    box-sizing: border-box;
+    color: #999;
+    cursor: pointer;
+  }
+  .entry-toggle {
+    .red {
       color: #5387fd;
     }
-    i{
+    i {
       font-size: 20px;
       color: #999;
     }

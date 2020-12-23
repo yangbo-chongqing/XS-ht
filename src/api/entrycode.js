@@ -7,18 +7,26 @@ export function relicsRevise(data) {
     data
   })
 }
-//词条添加分组
-export function postlabelCreate(data) {
+//词条添加标签
+export function postTagCreate(data) {
   return request({
-    url: '/api/store/label/create',
+    url: 'api/store/tag/create',
     method: 'post',
     data
   })
 }
-//词条删除分组
-export function postlabelDel(data) {
+//标签列表
+export function postTagList(data) {
   return request({
-    url: '/api/store/label/del',
+    url: '/api/store/tag/list',
+    method: 'post',
+    data
+  })
+}
+//词条删除标签
+export function postTagDel(data) {
+  return request({
+    url: '/api/store/tag/del',
     method: 'post',
     data
   })

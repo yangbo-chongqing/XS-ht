@@ -7,53 +7,64 @@
     </div>
     <div class="workbench-chart-tips">
       <el-row :gutter="20">
-        <el-col
-          :span="6"
-        ><div class="workbench-chart-tip">
-          <p class="tip-title">昨日</p>
-          <p class="tip-number">{{ codeObj.yesterday }}</p>
-        </div></el-col>
-        <el-col
-          :span="6"
-        ><div class="workbench-chart-tip">
-          <p>今日</p>
-          <p class="tip-number">{{ codeObj.nowadays }}</p>
-        </div></el-col>
-        <el-col
-          :span="6"
-        ><div class="workbench-chart-tip">
-          <p>近7日</p>
-          <p class="tip-number">{{ codeObj.seven_count }}</p>
-        </div></el-col>
-        <el-col
-          :span="6"
-        ><div class="workbench-chart-tip">
-          <p>近30日</p>
-          <p class="tip-number">{{ codeObj.monthly_count }}</p>
-        </div></el-col>
+        <el-col :span="6"
+          ><div class="workbench-chart-tip">
+            <p class="tip-title">昨日</p>
+            <p class="tip-number">{{ codeObj.yesterday }}</p>
+          </div></el-col
+        >
+        <el-col :span="6"
+          ><div class="workbench-chart-tip">
+            <p>今日</p>
+            <p class="tip-number">{{ codeObj.nowadays }}</p>
+          </div></el-col
+        >
+        <el-col :span="6"
+          ><div class="workbench-chart-tip">
+            <p>近7日</p>
+            <p class="tip-number">{{ codeObj.seven_count }}</p>
+          </div></el-col
+        >
+        <el-col :span="6"
+          ><div class="workbench-chart-tip">
+            <p>近30日</p>
+            <p class="tip-number">{{ codeObj.monthly_count }}</p>
+          </div></el-col
+        >
       </el-row>
     </div>
     <div class="workbench-chart-body">
       <line-chart :chart-data="chartData" />
     </div>
-    <!-- <div class="workbench-chart-hlep">
+    <div class="workbench-chart-hlep" v-if="newsList">
       <div class="workbench-chart-hlep-title">帮助</div>
       <div class="workbench-chart-hlep-list">
         <el-row>
-          <el-col :span="24"><div class=""> <el-link href="" target="_blank">怎么生成二维码?</el-link></div></el-col>
-          <el-col :span="24"><div class=""> <el-link href="" target="_blank">怎么生成二维码?</el-link></div></el-col>
-          <el-col :span="24"><div class=""> <el-link href="" target="_blank">怎么生成二维码?</el-link></div></el-col>
-          <el-col :span="24"><div class=""> <el-link href="" target="_blank">怎么生成二维码?</el-link></div></el-col>
+          <el-col :span="24"
+            ><div
+              class="news-list-item"
+              v-for="item in newsList"
+              :key="item.id"
+              @click="openNewInfo(item.id)"
+            >
+              <el-link >{{ item.title }}</el-link>
+            </div></el-col
+          >
         </el-row>
       </div>
-    </div> -->
+    </div>
+    <el-dialog :title="newsinfo.title" :visible.sync="dialogVisible" width="30%">
+      <div v-html="newsinfo.content"></div>
+      
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import LineChart from './components/LineChart'
+import LineChart from "./components/LineChart";
+import { newsDetails } from '@/api/workbench'
 export default {
-  name: 'EntryCode',
+  name: "EntryCode",
   components: { LineChart },
   props: {
     codeObj: {
@@ -62,15 +73,36 @@ export default {
         monthly_count: 0,
         seven_count: 0,
         yesterday: 0,
-        nowadays: 0
-      }
+        nowadays: 0,
+      },
+    },
+    newsList: {
+      type: Array,
+      default: [],
     },
     chartData: {
       type: Array,
-      default: []
+      default: [],
+    },
+  },
+  data() {
+    return {
+      dialogVisible: false,
+      newsinfo:''
+    };
+  },
+  created() {
+    console.log(this.newsList);
+  },
+  methods: {
+    openNewInfo(id) {
+      newsDetails(this.qs.stringify({news_id:id})).then((res)=>{
+        this.newsinfo = res.data.data;
+        this.dialogVisible = true;
+      })
     }
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -78,12 +110,13 @@ export default {
   background: white;
   padding: 20px;
   box-sizing: border-box;
-  .workbench-chart-hlep{
-    .workbench-chart-hlep-title{
-      margin-bottom: 10px;
-    }
-    .workbench-chart-hlep-list{
-      .el-col{
+  .news-list-item {
+    margin: 10px 0;
+  }
+  .workbench-chart-hlep {
+    padding-top: 15px;
+    .workbench-chart-hlep-list {
+      .el-col {
         margin: 10px 0;
       }
     }
