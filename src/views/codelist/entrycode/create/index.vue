@@ -181,13 +181,13 @@
         <el-col :span="6">
           <div class="create-code-img">
             <img
-              v-if="!codeSendImg"
+              v-if="!id"
               src="@/assets/icon/create-codeno.png"
               alt=""
               srcset=""
             />
-            <img v-else :src="codeSendImg" alt="" srcset="" />
-            <div v-if="!codeSendImg" class="create-btn">
+            <img v-else :src="'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id='+id+'&muse_id='+userinfo.user_info.muse_id" alt="" srcset="" />
+            <div v-if="!id" class="create-btn">
               <el-button type="primary" @click="publish(2)"
                 >生成二维码</el-button
               >
@@ -201,7 +201,7 @@
               <span
                 ><el-link
                   type="primary"
-                  @click="downloadImg(codeSendImg, 'code')"
+                  @click="openPopover('http://xsdt.xunsheng.org.cn/api/web/code?type=1&id='+id+'&muse_id='+userinfo.user_info.muse_id)"
                   >下载</el-link
                 ></span
               >
@@ -564,14 +564,10 @@
         </div>
       </div>
     </div>
-    <el-dialog
-      title="添加分类"
-      :visible.sync="createEntryTypeFlag"
-      width="30%"
-    >
-      <entrytype @createType="createEntryTypeFlag=false" :back-flag='false' />
-
+    <el-dialog title="添加分类" :visible.sync="createEntryTypeFlag" width="30%">
+      <entrytype @createType="createEntryTypeFlag = false" :back-flag="false" />
     </el-dialog>
+    <codedown :dialogVisible="dialogVisible" :codeImg="codeImg" @toggleDialog="toggle" />
     <EntryQuery
       v-if="popoverFlag"
       :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id=' + id"
@@ -586,7 +582,9 @@ import { downloadIamge } from "@/utils/utils";
 import EntryQuery from "@/components/EntryQuery";
 import { Loading } from "element-ui";
 import { getToken } from "@/utils/auth";
+import { mapGetters } from 'vuex'
 import entrytype from "@/views/codelist/entrytype/create/index";
+import codedown from "@/components/codeDown/index";
 import {
   postPublish,
   postTypeList,
@@ -601,7 +599,11 @@ export default {
   components: {
     EntryQuery,
     ue,
-    entrytype
+    entrytype,
+    codedown,
+  },
+  computed: {
+    ...mapGetters(['userinfo'])
   },
   data() {
     return {
@@ -628,7 +630,6 @@ export default {
       isCkeditorFlag: false,
       codeImageFlag: false,
       fullscreenLoading: "",
-      codeSendImg: "",
       isShowDoc: false,
       mobHtml: "",
       editor: null, // 编辑器实例
@@ -648,16 +649,28 @@ export default {
       loadProgress: 0, // 动态显示进度条
       progressFlag: false, // 关闭进度条
       createEntryTypeFlag: false,
+      dialogVisible: false,
+      codeImg: "",
     };
   },
   created() {},
   mounted() {
     this.$nextTick(() => {
-      this.loadFlag = true;
+      setTimeout(() => {
+        this.loadFlag = true;
+      }, 1000);
       this.queryType();
     });
   },
   methods: {
+    toggle() {
+      this.dialogVisible = !this.dialogVisible;
+      this.codeImg = "";
+    },
+    openPopover(code) {
+      this.codeImg = code;
+      this.dialogVisible = true;
+    },
     //模态窗确定
     savePopover(type) {
       if (type == 1) {
@@ -791,7 +804,6 @@ export default {
       };
       const loading = this.$loading();
       postPublish(this.qs.stringify(parmas)).then((res) => {
-        this.codeSendImg = res.data.file_path;
         this.id = res.data.id;
         loading.close();
       });
@@ -890,13 +902,13 @@ export default {
       });
     },
   },
-  watch:{
-    createEntryTypeFlag(val){
-      if(!val){
+  watch: {
+    createEntryTypeFlag(val) {
+      if (!val) {
         this.queryType();
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss">
@@ -918,17 +930,19 @@ export default {
       }
     }
   }
-  .el-checkbox {
-    width: 70%;
+  .create-code-body-title {
+    .el-checkbox {
+      width: 70%;
+    }
+    .el-checkbox__label {
+      width: 100%;
+    }
+    .el-tabs__content {
+      overflow-y: scroll;
+      background: white;
+    }
   }
-  .el-checkbox__label {
-    width: 100%;
-  }
-  .el-tabs__content {
-    height: 635px;
-    overflow-y: scroll;
-    background: white;
-  }
+
   .cke_contents {
     height: 440px !important;
   }

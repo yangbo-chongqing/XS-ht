@@ -31,11 +31,10 @@
               <el-row :gutter="20">
                 <el-col
                   :span="3"
-                ><div class="workbench-code-item-img">
+                ><div class="workbench-code-item-img" @click="openPopover('http://xsdt.xunsheng.org.cn/api/web/code?type=1&id='+item.id+'&muse_id='+userinfo.user_info.muse_id)">
                   <el-image
                     style="width: 100px; height: 100px"
-                    :src="item.mini_code"
-                    :preview-src-list="[item.mini_code]"
+                    :src="'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id='+item.id+'&muse_id='+userinfo.user_info.muse_id"
                   /></div></el-col>
                 <el-col
                   :span="12"
@@ -52,7 +51,7 @@
             </el-col>
             <el-col :span="8">
               <div class="workbench-code-item-link-body">
-                <el-link target="_blank" @click="downloadImg(item.mini_code,'code')">下载</el-link>
+                <el-link target="_blank" @click="openPopover('http://xsdt.xunsheng.org.cn/api/web/code?type=1&id='+item.id+'&muse_id='+userinfo.user_info.muse_id)">下载</el-link>
                 <el-link @click="togglePopover(item.id)">预览</el-link>
                 <el-link @click="golinkpage('/codelist/edit', { id: item.id })">编辑</el-link>
               </div>
@@ -61,6 +60,7 @@
         </div>
       </div>
     </div>
+    <codedown :dialogVisible="dialogVisible" :codeImg="codeImg" @toggleDialog="toggle" />
     <EntryQuery v-if="popoverFlag" :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id='+id" :id="id" @popoverEven="togglePopover" />
   </div>
 </template>
@@ -68,11 +68,14 @@
 <script>
 import { downloadIamge } from '@/utils/utils'
 import EntryQuery from '@/components/EntryQuery'
+import { mapGetters } from 'vuex'
+import codedown from "@/components/codeDown/index";
 import { array } from 'js-md5'
 export default {
   name: 'WorkbenchCode',
   components: {
-    EntryQuery
+    EntryQuery,
+    codedown
   },
   props: {
     relicsCount: {
@@ -84,6 +87,9 @@ export default {
       default: []
     }
   },
+  computed: {
+    ...mapGetters(['userinfo'])
+  },
   data() {
     return {
       url:
@@ -93,11 +99,22 @@ export default {
         'https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png'
       ],
       popoverFlag:false,
-      id:''
+      dialogVisible:false,
+      id:'',
+      codeImg:''
+
     }
   },
   created() {},
   methods: {
+    toggle(){
+      this.dialogVisible=!this.dialogVisible;
+      this.codeImg = '';
+    },
+    openPopover(code){
+      this.codeImg = code;
+      this.dialogVisible=true;
+    },
     togglePopover(id) {
       this.id=id;
       this.popoverFlag = !this.popoverFlag
@@ -141,6 +158,7 @@ export default {
         width: 100px;
         height: 100px;
         float: left;
+        cursor: pointer;
       }
       .workbench-code-item-body {
         float: left;

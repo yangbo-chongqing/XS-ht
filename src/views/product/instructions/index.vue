@@ -5,7 +5,7 @@
         <el-col :span="14"><div class="entry-title">说明书</div></el-col>
         <el-col :span="10">
           <el-row :gutter="20">
-            <el-col :span="18">
+            <el-col :offset="6" :span="18">
               <div class="entry-search">
                 <el-input
                   v-model="keyword"
@@ -17,7 +17,7 @@
                 </el-input>
               </div>
             </el-col>
-            <el-col :span="6">
+            <!-- <el-col :span="6">
               <div class="entry-search">
                 <el-button
                   type="primary"
@@ -25,7 +25,7 @@
                   >新增说明书</el-button
                 >
               </div>
-            </el-col>
+            </el-col> -->
           </el-row>
         </el-col>
       </el-row>

@@ -114,7 +114,7 @@ export default {
     downloadImg(img, imgname) {
       downloadIamge(img, imgname)
     },
-    // 删除词条
+    // 删除词条分类
     delType(id, item) {
       this.$confirm('此操作将删除该分类, 是否继续?', '提示', {
         confirmButtonText: '确定',

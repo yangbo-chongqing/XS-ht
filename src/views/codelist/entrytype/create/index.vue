@@ -130,7 +130,7 @@ export default {
     }
   }
   .fun-table-body {
-    width: 500px;
+    max-width: 500px;
     margin: auto;
     padding: 20px;
     box-sizing: border-box;

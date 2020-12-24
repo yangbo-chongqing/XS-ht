@@ -4,26 +4,9 @@
       <i class="el-icon-arrow-left"></i> 返回列表
     </div>
     <div class="fun-table-body">
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="关联产品">
-          <el-select
-            v-model="form.ids"
-            multiple
-            filterable
-            remote
-            reserve-keyword
-            placeholder="请输入关键词"
-            :remote-method="remoteMethod"
-            :loading="loading"
-          >
-            <el-option
-              v-for="item in options"
-              :key="item.id"
-              :label="item.unique+'/'+item.name"
-              :value="item.id"
-            >
-            </el-option>
-          </el-select>
+      <el-form ref="form" :model="form" label-width="90px">
+        <el-form-item label="说明书名称">
+          <el-input v-model="form.manual_name" placeholder="请输入说明书名称"></el-input>
         </el-form-item>
         <el-form-item label="说明书">
           <el-upload
@@ -61,8 +44,7 @@ export default {
       headers: { Authorization: "Bearer " + getToken() },
       id:this.$route.query.id,
       form: {
-        ids: [],
-        unique: "",
+        manual_name: '',
         fileList: [],
       },
       dialogVisible: false,
@@ -110,7 +92,7 @@ export default {
       });
       let params = {
         id:this.id,
-        product_ids: this.form.ids.toString(),
+        manual_name: '',
         file: this.form.fileList[0].url,
       };
       manualEdit(this.qs.stringify(params)).then((res) => {

@@ -83,6 +83,7 @@ form {
     width: 100%;
     min-height: 700px;
   }
+  
 }
 
 /*空白时显示拖拽提示*/
@@ -138,14 +139,7 @@ form {
     }
   }
 }
-.el-form-item__content{
-  margin-left: 0 !important;
-}
-.el-form-item__label{
-  display: block;
-  text-align: left;
-  float: none;
-}
+
 
 /*激活域*/
 .dr-active {

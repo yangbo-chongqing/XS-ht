@@ -29,16 +29,17 @@
         </el-col>
         <el-col :offset="2" :span="8">
           <el-tabs v-model="tabIndex">
-            <el-tab-pane label="小程序二维码" name="first">
-              <div class="qrcode-body">
-                <img :src="miniCodeImage" alt="" srcset="">
-              </div>
-            </el-tab-pane>
             <el-tab-pane label="网页二维码" name="second">
               <div class="qrcode-body">
                 <img :src="codeImage" alt="" srcset="">
               </div>
             </el-tab-pane>
+            <el-tab-pane label="小程序二维码" name="first">
+              <div class="qrcode-body">
+                <img :src="miniCodeImage" alt="" srcset="">
+              </div>
+            </el-tab-pane>
+            
           </el-tabs>
         </el-col>
       </el-row>
@@ -49,22 +50,18 @@
 <script>
 import { postEntryList, postGetRelics, postEdit } from "@/api/entrycode";
 import { preview } from "@/api/product";
+import { mapGetters } from 'vuex'
 export default {
   name: "EntryQuery",
-  props: {
-    infoUrl: {
-      type: String,
-      default: "",
-    },
-    id:{
-      type:Number
-    }
+  props:['id','infoUrl'],
+  computed: {
+    ...mapGetters(['userinfo'])
   },
   data() {
     return {
       codeImage: "",
       miniCodeImage:"",
-      tabIndex:"first"
+      tabIndex:"second"
     };
   },
   mounted() {
@@ -74,7 +71,8 @@ export default {
     previewCode(){
       let params = {
         type:1,
-        id:this.id
+        id:this.id,
+        muse_id:this.userinfo.user_info.muse_id
       }
       preview(this.qs.stringify(params)).then((res)=>{
         if(res.status == 200){

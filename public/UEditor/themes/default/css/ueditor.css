@@ -32,6 +32,18 @@
     background-size: 15px auto;
     background-position: center;
 }
+.edui-default  .edui-for-contact .edui-button-body .edui-icon {
+    background-repeat: no-repeat;
+    background-image: url(../images/contcat.png) !important;
+    background-size: 15px auto;
+    background-position: center;
+}
+.edui-default  .edui-for-information .edui-button-body .edui-icon {
+    background-repeat: no-repeat;
+    background-image: url(../images/information.png) !important;
+    background-size: 15px auto;
+    background-position: center;
+}
 .edui-default table.edui-box {
     border-collapse: collapse;
 }

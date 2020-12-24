@@ -36,6 +36,7 @@
         v-loading="listLoading"
         :data="list"
         element-loading-text="拼命加载中"
+        :height="tableHeight"
         border
         fit
         highlight-current-row
@@ -61,6 +62,11 @@
             <el-tag>{{ scope.row.factory }}</el-tag>
           </template>
         </el-table-column>
+        <el-table-column label="说明书" align="center">
+          <template slot-scope="scope">
+            <el-tag>{{ scope.row.factory }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="上市时间" align="center">
           <template slot-scope="scope">
             <el-tag>{{ scope.row.listed }}</el-tag>
@@ -79,6 +85,13 @@
         </el-table-column>
         <el-table-column align="center"  label="操作" width="220">
           <template slot-scope="scope">
+            <span class="el-link-btn"
+              ><el-link
+                type="primary"
+                @click="downloadImg(scope.row.id,scope.row.name)"
+                >查看</el-link
+              ></span
+            >
             <span class="el-link-btn"
               ><el-link
                 type="primary"
@@ -123,6 +136,7 @@ export default {
       page: 1,
       count: 0,
       showPage: false,
+      tableHeight: document.body.clientHeight - 230
     };
   },
   created() {

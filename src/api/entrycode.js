@@ -34,7 +34,7 @@ export function postTagDel(data) {
 //词条分类列表
 export function postTypeList(data) {
   return request({
-    url: '/api/store/type/list',
+    url: '/api/store/type/structure',
     method: 'post',
     data
   })
@@ -51,6 +51,14 @@ export function postTypeDetail(data) {
 export function postTypeCreate(data) {
   return request({
     url: '/api/store/type/create',
+    method: 'post',
+    data
+  })
+}
+//分类拖动排序
+export function postTypeSort(data) {
+  return request({
+    url: '/api/store/type/sort',
     method: 'post',
     data
   })

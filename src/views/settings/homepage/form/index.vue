@@ -116,13 +116,13 @@
           <i v-else class="el-icon-plus logo-uploader-icon" />
           <div class="logo-tip">logo</div>
         </el-upload>
-        <div class="home-code" v-if="homeCode">
-          <img :src="homeCode" class="logo" />
+        <div class="home-code">
+          <img :src="'http://xsdt.xunsheng.org.cn/api/web/code?type=2&id='+userinfo.user_info.muse_id+'&muse_id='+userinfo.user_info.muse_id" class="logo" />
           <span><el-link type="primary" @click="dialogVisible = true">下载二维码</el-link></span>
         </div>
       </el-col>
     </el-row>
-    <codedown :dialogVisible="dialogVisible" />
+    <codedown :dialogVisible="dialogVisible" :codeImg="'http://xsdt.xunsheng.org.cn/api/web/code?type=2&id='+userinfo.user_info.muse_id+'&muse_id='+userinfo.user_info.muse_id" @toggleDialog="toggle" />
   </div>
 </template>
 
@@ -157,7 +157,6 @@ export default {
       enterpriseLogo: "",
       isEditFlag: false,
       loading: "",
-      homeCode: "",
       loadProgress: 0, // 动态显示进度条
       progressFlag: false, // 关闭进度条
       dialogVisible:false
@@ -168,23 +167,15 @@ export default {
     this.enterpriseAudio = this.info.voice_url;
     this.enterpriseVideo = this.info.video_url;
     this.enterpriseLogo = this.info.logo;
-    this.previewCode();
   },
   methods: {
+    toggle(){
+      this.dialogVisible=!this.dialogVisible
+    },
     downloadImg(img, imgname) {
       downloadIamge(img, imgname)
     },
-    previewCode() {
-      let params = {
-        type: 2,
-        id: this.userinfo.user_info.muse_id,
-      };
-      preview(this.qs.stringify(params)).then((res) => {
-        if (res.status == 200) {
-          this.homeCode = res.data.img;
-        }
-      });
-    },
+   
     toggleSave() {
       this.isEditFlag = !this.isEditFlag;
     },

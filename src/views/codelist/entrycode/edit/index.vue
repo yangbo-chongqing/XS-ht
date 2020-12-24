@@ -175,8 +175,8 @@
           </el-form>
         </el-col>
         <el-col :span="6">
-          <div class="create-code-img">
-            <img :src="codeSendImg" alt="" srcset="" />
+          <div class="create-code-img" v-if="codeSendImgData">
+            <img :src="'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id='+codeSendImgData.id+'&muse_id='+codeSendImgData.muse_id" alt="" srcset="" />
             <div class="create-btn">
               <span
                 ><el-link type="primary" @click="togglePopover"
@@ -186,7 +186,7 @@
               <span
                 ><el-link
                   type="primary"
-                  @click="downloadImg(codeSendImg, 'code')"
+                  @click="openPopover('http://xsdt.xunsheng.org.cn/api/web/code?type=1&id='+codeSendImgData.id+'&muse_id='+codeSendImgData.muse_id)"
                   >下载</el-link
                 ></span
               >
@@ -555,6 +555,7 @@
         </div>
       </div>
     </div>
+    <codedown :dialogVisible="dialogVisible" :codeImg="codeImg" @toggleDialog="toggle" />
     <EntryQuery
       v-if="popoverFlag"
       :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id=' + id"
@@ -568,6 +569,7 @@
 import { downloadIamge } from "@/utils/utils";
 import { Loading } from "element-ui";
 import { getToken } from "@/utils/auth";
+import codedown from "@/components/codeDown/index";
 import {
   postEntryList,
   postTypeList,
@@ -581,6 +583,7 @@ export default {
   components: {
     EntryQuery,
     ue,
+    codedown
   },
   data() {
     return {
@@ -606,7 +609,7 @@ export default {
       isCkeditorFlag: false,
       codeImageFlag: false,
       fullscreenLoading: "",
-      codeSendImg: "",
+      codeSendImgData: "",
       isShowDoc: false,
       editor: null, // 编辑器实例
       editorData: "",
@@ -626,6 +629,8 @@ export default {
       entrySelData: [],
       loadProgress: 0, // 动态显示进度条
       progressFlag: false, // 关闭进度条
+      dialogVisible:false,
+      codeImg:''
     };
   },
   
@@ -636,6 +641,14 @@ export default {
     });
   },
   methods: {
+    toggle(){
+      this.dialogVisible=!this.dialogVisible;
+      this.codeImg = '';
+    },
+    openPopover(code){
+      this.codeImg = code;
+      this.dialogVisible=true;
+    },
     //模态窗确定
     savePopover(type) {
       if (type == 1) {
@@ -715,7 +728,7 @@ export default {
         this.codeVideo = res.data.relics_info.video_url;
         this.codeAudio = res.data.relics_info.voice_url;
         this.editorData = res.data.relics_info.content;
-        this.codeSendImg = res.data.relics_info.mini_code;
+        this.codeSendImgData = res.data.relics_info;
         this.codeSort = res.data.relics_info.sort;
         this.typeCheck = res.data.relics_info.type_id;
         res.data.relics_info.related_list.map((item)=>{
@@ -877,7 +890,6 @@ export default {
     width: 100%;
   }
   .el-tabs__content {
-    height: 635px;
     overflow-y: scroll;
     background: white;
   }

@@ -18,11 +18,18 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/workbench',
+    meta: { title: '管理', icon: 'dashboard',noCache: true },
     children: [{
       path: 'workbench',
       name: 'Workbench',
       component: () => import('@/views/workbench/index'),
       meta: { title: '工作台', icon: 'dashboard',noCache: true }
+    },
+    {
+      path: 'scancode',
+      name: 'ScanCode',
+      component: () => import('@/views/scancode/index'),
+      meta: { title: '扫码量统计', icon: 'dashboard',noCache: true }
     }]
   },
   {
@@ -30,19 +37,19 @@ export const constantRoutes = [
     component: Layout,
     name: 'CodeList',
     redirect: '/codelist/entrycode',
-    meta: { title: '二维码列表', icon: 'el-icon-s-help' },
+    meta: { title: '编辑', icon: 'el-icon-s-help' },
     children: [
       {
         path: 'entrycode',
         name: 'EntryCode',
         component: () => import('@/views/codelist/entrycode/index'),
-        meta: { title: '词条码', icon: 'el-icon-bank-card', noCache: false,isBack: false }
+        meta: { title: '词条', icon: 'el-icon-bank-card', noCache: false,isBack: false }
       },
       {
-        path: 'entrytype',
-        name: 'EntryType',
-        component: () => import('@/views/codelist/entrytype/index'),
-        meta: { title: '词条分类', icon: 'el-icon-collection',noCache: true }
+        path: 'homepage',
+        name: 'HomePage',
+        component: () => import('@/views/settings/homepage/index'),
+        meta: { title: '企业主页', icon: 'table',noCache: true }
       },
       {
         path: 'entrytypecreate',
@@ -50,13 +57,6 @@ export const constantRoutes = [
         name: 'CreateArticle',
         hidden: true,
         meta: { title: '新增词条分类',noCache: true }
-      },
-      {
-        path: 'entrytypeedit',
-        component: () => import('@/views/codelist/entrytype/edit'),
-        name: 'EntryEdit',
-        hidden: true,
-        meta: { title: '编辑词条分类',noCache: true }
       },
       {
         path: 'create',
@@ -94,65 +94,55 @@ export const constantRoutes = [
       }
     ]
   },
-  // {
-  //   path: '/product',
-  //   component: Layout,
-  //   name: 'Product',
-  //   redirect: '/product/productcode',
-  //   meta: { title: '产品管理', icon: 'el-icon-s-help' },
-  //   children: [
-  //     {
-  //       path: 'productcode',
-  //       name: 'ProductCode',
-  //       component: () => import('@/views/product/productcode/index'),
-  //       meta: { title: '产品码', icon: 'table' },
-  //     },
-  //     {
-  //       path: 'productcreate',
-  //       component: () => import('@/views/product/productcode/create'),
-  //       name: 'ProductCreate',
-  //       hidden: true,
-  //       meta: { title: '新增产品码' }
-  //     },
-  //     {
-  //       path: 'productedit',
-  //       component: () => import('@/views/product/productcode/edit'),
-  //       name: 'ProductEdit',
-  //       hidden: true,
-  //       meta: { title: '修改产品码' }
-  //     },
-  //     {
-  //       path: 'instructions',
-  //       name: 'Instructions',
-  //       component: () => import('@/views/product/instructions/index'),
-  //       meta: { title: '说明书', icon: 'el-icon-bank-card' }
-  //     },
-  //     {
-  //       path: 'instructionscreate',
-  //       component: () => import('@/views/product/instructions/create'),
-  //       name: 'InstructionsCreate',
-  //       hidden: true,
-  //       meta: { title: '新增说明书' }
-  //     },
-  //     {
-  //       path: 'instructionsedit',
-  //       component: () => import('@/views/product/instructions/edit'),
-  //       name: 'InstructionsEdit',
-  //       hidden: true,
-  //       meta: { title: '修改说明书' }
-  //     },
-
-  //   ]
-  // },
   {
-    path: '/scancode',
+    path: '/product',
     component: Layout,
-    children: [{
-      path: 'scancode',
-      name: 'ScanCode',
-      component: () => import('@/views/scancode/index'),
-      meta: { title: '扫码量统计', icon: 'dashboard',noCache: true }
-    }]
+    name: 'Product',
+    redirect: '/product/productcode',
+    meta: { title: '产品管理', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'productcode',
+        name: 'ProductCode',
+        component: () => import('@/views/product/productcode/index'),
+        meta: { title: '产品码', icon: 'table' },
+      },
+      {
+        path: 'productcreate',
+        component: () => import('@/views/product/productcode/create'),
+        name: 'ProductCreate',
+        hidden: true,
+        meta: { title: '新增产品码' }
+      },
+      {
+        path: 'productedit',
+        component: () => import('@/views/product/productcode/edit'),
+        name: 'ProductEdit',
+        hidden: true,
+        meta: { title: '修改产品码' }
+      },
+      {
+        path: 'instructions',
+        name: 'Instructions',
+        component: () => import('@/views/product/instructions/index'),
+        meta: { title: '说明书', icon: 'el-icon-bank-card' }
+      },
+      {
+        path: 'instructionscreate',
+        component: () => import('@/views/product/instructions/create'),
+        name: 'InstructionsCreate',
+        hidden: true,
+        meta: { title: '新增说明书' }
+      },
+      {
+        path: 'instructionsedit',
+        component: () => import('@/views/product/instructions/edit'),
+        name: 'InstructionsEdit',
+        hidden: true,
+        meta: { title: '修改说明书' }
+      },
+
+    ]
   },
   {
     path: '/settings',
@@ -161,12 +151,7 @@ export const constantRoutes = [
     name: 'Settings',
     meta: { title: '设置', icon: 'el-icon-s-tools' },
     children: [
-      {
-        path: 'homepage',
-        name: 'HomePage',
-        component: () => import('@/views/settings/homepage/index'),
-        meta: { title: '企业主页', icon: 'table',noCache: true }
-      },
+      
       {
         path: 'administrator',
         name: 'Administrator',

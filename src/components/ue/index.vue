@@ -31,6 +31,47 @@
         <el-button type="primary" @click="addEntry">添加</el-button>
       </div>
     </div>
+    <el-dialog
+      width="500px"
+      title="相关链接"
+      :visible.sync="contactFlag"
+      label-position="top"
+    >
+      <el-form ref="form" :inline="true" size="mini">
+        <div v-for="(item, index) in form" :key="index + 'item'">
+          <h3 style="margin-bottom: 15px">链接{{ index + 1 }}</h3>
+          <el-form-item label="标题" label-width="30px">
+            <el-input v-model="item.title" placeholder="例如名称"></el-input>
+          </el-form-item>
+          <el-form-item label="链接" label-width="30px">
+            <el-input
+              v-model="item.url"
+              placeholder="url:http://或者/https://"
+            ></el-input>
+          </el-form-item>
+          <span v-if="index > 0"
+            ><el-button
+              size="mini"
+              @click="delFromItem(index)"
+              icon="el-icon-minus"
+              circle
+            ></el-button
+          ></span>
+        </div>
+        <div>
+          <el-button
+            @click="addFromItem"
+            type="primary"
+            icon="el-icon-plus"
+            circle
+          ></el-button>
+        </div>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="contactFlag = false">取 消</el-button>
+        <el-button type="primary" @click="addXurl">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -72,7 +113,7 @@ export default {
             "date", //日期
             "unlink", //取消链接
             "cleardoc", //清空文档
-            "simpleupload",//单图上传
+            "simpleupload", //单图上传
             "insertimage", //图上传
             "music",
             "insertvideo",
@@ -102,12 +143,16 @@ export default {
             "fontfamily", //字体
             "fontsize", //字号
             "paragraph", //段落格式
+            "contact", //相关链接
+            "information", //联系方式
           ],
         ],
         labelMap: {
           entry: "添加词条链接",
+          contact: "添加相关链接",
+          information: "添加联系方式",
         },
-        catchRemoteImageEnable:true,
+        catchRemoteImageEnable: true,
         // 初始容器高度
         initialFrameHeight: 500,
         // 初始容器宽度
@@ -123,15 +168,85 @@ export default {
       options: [],
       entrykey: "",
       entryFlag: false,
+      contactFlag: false,
+      form: [
+        {
+          title: "",
+          url: "",
+        },
+      ],
     };
   },
   methods: {
+    //添加联系方式到富文本
+    addInformation() {
+      let aStr = `
+        <hr/>
+				<h4 style="text-align:center">联系电话：023-123456</h4>
+				<h4 style="text-align:center">手机号：12345678911</h4>
+        <h4 style="text-align:center">公司地址：xxxxxxxxx</h4>
+        <hr/>`;
+      this.editor.execCommand("inserthtml", aStr);
+    },
+    //添加相关链接到富文本
+    addXurl() {
+      let aStr = "";
+      this.form.map((item, index) => {
+        if (item.url == "" || item.title == "") {
+          this.$message({
+            type: "error",
+            message: "请填写完整链接信息",
+          });
+        } else {
+          if (
+            !item.url.match(
+              /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\*\+,;=.]+$/
+            )
+          ) {
+            this.$message({
+              type: "error",
+              message: "存在异常链接已自动剔除",
+            });
+            return false;
+          } else {
+            aStr += `<p ><a style="color:#333" href="${item.url}">${item.title}</a></p>`;
+            this.editor.execCommand("inserthtml", aStr);
+            this.form = [
+              {
+                title: "",
+                url: "",
+              },
+            ];
+            this.contactFlag = false;
+          }
+        }
+      });
+    },
+    //删除相关链接
+    delFromItem(index) {
+      this.form.splice(index, 1);
+    },
+    //添加相关链接
+    addFromItem() {
+      this.form.push({
+        title: "",
+        url: "",
+      });
+    },
     ready(editorInstance) {
       this.ueData = this.value;
       this.editor = editorInstance;
       let entry = document.querySelector(".edui-for-entry");
+      let contact = document.querySelector(".edui-for-contact");
+      let information = document.querySelector(".edui-for-information");
       entry.addEventListener("click", () => {
         this.entryFlag = true;
+      });
+      contact.addEventListener("click", () => {
+        this.contactFlag = true;
+      });
+      information.addEventListener("click", () => {
+        this.addInformation();
       });
     },
     addEntry() {

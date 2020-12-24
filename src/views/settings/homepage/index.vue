@@ -45,6 +45,10 @@ export default {
 .homepage-container {
   background: white;
   padding: 20px;
+  position: absolute;
+  width: 100%;
+  height: 95%;
+  overflow-y: scroll;
   box-sizing: border-box;
   &::after{
     content: '';

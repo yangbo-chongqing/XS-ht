@@ -1,184 +1,271 @@
 <template>
   <div class="entry-code">
-    <el-row :gutter="20">
-      <el-col :span="14"><div class="entry-title">词条码</div></el-col>
-      <el-col :span="10">
-        <el-row :gutter="20">
-          <el-col :span="18">
-            <div class="entry-search">
-              <el-input
-                placeholder="请输入"
-                v-model="keyword"
-                clearable
-                class="input-with-select"
-                @keyup.enter.native="onSearch"
-              >
-                <el-select
-                  v-model="entryselect"
-                  slot="prepend"
-                  placeholder="请选择"
-                >
-                  <el-option label="词条码" value="1"></el-option>
-                  <el-option label="词条分类" value="0"></el-option>
-                </el-select>
-                <el-button
-                  slot="append"
-                  icon="el-icon-search"
-                  @click="onSearch"
-                ></el-button>
-              </el-input>
-            </div>
-          </el-col>
-          <el-col :span="6">
-            <div class="entry-search">
-              <el-button type="primary" @click="golinkpage('/codelist/create')"
-                >新增二维码</el-button
-              >
-            </div>
-          </el-col>
-        </el-row>
-      </el-col>
-    </el-row>
-    <div class="entry-table">
-      <div class="entry-table-tips-btn">
-        <div class="entry-table-tips-item">
-          <el-button
-            :loading="downloadLoading"
-            type="primary"
-            icon="el-icon-document"
-            @click="handleDownload"
-          >
-            导出
-          </el-button>
-        </div>
-        <div class="entry-table-tips-item">
-          <el-select
-            v-model="tipValue"
-            @visible-change="(v) => visibleChange(v, 'cascader', cascaderClick)"
-            ref="cascader"
-            @change="tipsChange"
-            placeholder="标签"
-          >
-            <el-option
-              v-for="(item, index) in tipData"
-              :key="index"
-              :value="item.id"
-              :label="item.tag_name"
-            >
-            </el-option>
-          </el-select>
-        </div>
-        <div class="entry-table-tips-item">
-          <el-checkbox
-            v-model="checked1"
-            @change="ctypeChange"
-            label="草稿"
-            border
-          ></el-checkbox>
-        </div>
+    <div class="entry-type-menu">
+      <div class="entry-type-menu-title">
+        分类<span v-if="treeCount">共{{ treeCount }}个码</span>
       </div>
-      <el-table
-        ref="multipleTable"
-        v-loading="listLoading"
-        :data="list"
-        element-loading-text="拼命加载中"
-        border
-        fit
-        highlight-current-row
-        @selection-change="handleSelectionChange"
+      <el-tree
+        v-if="tree"
+        :data="tree"
+        node-key="id"
+        @node-click="entryTypeToggle"
+        draggable
+        @node-drop="node_drop"
+        :allow-drop="allowDrop"
       >
-        <el-table-column type="selection" width="40" align="center" />
-        <el-table-column label="排序" width="100" align="center">
-          <template slot-scope="scope">
-            <el-input
-              v-model="scope.row.sort"
-              @blur="editSort(scope.row.id, scope.row.sort)"
-              placeholder="排序"
-            ></el-input>
-          </template>
-        </el-table-column>
-        <el-table-column label="二维码名称">
-          <template slot-scope="scope">
-            <img
-              class="code-img"
-              :src="scope.row.mini_code"
-              width="30"
-              alt=""
-              srcset=""
-            />
-            <span class="code-name">{{ scope.row.name }}</span>
-            <div class="code-ftype">
-              标签：<span
-                class="tips"
-                v-for="(lableel, index) in scope.row.tag"
-                :key="lableel.id"
-                >{{ lableel.tag_name
-                }}<i
-                  class="del-tip el-icon-close"
-                  @click="deltips(scope, index)"
-                ></i></span
-              ><span class="addtips" @click="addTips(scope)">+标签</span>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="分类" align="center">
-          <template slot-scope="scope">
-            <el-tag>{{
-              scope.row.type.type_name ? scope.row.type.type_name : "暂无分类"
-            }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="创建时间" align="center">
-          <template slot-scope="scope">
-            {{ scope.row.create_time }}
-          </template>
-        </el-table-column>
-        <el-table-column label="状态" align="center">
-          <template slot-scope="scope">
-            <el-tag type="success" v-if="scope.row.state == 1">已发布</el-tag>
-            <el-tag type="danger" v-if="scope.row.state == 2">草稿</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="操作" width="220">
-          <template slot-scope="scope">
-            <span class="el-link-btn"
-              ><el-link
-                type="primary"
-                @click="downloadImg(scope.row.mini_code, 'code')"
-                >下载</el-link
-              ></span
-            >
-            <span class="el-link-btn"
-              ><el-link type="primary" @click="togglePopover(scope.row.id)"
-                >预览</el-link
-              ></span
-            >
-            <span class="el-link-btn"
-              ><el-link
-                type="primary"
-                @click="golinkpage('/codelist/edit', { id: scope.row.id })"
-                >编辑</el-link
-              ></span
-            >
-            <span class="el-link-btn"
-              ><el-link type="primary" @click="delEntry(scope.row.id, scope)"
-                >删除</el-link
-              ></span
-            >
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="entry-pagination">
-        <el-pagination
-          background
-          :current-page.sync="page"
-          layout="prev, pager, next"
-          :total="count"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
+        <span class="custom-tree-node" slot-scope="{ noed, data }">
+          <span v-if="!data.edit">{{ data.type_name }}</span>
+          <span v-else
+            ><input
+              class="entry-type-input"
+              autofocus
+              @focus="selectText($event)"
+              @keyup.enter="$event.target.blur"
+              @blur="entryTypeEdit(data)"
+              type="text"
+              v-model="data.type_name"
+          /></span>
+          <span @click.stop="return false;">
+            <el-button class="code-num" type="text" size="mini">
+              {{ data.count }}
+            </el-button>
+            <el-dropdown trigger="click">
+              <span class="el-dropdown-link">
+                <el-button
+                  type="text"
+                  size="mini"
+                  icon="el-icon-more"
+                  class="down-btn"
+                >
+                </el-button>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  icon="el-icon-plus"
+                  v-if="!data.top_id"
+                  @click.native="() => addChildType(noed, data)"
+                  >创建子分类</el-dropdown-item
+                >
+                <el-dropdown-item
+                  icon="el-icon-edit"
+                  @click.native="() => editFlagToggle(noed, data)"
+                  >重命名</el-dropdown-item
+                >
+                <el-dropdown-item
+                  icon="el-icon-delete"
+                  @click.native="delType(data.id)"
+                  >删除</el-dropdown-item
+                >
+              </el-dropdown-menu>
+            </el-dropdown>
+          </span>
+        </span>
+      </el-tree>
+      <div class="add-entry-type">
+        <el-button size="small" @click="addEntryType" icon="el-icon-plus"
+          >新建分类</el-button
+        >
       </div>
     </div>
+    <div class="entry-content">
+      <el-row :gutter="20">
+        <el-col :span="14"><div class="entry-title">词条</div></el-col>
+        <el-col :span="10">
+          <el-row :gutter="20">
+            <el-col :span="18">
+              <div class="entry-search">
+                <el-input
+                  placeholder="请输入"
+                  v-model="keyword"
+                  clearable
+                  class="input-with-select"
+                  @keyup.enter.native="onSearch"
+                >
+                  <el-button
+                    slot="append"
+                    icon="el-icon-search"
+                    @click="onSearch"
+                  ></el-button>
+                </el-input>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="entry-search">
+                <el-button
+                  type="primary"
+                  @click="golinkpage('/codelist/create')"
+                  >新增二维码</el-button
+                >
+              </div>
+            </el-col>
+          </el-row>
+        </el-col>
+      </el-row>
+      <div class="entry-table">
+        <div class="entry-table-tips-btn">
+          <div class="entry-table-tips-item">
+            <el-button
+              :loading="downloadLoading"
+              type="primary"
+              icon="el-icon-document"
+              @click="handleDownload"
+            >
+              导出
+            </el-button>
+          </div>
+          <div class="entry-table-tips-item">
+            <el-select
+              v-model="tipValue"
+              @visible-change="
+                (v) => visibleChange(v, 'cascader', cascaderClick)
+              "
+              ref="cascader"
+              @change="tipsChange"
+              placeholder="标签"
+            >
+              <el-option
+                v-for="(item, index) in tipData"
+                :key="index"
+                :value="item.id"
+                :label="item.tag_name"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <div class="entry-table-tips-item">
+            <el-checkbox
+              v-model="checked1"
+              @change="ctypeChange"
+              label="草稿"
+              border
+            ></el-checkbox>
+          </div>
+        </div>
+        <el-table
+          ref="multipleTable"
+          v-loading="listLoading"
+          :data="list"
+          element-loading-text="拼命加载中"
+          border
+          fit
+          :height="tableHeight"
+          highlight-current-row
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection" width="40" align="center" />
+          <el-table-column label="排序" width="100" align="center">
+            <template slot-scope="scope">
+              <el-input
+                v-model="scope.row.sort"
+                @blur="editSort(scope.row.id, scope.row.sort)"
+                placeholder="排序"
+              ></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column label="二维码名称">
+            <template slot-scope="scope">
+              <img
+                @click="
+                  openPopover(
+                    'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id=' +
+                      scope.row.id +
+                      '&muse_id=' +
+                      userinfo.user_info.muse_id
+                  )
+                "
+                class="code-img"
+                :src="
+                  'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id=' +
+                  scope.row.id +
+                  '&muse_id=' +
+                  userinfo.user_info.muse_id
+                "
+                width="30"
+                alt=""
+                srcset=""
+              />
+              <span class="code-name">{{ scope.row.name }}</span>
+              <div class="code-ftype">
+                标签：<span
+                  class="tips"
+                  v-for="(lableel, index) in scope.row.tag"
+                  :key="lableel.id"
+                  >{{ lableel.tag_name
+                  }}<i
+                    class="del-tip el-icon-close"
+                    @click="deltips(scope, index)"
+                  ></i></span
+                ><span class="addtips" @click="addTips(scope)">+标签</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="分类" align="center">
+            <template slot-scope="scope">
+              <el-tag>{{
+                scope.row.type.type_name ? scope.row.type.type_name : "暂无分类"
+              }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="创建时间" align="center">
+            <template slot-scope="scope">
+              {{ scope.row.create_time }}
+            </template>
+          </el-table-column>
+          <el-table-column label="状态" align="center">
+            <template slot-scope="scope">
+              <el-tag type="success" v-if="scope.row.state == 1">已发布</el-tag>
+              <el-tag type="danger" v-if="scope.row.state == 2">草稿</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="操作" width="220">
+            <template slot-scope="scope">
+              <span class="el-link-btn"
+                ><el-link
+                  type="primary"
+                  @click="
+                    openPopover(
+                      'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id=' +
+                        scope.row.id +
+                        '&muse_id=' +
+                        userinfo.user_info.muse_id
+                    )
+                  "
+                  >下载</el-link
+                ></span
+              >
+              <span class="el-link-btn"
+                ><el-link type="primary" @click="togglePopover(scope.row.id)"
+                  >预览</el-link
+                ></span
+              >
+              <span class="el-link-btn"
+                ><el-link
+                  type="primary"
+                  @click="golinkpage('/codelist/edit', { id: scope.row.id })"
+                  >编辑</el-link
+                ></span
+              >
+              <span class="el-link-btn"
+                ><el-link type="primary" @click="delEntry(scope.row.id, scope)"
+                  >删除</el-link
+                ></span
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="entry-pagination">
+          <el-pagination
+            background
+            :current-page.sync="page"
+            layout="prev, pager, next"
+            :total="count"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
+        </div>
+      </div>
+    </div>
+
     <el-dialog
       title="添加标签"
       :visible.sync="dialogVisible"
@@ -232,6 +319,11 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+    <codedown
+      :dialogVisible="codeDialog"
+      :codeImg="codeImg"
+      @toggleDialog="toggle"
+    />
     <EntryQuery
       v-if="popoverFlag"
       :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id=' + id"
@@ -250,13 +342,24 @@ import {
   postTagDel,
   relicsRevise,
   postTagList,
+  postTypeList,
+  postTypeDel,
+  postTypeEdit,
+  postTypeCreate,
+  postTypeSort,
 } from "@/api/entrycode";
 import { getGetMuse } from "@/api/settings";
+import { mapGetters } from "vuex";
 import EntryQuery from "@/components/EntryQuery";
+import codedown from "@/components/codeDown/index";
 export default {
   name: "EntryCode",
   components: {
     EntryQuery,
+    codedown,
+  },
+  computed: {
+    ...mapGetters(["userinfo"]),
   },
   data() {
     return {
@@ -266,6 +369,7 @@ export default {
       downloadLoading: false,
       dialogVisible: false,
       dialogTableVisible: false,
+      tableHeight: document.body.clientHeight - 300,
       filename: "",
       page: 1,
       pages: 0,
@@ -283,29 +387,168 @@ export default {
       entryTipHisList: "",
       gridData: [],
       tipData: [{ tag_name: "标签" }],
+      codeImg: "",
+      codeDialog: false,
+      tree: "",
+      treeCount: 0,
+      type_id: 0,
     };
   },
   beforeRouteEnter(to, from, next) {
-      if(from.name === 'EntryEdit' || from.name === 'CreateArticle') { //判断是从哪个路由过来的，若是detail页面不需要刷新获取新数据，直接用之前缓存的数据即可
-          to.meta.isBack = true;
-      }
-      next();
+    if (from.name === "EntryEdit" || from.name === "CreateArticle") {
+      //判断是从哪个路由过来的，若是detail页面不需要刷新获取新数据，直接用之前缓存的数据即可
+      to.meta.isBack = true;
+    }
+    next();
   },
   activated() {
-    if(!this.$route.meta.isBack) {
+    if (!this.$route.meta.isBack) {
       this.page = 1;
       // 如果isBack是false，表明需要获取新数据，否则就不再请求，直接使用缓存的数据
       this.fetchData();
       this.GetMuse();
+      this.typeList();
     }
     // 恢复成默认的false，避免isBack一直是true，导致下次无法获取数据
-    this.$route.meta.isBack = false
+    this.$route.meta.isBack = false;
   },
   created() {
     this.fetchData();
     this.GetMuse();
+    this.typeList();
   },
   methods: {
+    //拖动完成提交数据
+    node_drop() {
+      console.log(this.tree);
+      postTypeSort(
+        this.qs.stringify({ type_json: JSON.stringify(this.tree) })
+      ).then((res) => {
+        if (res.status == 200) {
+          this.typeList();
+        }
+      });
+    },
+    //拖动判断
+    allowDrop(draggingNode, dropNode, type) {
+      if (dropNode.level == 2) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    //添加子分类
+    addChildType(node,data){
+      let params = {
+        name: "未命名分类",
+        top_id:data.id
+      };
+      postTypeCreate(this.qs.stringify(params)).then((res) => {
+        if (res.status == 200) {
+          res.data.data.edit = true;
+          let addData = res.data.data;
+          data.children.push(addData);
+          this.$message({
+            message: res.message,
+            type: "success",
+          });
+        }
+      });
+    },
+    //添加分类
+    addEntryType() {
+      let params = {
+        name: "未命名分类",
+      };
+      postTypeCreate(this.qs.stringify(params)).then((res) => {
+        if (res.status == 200) {
+          res.data.data.edit = true;
+          let addData = res.data.data;
+          this.tree.push(addData);
+          this.$message({
+            message: res.message,
+            type: "success",
+          });
+        }
+      });
+    },
+    //切换重命名输入
+    editFlagToggle(noeds, data) {
+      this.$set(data,'edit',true);
+    },
+    //自动选中文本值
+    selectText(e) {
+      e.currentTarget.select();
+    },
+    //修改分类名称
+    entryTypeEdit(data) {
+      let params = {
+        id: data.id,
+        name: data.type_name,
+      };
+      postTypeEdit(this.qs.stringify(params)).then((res) => {
+        if (res.status == 200) {
+          this.$set(data,'edit',false);
+          this.$message({
+            message: res.message,
+            type: "success",
+          });
+        }
+      });
+    },
+    //分类删除
+    delType(id) {
+      this.$confirm("此操作将删除该分类, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          const parmas = {
+            id: id,
+          };
+          postTypeDel(this.qs.stringify(parmas)).then((res) => {
+            if (res.status == 200) {
+              this.$message({
+                type: "success",
+                message: "删除成功!",
+              });
+              this.typeList();
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+    //切换分类数据
+    entryTypeToggle(data, node) {
+      this.type_id = data.id;
+      this.keyword = "";
+      this.fetchData();
+    },
+    //分类列表查询
+    typeList() {
+      postTypeList().then((res) => {
+        if (res.status == 200) {
+          res.data.data.list.map((item) => {
+            item.edit = false;
+          });
+          this.tree = res.data.data.list;
+          this.treeCount = res.data.data.count;
+        }
+      });
+    },
+    toggle() {
+      this.codeDialog = !this.codeDialog;
+    },
+    openPopover(code) {
+      this.codeImg = code;
+      this.codeDialog = true;
+    },
     //标签管理按钮
     cascaderClick() {
       this.dialogTableVisible = true;
@@ -533,6 +776,7 @@ export default {
       this.page = 1;
       this.checked1 = false;
       this.draft = 0;
+      this.type_id = 0;
       this.tipValue = "标签";
       localStorage.setItem("entrykeyword", this.keyword);
       this.fetchData();
@@ -563,9 +807,9 @@ export default {
         label: this.tipValue == "标签" ? "" : this.tipValue,
         draft: this.draft,
         type: this.entryselect,
+        type_id: this.type_id,
       };
       entryCodeList(this.qs.stringify(params)).then((res) => {
-        console.log(res.data.relics_list);
         this.pages = res.data.relics_list.last_page;
         this.count = res.data.relics_list.total;
         this.list = res.data.relics_list.data;
@@ -607,7 +851,7 @@ export default {
         });
 
         console.log(this.multipleSelection);
-        table2excel(tHeader, this.multipleSelection, "词条码.xls");
+        table2excel(tHeader, this.multipleSelection, "词条.xls");
         this.downloadLoading = false;
       } else {
         this.$message({
@@ -632,14 +876,26 @@ export default {
   .el-select .el-input {
     width: 110px;
   }
-
+  .entry-type-menu {
+    .el-tree-node__content {
+      height: 35px;
+      &:hover {
+        .down-btn {
+          display: inline-block;
+        }
+        .code-num {
+          display: none;
+        }
+      }
+    }
+  }
   .el-table__row {
     .el-input__inner {
       border: none;
       text-align: center;
     }
   }
-.el-message-box__message{
+  .el-message-box__message {
     color: red;
   }
   .input-with-select .el-input-group__prepend {
@@ -650,9 +906,60 @@ export default {
 <style lang="scss" scoped>
 .entry-code {
   background: white;
-  padding: 20px;
+  padding: 20px 20px 20px 0;
   box-sizing: border-box;
-  
+  min-width: 1000px;
+  position: relative;
+  display: flex;
+  .entry-type-menu {
+    width: 260px;
+    flex-shrink: 0;
+    border-right: 1px solid #e0e1e3;
+    .entry-type-input {
+      border: 1px solid #66b1ff;
+      border-radius: 5px;
+      padding: 5px;
+      box-sizing: border-box;
+    }
+    .add-entry-type {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .el-tree-node__content {
+      height: 35px;
+    }
+    .code-num {
+      color: #333;
+    }
+    .down-btn {
+      display: none;
+    }
+    .custom-tree-node {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      padding-right: 8px;
+    }
+    .entry-type-menu-title {
+      font-size: 16px;
+      color: #333;
+      padding-left: 20px;
+      box-sizing: border-box;
+      margin-bottom: 15px;
+      span {
+        font-size: 14px;
+        color: #999;
+        margin-left: 10px;
+      }
+    }
+  }
+  .entry-content {
+    padding-left: 15px;
+    box-sizing: border-box;
+    width: calc(100% - 265px);
+  }
   .tag-btn-box {
     display: flex;
     justify-content: space-around;
@@ -745,6 +1052,7 @@ export default {
   }
   .code-img {
     float: left;
+    cursor: pointer;
   }
   .code-name {
     float: left;

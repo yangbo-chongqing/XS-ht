@@ -4,8 +4,8 @@
       <i class="el-icon-arrow-left"></i> 返回列表
     </div>
     <div class="fun-table-body">
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="关联产品">
+      <el-form ref="form" :model="form" label-width="90px">
+        <el-form-item label="说明书名称">
           <el-input v-model="form.manual_name" placeholder="请输入说明书名称"></el-input>
         </el-form-item>
         <el-form-item label="说明书">
