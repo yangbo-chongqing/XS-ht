@@ -23,7 +23,7 @@ export const constantRoutes = [
       path: 'workbench',
       name: 'Workbench',
       component: () => import('@/views/workbench/index'),
-      meta: { title: '工作台', icon: 'dashboard',noCache: true }
+      meta: { title: '工作台', icon: 'dashboard',noCache: true,affix: true }
     },
     {
       path: 'scancode',

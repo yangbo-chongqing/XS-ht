@@ -5,7 +5,7 @@
         <el-col :span="14"><div class="entry-title">产品码</div></el-col>
         <el-col :span="10">
           <el-row :gutter="20">
-            <el-col :span="18">
+            <el-col :span="20">
               <div class="entry-search">
                 <el-input
                   v-model="keyword"
@@ -17,7 +17,7 @@
                 </el-input>
               </div>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="4">
               <div class="entry-search">
                 <el-button
                   type="primary"
@@ -41,12 +41,12 @@
         fit
         highlight-current-row
       >
-        <el-table-column label="产品编号" width="220" align="center">
+        <el-table-column label="产品编号" width="220" >
           <template slot-scope="scope">
-            <el-tag>{{ scope.row.unique }}</el-tag>
+            {{ scope.row.unique }}
           </template>
         </el-table-column>
-        <el-table-column label="产品名称" align="center">
+        <el-table-column label="产品名称" >
           <template slot-scope="scope">
             <el-image
               style="width: 30px; height: 30px; object-fit: cover"
@@ -57,22 +57,23 @@
             <span class="code-name">{{ scope.row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="厂家" align="center">
+        <el-table-column label="厂家">
           <template slot-scope="scope">
-            <el-tag>{{ scope.row.factory }}</el-tag>
+            {{ scope.row.factory }}
           </template>
         </el-table-column>
-        <el-table-column label="说明书" align="center">
+        <el-table-column label="说明书" width="220" align="center">
           <template slot-scope="scope">
-            <el-tag>{{ scope.row.factory }}</el-tag>
+            <el-tag v-if="scope.row.manual">{{ scope.row.manual.manual_name }}</el-tag>
+            <el-tag  type="danger" @click="addManual" v-else>暂无</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="上市时间" align="center">
+        <el-table-column label="上市时间" >
           <template slot-scope="scope">
-            <el-tag>{{ scope.row.listed }}</el-tag>
+            {{ scope.row.listed }}
           </template>
         </el-table-column>
-        <el-table-column label="是否上架" width="220" align="center">
+        <el-table-column label="是否上架" width="120" align="center">
           <template slot-scope="scope">
             <el-switch
               v-model="scope.row.showFlag"
@@ -89,7 +90,7 @@
               ><el-link
                 type="primary"
                 @click="downloadImg(scope.row.id,scope.row.name)"
-                >查看</el-link
+                >查看流程码</el-link
               ></span
             >
             <span class="el-link-btn"
@@ -143,6 +144,12 @@ export default {
     this.fetchData();
   },
   methods: {
+    addManual(){
+
+
+
+
+    },
     downloadImg(id,name) {
       let params = {
         type:0,

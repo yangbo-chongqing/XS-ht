@@ -10,6 +10,7 @@
         node-key="id"
         @node-click="entryTypeToggle"
         draggable
+        ref="entryTypeList"
         @node-drop="node_drop"
         :allow-drop="allowDrop"
       >
@@ -439,6 +440,7 @@ export default {
     },
     //添加子分类
     addChildType(node,data){
+      this.$refs.entryTypeList.store.nodesMap[data.id].expanded = true;
       let params = {
         name: "未命名分类",
         top_id:data.id

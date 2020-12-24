@@ -69,7 +69,6 @@
         highlight-current-row
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" align="center" />
         <el-table-column label="管理员名称">
           <template slot-scope="scope">
             <img
@@ -82,11 +81,6 @@
             <span class="code-name">{{ scope.row.nickname }}</span>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="分类" align="center">
-          <template slot-scope="scope">
-            <el-tag>{{ scope.row.type.type_name }}</el-tag>
-          </template>
-        </el-table-column> -->
         <el-table-column label="添加时间" align="center">
           <template slot-scope="scope">
             {{ scope.row.create_time }}
