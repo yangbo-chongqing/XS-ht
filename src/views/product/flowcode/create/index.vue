@@ -4,7 +4,7 @@
       <i class="el-icon-arrow-left"></i> 返回列表
     </div>
     <div class="fun-table-body">
-      <el-form ref="form" :model="form" label-width="80px">
+      <el-form ref="form" :model="form" label-width="90px">
         <el-form-item label="唯一编号">
           <el-input v-model="form.pkid"></el-input>
         </el-form-item>
@@ -29,11 +29,12 @@
 </template>
 
 <script>
-import { productCreate } from "@/api/product";
+import { floWingCreate } from "@/api/product";
 export default {
   name: "ProductCreate",
   data() {
     return {
+      id:this.$route.query.id,
       form: {
         pkid: "",
         colour: "",
@@ -50,24 +51,25 @@ export default {
         text: "保存中",
       });
       let params = {
-        unique: this.form.unique,
-        name: this.form.name,
-        image: this.form.dialogImageUrl,
-        factory: this.form.factory,
-        listed: this.form.listed,
+        product_id:this.id,
+        pkid: this.form.pkid,
+        colour: this.form.colour,
+        engine: this.form.engine,
+        certificate_id: this.form.certificate_id,
+        certificate_core: this.form.certificate_core,
       };
-      productCreate(this.qs.stringify(params)).then((res) => {
+      floWingCreate(this.qs.stringify(params)).then((res) => {
         loading.close();
         if (res.status == 200) {
           this.$message({
             message: res.message,
             type: "success",
           });
-          this.form.unique = "";
-          this.form.name = "";
-          this.form.dialogImageUrl = "";
-          this.form.factory = "";
-          this.form.listed = "";
+          this.form.pkid = ''
+          this.form.colour = ''
+          this.form.engine = ''
+          this.form.certificate_id = ''
+          this.form.certificate_core = ''
         }
       });
     },

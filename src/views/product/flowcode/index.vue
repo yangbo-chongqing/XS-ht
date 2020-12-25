@@ -10,7 +10,7 @@
                 <el-input
                   v-model="keyword"
                   type="search"
-                  placeholder="搜索流程码"
+                  placeholder="请输入唯一码"
                   clearable
                   ><i slot="prefix" class="el-input__icon el-icon-search" />
                   <el-button slot="append" @click="onSearch">搜索</el-button>
@@ -21,7 +21,7 @@
               <div class="entry-search">
                 <el-button
                   type="primary"
-                  @click="golinkpage('/product/flowcodecreate')"
+                  @click="golinkpage('/product/flowcodecreate',{id:id})"
                   >新增流程码</el-button
                 >
               </div>
@@ -46,14 +46,29 @@
             <el-tag>{{ scope.row.id }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="流程码名称" >
+        <el-table-column label="唯一编号" >
           <template slot-scope="scope">
-            <span class="code-name">{{ scope.row.manual_name }}</span>
+            <span class="code-name">{{ scope.row.pkid }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="创建时间">
+        <el-table-column label="颜色">
           <template slot-scope="scope">
-            <span class="code-name">{{ scope.row.create_time }}</span>
+            <span class="code-name">{{ scope.row.colour }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="发动机号">
+          <template slot-scope="scope">
+            <span class="code-name">{{ scope.row.engine }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="合格证编号">
+          <template slot-scope="scope">
+            <span class="code-name">{{ scope.row.certificate_id }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="合格证证芯">
+          <template slot-scope="scope">
+            <span class="code-name">{{ scope.row.certificate_core }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center"  label="操作" width="220">
@@ -132,7 +147,7 @@ export default {
     fetchData() {
       this.listLoading = true;
       let parmas = {
-        id:this.id,
+        product_id:this.id,
         page: this.page,
         keyword: this.keyword,
       };

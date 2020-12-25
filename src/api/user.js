@@ -23,7 +23,7 @@ export function getInfo() {
 // 获取登陆二维码凭证
 export function LoginCredentials(data) {
   return request({
-    url: '/api/Store/LoginCredentials',
+    url: '/api/store/login/credentials',
     method: 'post',
     data
   })

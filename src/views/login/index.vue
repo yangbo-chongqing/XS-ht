@@ -58,7 +58,7 @@
             >登录</el-button>
           </el-form>
         </el-col>
-        <el-col :span="8">
+        <!-- <el-col :span="8">
           <div class="login-form">
             <div class="title-container">
               <h3 class="title">微信快捷登录</h3>
@@ -75,7 +75,7 @@
               >
             </div>
           </div>
-        </el-col>
+        </el-col> -->
       </el-row>
     </div>
   </div>
@@ -113,7 +113,7 @@ export default {
     }
   },
   created() {
-    this.loginCredentials()
+    // this.loginCredentials()
   },
   destroyed() {
     // clearInterval(this.setInt)

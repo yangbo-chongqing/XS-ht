@@ -353,7 +353,6 @@ export default {
         }
         parmas.inspection=this.form.fileList[0].response.data.file_path;
       }
-      console.log(this.form.fileList);
       let loading = this.$loading({
         text: "关联中...",
       });
@@ -450,7 +449,6 @@ export default {
     },
     remoteMethod(query) {
       if (query !== "") {
-        console.log(query);
         this.loading = true;
         let parmas = {
           keyword: query,
@@ -538,7 +536,6 @@ export default {
           });
         }
         this.list = res.data.data;
-        console.log(this.list);
         this.listLoading = false;
         this.showPage = res.data.last_page > 1 ? true : false;
       });

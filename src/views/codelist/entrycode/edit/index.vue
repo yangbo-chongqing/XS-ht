@@ -572,7 +572,7 @@ import { getToken } from "@/utils/auth";
 import codedown from "@/components/codeDown/index";
 import {
   postEntryList,
-  postTypeList,
+  typeList,
   postGetRelics,
   postEdit,
 } from "@/api/entrycode";
@@ -701,7 +701,7 @@ export default {
       const params = {
         type: 1,
       };
-      postTypeList(this.qs.stringify(params)).then((res) => {
+      typeList(this.qs.stringify(params)).then((res) => {
         this.options = res.data.data;
       });
     },
