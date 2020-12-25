@@ -2,7 +2,7 @@
   <div class="fun-code">
     <div class="fun-code-head">
       <el-row>
-        <el-col :span="14"><div class="entry-title">产品码</div></el-col>
+        <el-col :span="14"><div class="entry-title" @click="back"><i class="el-icon-arrow-left"></i>返回产品码</div></el-col>
         <el-col :span="10">
           <el-row :gutter="20">
             <el-col :span="20">
@@ -10,8 +10,8 @@
                 <el-input
                   v-model="keyword"
                   type="search"
+                  placeholder="搜索流程码"
                   clearable
-                  placeholder="搜索产品码"
                   ><i slot="prefix" class="el-input__icon el-icon-search" />
                   <el-button slot="append" @click="onSearch">搜索</el-button>
                 </el-input>
@@ -21,8 +21,8 @@
               <div class="entry-search">
                 <el-button
                   type="primary"
-                  @click="golinkpage('/product/productcreate')"
-                  >新增产品码</el-button
+                  @click="golinkpage('/product/instructionscreate')"
+                  >新增流程码</el-button
                 >
               </div>
             </el-col>
@@ -35,53 +35,25 @@
         ref="multipleTable"
         v-loading="listLoading"
         :data="list"
-        element-loading-text="拼命加载中"
         :height="tableHeight"
+        element-loading-text="拼命加载中"
         border
         fit
         highlight-current-row
       >
-        <el-table-column label="产品编号" width="220" >
+        <el-table-column label="编号" width="220" align="center">
           <template slot-scope="scope">
-            {{ scope.row.unique }}
+            <el-tag>{{ scope.row.id }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="产品名称" >
+        <el-table-column label="流程码名称" >
           <template slot-scope="scope">
-            <el-image
-              style="width: 30px; height: 30px; object-fit: cover"
-              :src="scope.row.image"
-              :preview-src-list="[scope.row.image]"
-            >
-            </el-image>
-            <span class="code-name">{{ scope.row.name }}</span>
+            <span class="code-name">{{ scope.row.manual_name }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="厂家">
+        <el-table-column label="创建时间">
           <template slot-scope="scope">
-            {{ scope.row.factory }}
-          </template>
-        </el-table-column>
-        <el-table-column label="说明书" width="220" align="center">
-          <template slot-scope="scope">
-            <el-tag v-if="scope.row.manual">{{ scope.row.manual.manual_name }}</el-tag>
-            <el-tag  type="danger" @click="addManual" v-else>暂无</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="上市时间" >
-          <template slot-scope="scope">
-            {{ scope.row.listed }}
-          </template>
-        </el-table-column>
-        <el-table-column label="是否上架" width="120" align="center">
-          <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.showFlag"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              @change="toggleShow(scope.row.id,scope.row.showFlag)"
-            >
-            </el-switch>
+            <span class="code-name">{{ scope.row.create_time }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center"  label="操作" width="220">
@@ -89,22 +61,21 @@
             <span class="el-link-btn"
               ><el-link
                 type="primary"
-                @click="golinkpage('/product/flowcode',{id: scope.row.id})"
-                >查看流程码</el-link
-              ></span
-            >
-            <span class="el-link-btn"
-              ><el-link
-                type="primary"
-                @click="downloadImg(scope.row.id,scope.row.name)"
                 >下载二维码</el-link
               ></span
             >
             <span class="el-link-btn"
               ><el-link
                 type="primary"
-                @click="golinkpage('/product/productedit', { id: scope.row.id })"
+                @click="golinkpage('/product/instructionsedit', { id: scope.row.id })"
                 >编辑</el-link
+              ></span
+            >
+            <span class="el-link-btn"
+              ><el-link
+                type="primary"
+                @click="golinkpage('/product/instructionsedit', { id: scope.row.id })"
+                >删除</el-link
               ></span
             >
           </template>
@@ -125,10 +96,9 @@
 </template>
 
 <script>
-import { productList,productEdit,preview } from "@/api/product";
-import { downloadIamge } from '@/utils/utils'
+import { manualList,productEdit } from "@/api/product";
 export default {
-  name: "ProductCode",
+  name: "FlowCode",
   data() {
     return {
       list: null,
@@ -137,30 +107,13 @@ export default {
       page: 1,
       count: 0,
       showPage: false,
-      tableHeight: document.body.clientHeight - 230
+      tableHeight: document.body.clientHeight - 220,
     };
   },
   created() {
     this.fetchData();
   },
   methods: {
-    addManual(){
-
-
-
-
-    },
-    downloadImg(id,name) {
-      let params = {
-        type:0,
-        id:id
-      }
-      preview(this.qs.stringify(params)).then((res)=>{
-        if(res.status == 200){
-          downloadIamge(res.data.img, name)
-        }
-      })
-    },
     onSearch() {
       this.page = 1;
       this.fetchData();
@@ -206,7 +159,7 @@ export default {
         page: this.page,
         keyword: this.keyword,
       };
-      productList(this.qs.stringify(parmas)).then((res) => {
+      manualList(this.qs.stringify(parmas)).then((res) => {
         this.count = res.data.total;
         if(res.data.data.length>0){
           res.data.data.map((item,index)=>{
@@ -219,6 +172,9 @@ export default {
         this.showPage = res.data.last_page > 1 ? true : false;
       });
     },
+    back(){
+      this.$router.go(-1);
+    }
   },
 };
 </script>

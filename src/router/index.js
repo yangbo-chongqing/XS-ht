@@ -23,7 +23,7 @@ export const constantRoutes = [
       path: 'workbench',
       name: 'Workbench',
       component: () => import('@/views/workbench/index'),
-      meta: { title: '工作台', icon: 'dashboard',noCache: true,affix: true }
+      meta: { title: '工作台', icon: 'dashboard',noCache: true }
     },
     {
       path: 'scancode',
@@ -113,6 +113,13 @@ export const constantRoutes = [
         name: 'ProductCreate',
         hidden: true,
         meta: { title: '新增产品码' }
+      },
+      {
+        path: 'flowcode',
+        component: () => import('@/views/product/flowcode/index'),
+        name: 'FlowCode',
+        hidden: true,
+        meta: { title: '流程码' }
       },
       {
         path: 'productedit',
