@@ -39,7 +39,7 @@
     <el-aside class="dr-parameter">
       <el-button type="primary">保存</el-button>
       <el-tabs value="setter">
-        <!-- <el-tab-pane label="数据结构" name="data">
+        <el-tab-pane label="数据结构" name="data">
           <el-container>
             <div style="overflow: auto; width: 100%">
               <pre style="font-family: 'Courier New', serif; padding: 5px">{{
@@ -47,7 +47,7 @@
               }}</pre>
             </div>
           </el-container>
-        </el-tab-pane> -->
+        </el-tab-pane>
         <el-tab-pane label="配置项" name="setter" v-if="selector">
           <slot :config.sync="selector">
             <parameter v-if="selector" :data.sync="selector" />

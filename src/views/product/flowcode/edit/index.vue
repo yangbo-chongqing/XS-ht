@@ -4,25 +4,42 @@
       <i class="el-icon-arrow-left"></i> 返回列表
     </div>
     <div class="fun-table-body">
-      <el-form ref="form" :model="form" label-width="90px">
-        <el-form-item label="说明书名称">
-          <el-input v-model="form.manual_name" placeholder="请输入说明书名称"></el-input>
+      <el-form ref="form" :model="form" label-width="80px">
+        <el-form-item label="产品名称">
+          <el-input v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item label="说明书">
+        <el-form-item label="产品编码">
+          <el-input v-model="form.unique" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="上市时间">
+          <el-date-picker
+            v-model="form.listed"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="厂家">
+          <el-input v-model="form.factory"></el-input>
+        </el-form-item>
+        <el-form-item label="产品图标">
           <el-upload
             class="upload-demo"
             action="/api/store/upload"
             :headers="headers"
-            accept=".pdf"
-            :limit="1"
+            accept=".jpg,.png"
+            v-if="!form.dialogImageUrl"
             :on-success="imageUploadSuccess"
             :on-progress="uploadProgress"
-            :on-remove="handleRemove"
-            :file-list="form.fileList"
+            :show-file-list="false"
           >
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传PDF文件</div>
+            <div class="upload-box"><i class="el-icon-plus"></i></div>
           </el-upload>
+          <div class="upload-box" v-else>
+            <img :src="form.dialogImageUrl" alt="" /><span
+              @click="form.dialogImageUrl = ''"
+              ><i class="el-icon-close"></i
+            ></span>
+          </div>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">立即修改</el-button>
@@ -34,98 +51,81 @@
 </template>
 
 <script>
-import { productList,manualDetails,manualEdit } from "@/api/product";
+import { productEdit,productDetails } from "@/api/product";
 import { getToken } from "@/utils/auth";
 import { Loading } from "element-ui";
 export default {
-  name: "InstructionsCreate",
+  name: "ProductEdit",
   data() {
     return {
       headers: { Authorization: "Bearer " + getToken() },
       id:this.$route.query.id,
       form: {
-        manual_name: '',
-        fileList: [],
+        name: "",
+        unique: "",
+        dialogImageUrl: "",
+        factory:"",
+        listed:""
       },
       dialogVisible: false,
       disabled: false,
       uploadLoading: "",
-      options: [],
-      list: [],
-      loading: false,
     };
   },
   created() {
-    this.Details();
+    this.queryDetails();
   },
   methods: {
-    //查询说明说详情
-    Details(){
-      let params ={
+    //查询产品码
+    queryDetails(){
+      let loading = this.$loading({
+        text:'加载中...'
+      })
+      let params = {
         id:this.id
       }
-      manualDetails(this.qs.stringify(params)).then((res)=>{
-        this.form.fileList.push({name:'产品说明书',url:res.data.manual_info.file})
-        this.form.manual_name = res.data.manual_info.manual_name;
+      productDetails(this.qs.stringify(params)).then((res)=>{
+        loading.close();
+        this.form.name = res.data.data.name;
+        this.form.unique = res.data.data.unique;
+        this.form.dialogImageUrl = res.data.data.image;
+        this.form.factory = res.data.data.factory;
+        this.form.listed = res.data.data.listed;
       })
     },
     onSubmit() {
-      if(this.form.fileList.length==0){
-        this.$message({
-            message: '请上传说明书',
-            type: "error",
-          });
-          return false;
-      }
       let loading = this.$loading({
         text: "保存中",
       });
       let params = {
-        id:this.id,
-        manual_name: this.form.manual_name,
-        file: this.form.fileList[0].url,
+        id: this.id,
+        name: this.form.name,
+        image: this.form.dialogImageUrl,
+        factory: this.form.factory,
+        listed: this.form.listed,
       };
-      manualEdit(this.qs.stringify(params)).then((res) => {
+      productEdit(this.qs.stringify(params)).then((res) => {
         loading.close();
         if (res.status == 200) {
           this.$message({
             message: res.message,
             type: "success",
           });
-          this.back();
+          this.back()
         }
       });
     },
-    remoteMethod(query) {
-      if (query !== "") {
-        console.log(query);
-        this.loading = true;
-        let parmas = {
-          manual: 1,
-          keyword: query,
-        };
-        productList(this.qs.stringify(parmas)).then((res) => {
-          this.loading = false;
-          this.options = res.data.data;
-        });
-      } else {
-        this.options = [];
-      }
-    },
-    handleRemove(file, fileList) {
-      this.form.fileList = fileList;
-    },
+    handleRemove(file) {},
     handlePictureCardPreview(file) {
       this.dialogVisible = true;
     },
     handleDownload(file) {},
     imageUploadSuccess(response, file, fileList) {
-      this.form.fileList = [{name:file.name,url:file.response.data.file_path}];
+      this.form.dialogImageUrl = response.data.file_path;
       this.uploadLoading.close();
     },
     uploadProgress() {
       this.uploadLoading = Loading.service({
-        target:'.fun-code',
         text: "上传中...",
       });
     },
@@ -138,9 +138,6 @@ export default {
 <style lang="scss" scoped>
 .fun-code {
   background: white;
-  .el-select{
-    display: block;
-  }
   .back-box {
     padding: 10px;
     box-sizing: border-box;

@@ -1,4 +1,28 @@
 import request from '@/utils/request'
+//流水码列表
+export function floWingList(data) {
+  return request({
+    url: '/api/store/flowing/list',
+    method: 'post',
+    data
+  })
+}
+//流水码修改
+export function floWingEdit(data) {
+  return request({
+    url: '/api/store/flowing/edit',
+    method: 'post',
+    data
+  })
+}
+//流水码创建
+export function floWingCreate(data) {
+  return request({
+    url: '/api/store/flowing/create',
+    method: 'post',
+    data
+  })
+}
 // 产品码添加
 export function productCreate(data) {
   return request({

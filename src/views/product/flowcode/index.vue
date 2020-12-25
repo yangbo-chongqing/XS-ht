@@ -21,7 +21,7 @@
               <div class="entry-search">
                 <el-button
                   type="primary"
-                  @click="golinkpage('/product/instructionscreate')"
+                  @click="golinkpage('/product/flowcodecreate')"
                   >新增流程码</el-button
                 >
               </div>
@@ -61,12 +61,6 @@
             <span class="el-link-btn"
               ><el-link
                 type="primary"
-                >下载二维码</el-link
-              ></span
-            >
-            <span class="el-link-btn"
-              ><el-link
-                type="primary"
                 @click="golinkpage('/product/instructionsedit', { id: scope.row.id })"
                 >编辑</el-link
               ></span
@@ -96,11 +90,12 @@
 </template>
 
 <script>
-import { manualList,productEdit } from "@/api/product";
+import { floWingList } from "@/api/product";
 export default {
   name: "FlowCode",
   data() {
     return {
+      id:this.$route.query.id,
       list: null,
       listLoading: true,
       keyword: "",
@@ -134,32 +129,14 @@ export default {
       this.page = size;
       this.fetchData();
     },
-    //是否上架
-    toggleShow(id,flag){
-      let loading = this.$loading({
-        text:'修改中...'
-      })
-      let parmas = {
-        id: id,
-        show: flag?1:0,
-      };
-      productEdit(this.qs.stringify(parmas)).then((res)=>{
-        loading.close();
-        if (res.status == 200) {
-          this.$message({
-            message: res.message,
-            type: "success",
-          });
-        }
-      })
-    },
     fetchData() {
       this.listLoading = true;
       let parmas = {
+        id:this.id,
         page: this.page,
         keyword: this.keyword,
       };
-      manualList(this.qs.stringify(parmas)).then((res) => {
+      floWingList(this.qs.stringify(parmas)).then((res) => {
         this.count = res.data.total;
         if(res.data.data.length>0){
           res.data.data.map((item,index)=>{

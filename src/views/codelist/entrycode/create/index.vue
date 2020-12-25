@@ -587,7 +587,7 @@ import entrytype from "@/views/codelist/entrytype/create/index";
 import codedown from "@/components/codeDown/index";
 import {
   postPublish,
-  postTypeList,
+  typeList,
   postEntryList,
   RelicsList,
   entryCodeList,
@@ -745,7 +745,7 @@ export default {
       const params = {
         type: 1,
       };
-      postTypeList(this.qs.stringify(params)).then((res) => {
+      typeList(this.qs.stringify(params)).then((res) => {
         this.options = res.data.data;
       });
     },

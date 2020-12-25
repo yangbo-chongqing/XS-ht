@@ -79,6 +79,14 @@ export function postTypeDel(data) {
     data
   })
 }
+//词条添加内查询分类列表
+export function typeList(data) {
+  return request({
+    url: '/api/store/type/list',
+    method: 'post',
+    data
+  })
+}
 //词条列表
 export function RelicsList(data) {
   return request({
