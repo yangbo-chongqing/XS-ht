@@ -129,6 +129,13 @@ export const constantRoutes = [
         meta: { title: '新增流程码',noCache: true }
       },
       {
+        path: 'flowcodeedit',
+        component: () => import('@/views/product/flowcode/edit'),
+        name: 'flowcodeEdit',
+        hidden: true,
+        meta: { title: '修改流程码',noCache: true }
+      },
+      {
         path: 'productedit',
         component: () => import('@/views/product/productcode/edit'),
         name: 'ProductEdit',

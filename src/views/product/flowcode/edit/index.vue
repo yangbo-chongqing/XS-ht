@@ -4,42 +4,21 @@
       <i class="el-icon-arrow-left"></i> 返回列表
     </div>
     <div class="fun-table-body">
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="产品名称">
-          <el-input v-model="form.name"></el-input>
+      <el-form ref="form" :model="form" label-width="90px">
+        <el-form-item label="唯一编号">
+          <el-input v-model="form.pkid" disabled></el-input>
         </el-form-item>
-        <el-form-item label="产品编码">
-          <el-input v-model="form.unique" disabled></el-input>
+        <el-form-item label="颜色">
+          <el-input v-model="form.colour"></el-input>
         </el-form-item>
-        <el-form-item label="上市时间">
-          <el-date-picker
-            v-model="form.listed"
-            type="date"
-            placeholder="选择日期">
-          </el-date-picker>
+        <el-form-item label="发动机号">
+          <el-input v-model="form.engine"></el-input>
         </el-form-item>
-        <el-form-item label="厂家">
-          <el-input v-model="form.factory"></el-input>
+        <el-form-item label="合格证编号">
+          <el-input v-model="form.certificate_id"></el-input>
         </el-form-item>
-        <el-form-item label="产品图标">
-          <el-upload
-            class="upload-demo"
-            action="/api/store/upload"
-            :headers="headers"
-            accept=".jpg,.png"
-            v-if="!form.dialogImageUrl"
-            :on-success="imageUploadSuccess"
-            :on-progress="uploadProgress"
-            :show-file-list="false"
-          >
-            <div class="upload-box"><i class="el-icon-plus"></i></div>
-          </el-upload>
-          <div class="upload-box" v-else>
-            <img :src="form.dialogImageUrl" alt="" /><span
-              @click="form.dialogImageUrl = ''"
-              ><i class="el-icon-close"></i
-            ></span>
-          </div>
+        <el-form-item label="合格证证芯">
+          <el-input v-model="form.certificate_core"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">立即修改</el-button>
@@ -51,46 +30,34 @@
 </template>
 
 <script>
-import { productEdit,productDetails } from "@/api/product";
-import { getToken } from "@/utils/auth";
-import { Loading } from "element-ui";
+import { floWingEdit,floWingDetails } from "@/api/product";
 export default {
-  name: "ProductEdit",
+  name: "ProductCreate",
   data() {
     return {
-      headers: { Authorization: "Bearer " + getToken() },
       id:this.$route.query.id,
       form: {
-        name: "",
-        unique: "",
-        dialogImageUrl: "",
-        factory:"",
-        listed:""
+        pkid: "",
+        colour: "",
+        engine: "",
+        certificate_id:"",
+        certificate_core:""
       },
-      dialogVisible: false,
-      disabled: false,
-      uploadLoading: "",
     };
   },
   created() {
-    this.queryDetails();
+    this.getDtails();
   },
   methods: {
-    //查询产品码
-    queryDetails(){
-      let loading = this.$loading({
-        text:'加载中...'
-      })
-      let params = {
-        id:this.id
-      }
-      productDetails(this.qs.stringify(params)).then((res)=>{
-        loading.close();
-        this.form.name = res.data.data.name;
-        this.form.unique = res.data.data.unique;
-        this.form.dialogImageUrl = res.data.data.image;
-        this.form.factory = res.data.data.factory;
-        this.form.listed = res.data.data.listed;
+    
+    //详情
+    getDtails(){
+      floWingDetails(this.qs.stringify({id:this.id})).then((res)=>{
+        this.form.pkid=res.data.data.pkid;
+        this.form.colour=res.data.data.colour;
+        this.form.engine=res.data.data.engine;
+        this.form.certificate_id=res.data.data.certificate_id;
+        this.form.certificate_core=res.data.data.certificate_core;
       })
     },
     onSubmit() {
@@ -98,13 +65,13 @@ export default {
         text: "保存中",
       });
       let params = {
-        id: this.id,
-        name: this.form.name,
-        image: this.form.dialogImageUrl,
-        factory: this.form.factory,
-        listed: this.form.listed,
+        id:this.id,
+        colour: this.form.colour,
+        engine: this.form.engine,
+        certificate_id: this.form.certificate_id,
+        certificate_core: this.form.certificate_core,
       };
-      productEdit(this.qs.stringify(params)).then((res) => {
+      floWingEdit(this.qs.stringify(params)).then((res) => {
         loading.close();
         if (res.status == 200) {
           this.$message({
@@ -113,20 +80,6 @@ export default {
           });
           this.back()
         }
-      });
-    },
-    handleRemove(file) {},
-    handlePictureCardPreview(file) {
-      this.dialogVisible = true;
-    },
-    handleDownload(file) {},
-    imageUploadSuccess(response, file, fileList) {
-      this.form.dialogImageUrl = response.data.file_path;
-      this.uploadLoading.close();
-    },
-    uploadProgress() {
-      this.uploadLoading = Loading.service({
-        text: "上传中...",
       });
     },
     back() {

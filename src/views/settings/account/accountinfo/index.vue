@@ -5,20 +5,20 @@
       <el-col
         :span="24"
       ><div class="AccountInfo-item">
-        <label>用户名:</label>
+        <label>昵称:</label>
         <span v-if="!isShowUserName">{{ userinfo.user_info.nickname }}</span>
         <el-input
           v-else
           v-model="userinfo.user_info.nickname"
           size="small"
-          placeholder="请输入用户名"
+          placeholder="请输入昵称"
         />
         <span>
           <el-link
             v-if="!isShowUserName"
             type="primary"
             @click="isShowUserName = true"
-          >修改用户名</el-link>
+          >修改昵称</el-link>
           <el-link
             v-else
             type="primary"

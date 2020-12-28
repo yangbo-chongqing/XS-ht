@@ -186,7 +186,17 @@
               alt=""
               srcset=""
             />
-            <img v-else :src="'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id='+id+'&muse_id='+userinfo.user_info.muse_id" alt="" srcset="" />
+            <img
+              v-else
+              :src="
+                'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id=' +
+                id +
+                '&muse_id=' +
+                userinfo.user_info.muse_id
+              "
+              alt=""
+              srcset=""
+            />
             <div v-if="!id" class="create-btn">
               <el-button type="primary" @click="publish(2)"
                 >生成二维码</el-button
@@ -201,7 +211,14 @@
               <span
                 ><el-link
                   type="primary"
-                  @click="openPopover('http://xsdt.xunsheng.org.cn/api/web/code?type=1&id='+id+'&muse_id='+userinfo.user_info.muse_id)"
+                  @click="
+                    openPopover(
+                      'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id=' +
+                        id +
+                        '&muse_id=' +
+                        userinfo.user_info.muse_id
+                    )
+                  "
                   >下载</el-link
                 ></span
               >
@@ -515,10 +532,26 @@
             ref="multipleTable"
             v-loading="listLoading"
             :data="list"
+            height="600"
             element-loading-text="拼命加载中"
             border
           >
-            <el-table-column :label="type == 1 ? '关联词条' : '我与'">
+            <el-table-column>
+              <template slot="header">
+                <div class="table-header">
+                   <div>{{type == 1 ? '关联词条' : '我与'}}</div>
+                   <div>
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      content="双向关联为两词条相互关联上"
+                      placement="left"
+                    >
+                       <i class="el-icon-question"></i>
+                       </el-tooltip>
+                    </div>
+                </div>
+              </template>
               <template slot-scope="scope">
                 <el-checkbox :label="scope.row">
                   <div class="scope-body">
@@ -530,14 +563,29 @@
                     class="entry-toggle"
                     @click="entryToggle(scope.row)"
                     v-if="!scope.row.flag"
-                    ><i class="el-icon-finished" size="30"
-                  /></span>
+                    ><el-tooltip
+                      class="item"
+                      effect="dark"
+                      content="双向关联"
+                      placement="top"
+                    >
+                      <i class="el-icon-connection" size="30" /> </el-tooltip
+                  ></span>
                   <span
                     class="entry-toggle"
                     @click="entryToggle(scope.row)"
                     v-else
-                    ><i class="el-icon-finished red" size="30"
-                  /></span>
+                    ><el-tooltip
+                      class="item"
+                      effect="dark"
+                      content="取消双向关联"
+                      placement="top"
+                    >
+                      <i
+                        class="el-icon-connection red"
+                        size="30"
+                      /> </el-tooltip
+                  ></span>
                 </div>
               </template>
             </el-table-column>
@@ -567,7 +615,11 @@
     <el-dialog title="添加分类" :visible.sync="createEntryTypeFlag" width="30%">
       <entrytype @createType="createEntryTypeFlag = false" :back-flag="false" />
     </el-dialog>
-    <codedown :dialogVisible="dialogVisible" :codeImg="codeImg" @toggleDialog="toggle" />
+    <codedown
+      :dialogVisible="dialogVisible"
+      :codeImg="codeImg"
+      @toggleDialog="toggle"
+    />
     <EntryQuery
       v-if="popoverFlag"
       :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id=' + id"
@@ -582,7 +634,7 @@ import { downloadIamge } from "@/utils/utils";
 import EntryQuery from "@/components/EntryQuery";
 import { Loading } from "element-ui";
 import { getToken } from "@/utils/auth";
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 import entrytype from "@/views/codelist/entrytype/create/index";
 import codedown from "@/components/codeDown/index";
 import {
@@ -603,7 +655,7 @@ export default {
     codedown,
   },
   computed: {
-    ...mapGetters(['userinfo'])
+    ...mapGetters(["userinfo"]),
   },
   data() {
     return {
@@ -952,6 +1004,10 @@ export default {
 .create-code {
   max-height: 90vh;
   overflow-y: scroll;
+  .table-header{
+    display: flex;
+    justify-content: space-between;
+  }
   .back-box {
     padding: 10px 0;
     box-sizing: border-box;

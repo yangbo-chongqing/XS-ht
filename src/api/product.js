@@ -7,6 +7,22 @@ export function floWingList(data) {
     data
   })
 }
+//流水码删除
+export function floWingDel(data) {
+  return request({
+    url: '/api/store/flowing/del',
+    method: 'post',
+    data
+  })
+}
+//流水码详情
+export function floWingDetails(data) {
+  return request({
+    url: '/api/store/flowing/details',
+    method: 'post',
+    data
+  })
+}
 //流水码修改
 export function floWingEdit(data) {
   return request({
