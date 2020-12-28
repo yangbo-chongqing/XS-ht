@@ -28,8 +28,8 @@
         </el-tab-pane>
       </el-tabs>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="toggle">取 消</el-button>
-        <el-button type="primary" @click="toggle">下 载</el-button>
+        <el-button @click="toggle('close')">取 消</el-button>
+        <el-button type="primary" @click="toggle('down')">下 载</el-button>
       </span>
     </el-dialog>
   </div>
@@ -52,35 +52,37 @@ export default {
   methods: {
     handleClose(done) {
       this.$emit("toggleDialog");
-      this.activeName = "second"
+      this.activeName = "second";
     },
-    toggle() {
-      if (this.activeName == "second") {
-        html2canvas(this.$refs.imageWrapper, {
-          allowTaint: true,
-          useCORS: true,
-        }).then((canvas) => {
-          let dataURL = canvas.toDataURL("image/png");
-          this.downloadImg(dataURL, "普通二维码");
-        });
-      } else {
-        if (!this.input) {
-          this.$message({
-            type: "error",
-            message: "请填写标签内容",
+    toggle(type) {
+      if (type == "down") {
+        if (this.activeName == "second") {
+          html2canvas(this.$refs.imageWrapper, {
+            allowTaint: true,
+            useCORS: true,
+          }).then((canvas) => {
+            let dataURL = canvas.toDataURL("image/png");
+            this.downloadImg(dataURL, "普通二维码");
           });
-          return false;
+        } else {
+          if (!this.input) {
+            this.$message({
+              type: "error",
+              message: "请填写标签内容",
+            });
+            return false;
+          }
+          html2canvas(this.$refs.imageWrapperTag, {
+            allowTaint: true,
+            useCORS: true,
+          }).then((canvas) => {
+            let dataURL = canvas.toDataURL("image/png");
+            this.downloadImg(dataURL, "标签二维码");
+          });
         }
-        html2canvas(this.$refs.imageWrapperTag, {
-          allowTaint: true,
-          useCORS: true,
-        }).then((canvas) => {
-          let dataURL = canvas.toDataURL("image/png");
-          this.downloadImg(dataURL, "标签二维码");
-        });
       }
       this.$emit("toggleDialog");
-      this.activeName = "second"
+      this.activeName = "second";
     },
     //二维码下载
     downloadImg(img, imgname) {

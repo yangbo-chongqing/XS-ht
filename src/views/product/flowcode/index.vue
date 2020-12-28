@@ -10,10 +10,11 @@
                 <el-input
                   v-model="keyword"
                   type="search"
+                  @keyup.enter.native="onSearch"
                   placeholder="请输入唯一码"
                   clearable
                   ><i slot="prefix" class="el-input__icon el-icon-search" />
-                  <el-button slot="append" @click="onSearch">搜索</el-button>
+                  <el-button slot="append"  @click="onSearch">搜索</el-button>
                 </el-input>
               </div>
             </el-col>
@@ -41,11 +42,6 @@
         fit
         highlight-current-row
       >
-        <el-table-column label="编号" width="220" align="center">
-          <template slot-scope="scope">
-            <el-tag>{{ scope.row.id }}</el-tag>
-          </template>
-        </el-table-column>
         <el-table-column label="唯一编号" >
           <template slot-scope="scope">
             <span class="code-name">{{ scope.row.pkid }}</span>
@@ -76,14 +72,14 @@
             <span class="el-link-btn"
               ><el-link
                 type="primary"
-                @click="golinkpage('/product/instructionsedit', { id: scope.row.id })"
+                @click="golinkpage('/product/flowcodeedit', { id: scope.row.id })"
                 >编辑</el-link
               ></span
             >
             <span class="el-link-btn"
               ><el-link
                 type="primary"
-                @click="golinkpage('/product/instructionsedit', { id: scope.row.id })"
+                @click="delFow(scope.row.id,scope)"
                 >删除</el-link
               ></span
             >
@@ -105,7 +101,7 @@
 </template>
 
 <script>
-import { floWingList } from "@/api/product";
+import { floWingList,floWingDel } from "@/api/product";
 export default {
   name: "FlowCode",
   data() {
@@ -124,6 +120,34 @@ export default {
     this.fetchData();
   },
   methods: {
+    //删除
+    delFow(id,item){
+      this.$confirm('此操作将删除该流程, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          const parmas = {
+            id: id
+          }
+          floWingDel(this.qs.stringify(parmas)).then((res) => {
+            if (res.status == 200) {
+              this.list.splice(item.$index, 1)
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    },
     onSearch() {
       this.page = 1;
       this.fetchData();
@@ -152,16 +176,10 @@ export default {
         keyword: this.keyword,
       };
       floWingList(this.qs.stringify(parmas)).then((res) => {
-        this.count = res.data.total;
-        if(res.data.data.length>0){
-          res.data.data.map((item,index)=>{
-            item.showFlag = item.show==1?true:false;
-          })
-        }
-        this.list = res.data.data;
-        console.log(this.list);
+        this.count = res.data.data.total;
+        this.list = res.data.data.data;
         this.listLoading = false;
-        this.showPage = res.data.last_page > 1 ? true : false;
+        this.showPage = res.data.data.last_page > 1 ? true : false;
       });
     },
     back(){

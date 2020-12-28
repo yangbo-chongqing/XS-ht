@@ -506,10 +506,26 @@
             ref="multipleTable"
             v-loading="listLoading"
             :data="list"
+             height="600"
             element-loading-text="拼命加载中"
             border
           >
-            <el-table-column :label="type == 1 ? '关联词条' : '我与'">
+            <el-table-column>
+              <template slot="header">
+                <div class="table-header">
+                   <div>{{type == 1 ? '关联词条' : '我与'}}</div>
+                   <div>
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      content="双向关联为两词条相互关联上"
+                      placement="left"
+                    >
+                       <i class="el-icon-question"></i>
+                       </el-tooltip>
+                    </div>
+                </div>
+              </template>
               <template slot-scope="scope">
                 <el-checkbox :label="scope.row">
                   <div class="scope-body">
@@ -521,14 +537,20 @@
                     class="entry-toggle"
                     @click="entryToggle(scope.row)"
                     v-if="!scope.row.flag"
-                    ><i class="el-icon-finished" size="30"
-                  /></span>
+                    >
+                      <el-tooltip class="item" effect="dark" content="双向关联" placement="top">
+                        <i class="el-icon-connection" size="30" />
+                      </el-tooltip>
+                  </span>
                   <span
                     class="entry-toggle"
                     @click="entryToggle(scope.row)"
                     v-else
-                    ><i class="el-icon-finished red" size="30"
-                  /></span>
+                    >
+                      <el-tooltip class="item" effect="dark" content="取消双向关联" placement="top">
+                         <i class="el-icon-connection red" size="30" />
+                      </el-tooltip>
+                   </span>
                 </div>
               </template>
             </el-table-column>
@@ -902,6 +924,10 @@ export default {
 .create-code {
   max-height: 90vh;
   overflow-y: scroll;
+  .table-header{
+    display: flex;
+    justify-content: space-between;
+  }
   .back-box {
     padding: 10px 0;
     box-sizing: border-box;
