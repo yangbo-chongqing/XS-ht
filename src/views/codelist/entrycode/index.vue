@@ -439,11 +439,11 @@ export default {
       }
     },
     //添加子分类
-    addChildType(node,data){
+    addChildType(node, data) {
       this.$refs.entryTypeList.store.nodesMap[data.id].expanded = true;
       let params = {
         name: "未命名分类",
-        top_id:data.id
+        top_id: data.id,
       };
       postTypeCreate(this.qs.stringify(params)).then((res) => {
         if (res.status == 200) {
@@ -476,7 +476,7 @@ export default {
     },
     //切换重命名输入
     editFlagToggle(noeds, data) {
-      this.$set(data,'edit',true);
+      this.$set(data, "edit", true);
     },
     //自动选中文本值
     selectText(e) {
@@ -490,7 +490,7 @@ export default {
       };
       postTypeEdit(this.qs.stringify(params)).then((res) => {
         if (res.status == 200) {
-          this.$set(data,'edit',false);
+          this.$set(data, "edit", false);
           this.$message({
             message: res.message,
             type: "success",
