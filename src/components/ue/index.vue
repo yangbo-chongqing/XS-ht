@@ -145,12 +145,14 @@ export default {
             "paragraph", //段落格式
             "contact", //相关链接
             "information", //联系方式
+            "update", //一键排版
           ],
         ],
         labelMap: {
           entry: "添加词条链接",
           contact: "添加相关链接",
           information: "添加联系方式",
+          update: "一键排版",
         },
         catchRemoteImageEnable: true,
         // 初始容器高度
@@ -178,6 +180,10 @@ export default {
     };
   },
   methods: {
+    addUpdate() {
+      //一键排版
+      console.log(this.editor.body.innerHTML);
+    },
     //添加联系方式到富文本
     addInformation() {
       let aStr = `
@@ -239,6 +245,7 @@ export default {
       let entry = document.querySelector(".edui-for-entry");
       let contact = document.querySelector(".edui-for-contact");
       let information = document.querySelector(".edui-for-information");
+      let update = document.querySelector(".edui-for-update");
       entry.addEventListener("click", () => {
         this.entryFlag = true;
       });
@@ -247,6 +254,9 @@ export default {
       });
       information.addEventListener("click", () => {
         this.addInformation();
+      });
+      update.addEventListener("click", () => {
+        this.addUpdate();
       });
     },
     addEntry() {

@@ -539,17 +539,17 @@
             <el-table-column>
               <template slot="header">
                 <div class="table-header">
-                   <div>{{type == 1 ? '关联词条' : '我与'}}</div>
-                   <div>
+                  <div>{{ type == 1 ? "关联词条" : "我与" }}</div>
+                  <div>
                     <el-tooltip
                       class="item"
                       effect="dark"
                       content="双向关联为两词条相互关联上"
                       placement="left"
                     >
-                       <i class="el-icon-question"></i>
-                       </el-tooltip>
-                    </div>
+                      <i class="el-icon-question"></i>
+                    </el-tooltip>
+                  </div>
                 </div>
               </template>
               <template slot-scope="scope">
@@ -1004,7 +1004,7 @@ export default {
 .create-code {
   max-height: 90vh;
   overflow-y: scroll;
-  .table-header{
+  .table-header {
     display: flex;
     justify-content: space-between;
   }

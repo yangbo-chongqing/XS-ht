@@ -47,22 +47,26 @@
               :key="item.id"
               @click="openNewInfo(item.id)"
             >
-              <el-link >{{ item.title }}</el-link>
+              <el-link>{{ item.title }}</el-link>
             </div></el-col
           >
         </el-row>
       </div>
     </div>
-    <el-dialog :title="newsinfo.title" :visible.sync="dialogVisible" width="30%">
+    <el-dialog
+      custom-class="dialogStyle"
+      :title="newsinfo.title"
+      :visible.sync="dialogVisible"
+      width="30%"
+    >
       <div v-html="newsinfo.content"></div>
-      
     </el-dialog>
   </div>
 </template>
 
 <script>
 import LineChart from "./components/LineChart";
-import { newsDetails } from '@/api/workbench'
+import { newsDetails } from "@/api/workbench";
 export default {
   name: "EntryCode",
   components: { LineChart },
@@ -88,7 +92,7 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      newsinfo:''
+      newsinfo: "",
     };
   },
   created() {
@@ -96,11 +100,11 @@ export default {
   },
   methods: {
     openNewInfo(id) {
-      newsDetails(this.qs.stringify({news_id:id})).then((res)=>{
+      newsDetails(this.qs.stringify({ news_id: id })).then((res) => {
         this.newsinfo = res.data.data;
         this.dialogVisible = true;
-      })
-    }
+      });
+    },
   },
 };
 </script>

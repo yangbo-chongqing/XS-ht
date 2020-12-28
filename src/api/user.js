@@ -36,6 +36,14 @@ export function GetCodeStatus(data) {
     data
   })
 }
+// 获取协议详情
+export function getDetail(data) {
+  return request({
+    url: '/api/help/details',
+    method: 'post',
+    data
+  })
+}
 export function logout() {
   return request({
     url: '',

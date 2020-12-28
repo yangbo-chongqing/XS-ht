@@ -2,12 +2,12 @@
   <div class="workbench-admin">
     <div class="workbench-admin-code">
       <el-row :gutter="20">
-        <el-col
-          :span="6"
-        ><div class="grid-content bg-purple">
-          <p>词条码</p>
-          <p>{{ relicsCount }}</p>
-        </div></el-col>
+        <el-col :span="6"
+          ><div class="grid-content bg-purple">
+            <p>词条码</p>
+            <p>{{ relicsCount }}</p>
+          </div></el-col
+        >
         <!-- <el-col
           :span="6"
         ><div class="grid-content bg-purple">
@@ -29,109 +29,146 @@
           <el-row :gutter="20">
             <el-col :span="16">
               <el-row :gutter="20">
-                <el-col
-                  :span="3"
-                ><div class="workbench-code-item-img" @click="openPopover('http://xsdt.xunsheng.org.cn/api/web/code?type=1&id='+item.id+'&muse_id='+userinfo.user_info.muse_id)">
-                  <el-image
-                    style="width: 100px; height: 100px"
-                    :src="'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id='+item.id+'&muse_id='+userinfo.user_info.muse_id"
-                  /></div></el-col>
-                <el-col
-                  :span="12"
-                ><div class="workbench-code-item-body">
-                  <h3>{{ item.name }}</h3>
-                  <p>
-                    近3日扫码量<span>{{ item.three }}</span>总扫码量<span>{{ item.watch_number }}</span>
-                  </p>
-                  <p>
-                    分类<span>{{ item.type.type_name }}</span>
-                  </p>
-                </div></el-col>
+                <el-col :span="3" style="padding-left: 0px"
+                  ><div
+                    class="workbench-code-item-img"
+                    @click="
+                      openPopover(
+                        'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id=' +
+                          item.id +
+                          '&muse_id=' +
+                          userinfo.user_info.muse_id
+                      )
+                    "
+                  >
+                    <el-image
+                      style="width: 100px; height: 100px"
+                      :src="
+                        'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id=' +
+                        item.id +
+                        '&muse_id=' +
+                        userinfo.user_info.muse_id
+                      "
+                    /></div
+                ></el-col>
+                <el-col :span="12"
+                  ><div class="workbench-code-item-body">
+                    <h3>{{ item.name }}</h3>
+                    <p>
+                      近3日扫码量<span>{{ item.three }}</span
+                      >总扫码量<span>{{ item.watch_number }}</span>
+                    </p>
+                    <p>
+                      分类<span>{{ item.type.type_name }}</span>
+                    </p>
+                  </div></el-col
+                >
               </el-row>
             </el-col>
             <el-col :span="8">
               <div class="workbench-code-item-link-body">
-                <el-link target="_blank" @click="openPopover('http://xsdt.xunsheng.org.cn/api/web/code?type=1&id='+item.id+'&muse_id='+userinfo.user_info.muse_id)">下载</el-link>
+                <el-link
+                  target="_blank"
+                  @click="
+                    openPopover(
+                      'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id=' +
+                        item.id +
+                        '&muse_id=' +
+                        userinfo.user_info.muse_id
+                    )
+                  "
+                  >下载</el-link
+                >
                 <el-link @click="togglePopover(item.id)">预览</el-link>
-                <el-link @click="golinkpage('/codelist/edit', { id: item.id })">编辑</el-link>
+                <el-link @click="golinkpage('/codelist/edit', { id: item.id })"
+                  >编辑</el-link
+                >
               </div>
             </el-col>
           </el-row>
         </div>
       </div>
     </div>
-    <codedown :dialogVisible="dialogVisible" :codeImg="codeImg" @toggleDialog="toggle" />
-    <EntryQuery v-if="popoverFlag" :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id='+id" :id="id" @popoverEven="togglePopover" />
+    <codedown
+      :dialogVisible="dialogVisible"
+      :codeImg="codeImg"
+      @toggleDialog="toggle"
+    />
+    <EntryQuery
+      v-if="popoverFlag"
+      :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id=' + id"
+      :id="id"
+      @popoverEven="togglePopover"
+    />
   </div>
 </template>
 
 <script>
-import { downloadIamge } from '@/utils/utils'
-import EntryQuery from '@/components/EntryQuery'
-import { mapGetters } from 'vuex'
+import { downloadIamge } from "@/utils/utils";
+import EntryQuery from "@/components/EntryQuery";
+import { mapGetters } from "vuex";
 import codedown from "@/components/codeDown/index";
-import { array } from 'js-md5'
+import { array } from "js-md5";
 export default {
-  name: 'WorkbenchCode',
+  name: "WorkbenchCode",
   components: {
     EntryQuery,
-    codedown
+    codedown,
   },
   props: {
     relicsCount: {
       type: Number,
-      default: 0
+      default: 0,
     },
     relicsList: {
       type: Array,
-      default: []
-    }
+      default: [],
+    },
   },
   computed: {
-    ...mapGetters(['userinfo'])
+    ...mapGetters(["userinfo"]),
   },
   data() {
     return {
       url:
-        'https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png',
+        "https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png",
       srcList: [
-        'https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png',
-        'https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png'
+        "https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png",
+        "https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png",
       ],
-      popoverFlag:false,
-      dialogVisible:false,
-      id:'',
-      codeImg:''
-
-    }
+      popoverFlag: false,
+      dialogVisible: false,
+      id: "",
+      codeImg: "",
+    };
   },
   created() {},
   methods: {
-    toggle(){
-      this.dialogVisible=!this.dialogVisible;
-      this.codeImg = '';
+    toggle() {
+      this.dialogVisible = !this.dialogVisible;
+      this.codeImg = "";
     },
-    openPopover(code){
+    openPopover(code) {
       this.codeImg = code;
-      this.dialogVisible=true;
+      this.dialogVisible = true;
     },
     togglePopover(id) {
-      this.id=id;
-      this.popoverFlag = !this.popoverFlag
+      this.id = id;
+      this.popoverFlag = !this.popoverFlag;
     },
     downloadImg(img, imgname) {
-      downloadIamge(img, imgname)
+      downloadIamge(img, imgname);
     },
     golinkpage(page, obj) {
       this.$router.push({
         path: page,
         query: {
-          ...obj
-        }
-      })
-    }
-  }
-}
+          ...obj,
+        },
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

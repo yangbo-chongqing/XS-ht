@@ -35,12 +35,12 @@ axios.interceptors.request.use(
       }
     }
     return config
-  }, function(error) {
+  }, function (error) {
     console.log(error)
     return Promise.reject('error')
   }
 )
-const http = function(options) {
+const http = function (options) {
   return new Promise((resolve, reject) => {
     axios(options)
       .then(res => {
@@ -60,12 +60,12 @@ const http = function(options) {
               })
             })
             return false
-          } else {
-            Message({
-              message: res.message,
-              type: 'error',
-              duration: 5 * 1000
-            })
+          } else if (res.status == 400) {
+            // Message({
+            //   message: res.message,
+            //   type: 'error',
+            //   duration: 5 * 1000
+            // })
           }
 
           setTimeout(() => {

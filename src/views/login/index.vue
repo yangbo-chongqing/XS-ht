@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="login-body">
       <el-row :gutter="20">
-        <el-col :span="24">
+        <el-col :span="16">
           <el-form
             ref="loginForm"
             :model="loginForm"
@@ -55,10 +55,32 @@
               type="primary"
               style="width: 100%; margin-bottom: 30px"
               @click.native.prevent="handleLogin"
-            >登录</el-button>
+              >登录</el-button
+            >
           </el-form>
+          <div class="textCenter">
+            <input type="checkbox" v-model="checked" />&nbsp;
+            <span class="fontB">同意寻声地图</span> &nbsp;<span
+              @click="readBook"
+              class="fontP"
+              >平台登录协议</span
+            >
+          </div>
+          <!-- 协议详情 -->
+
+          <el-dialog
+            title="平台登录协议"
+            custom-class="dialogStyle"
+            :visible.sync="read"
+            width="50%"
+          >
+            <p v-html="readDetail"></p>
+            <span slot="footer" class="dialog-footer">
+              <el-button type="primary" @click="read = false">确 定</el-button>
+            </span>
+          </el-dialog>
         </el-col>
-        <!-- <el-col :span="8">
+        <el-col :span="8">
           <div class="login-form">
             <div class="title-container">
               <h3 class="title">微信快捷登录</h3>
@@ -68,109 +90,134 @@
                 v-if="codeKey"
                 :src="
                   'http://testsydt.xunsheng.org.cn/api/store/login/code?key=' +
-                    codeKey
+                  codeKey
                 "
                 alt=""
                 srcset=""
-              >
+              />
             </div>
           </div>
-        </el-col> -->
+        </el-col>
       </el-row>
     </div>
   </div>
 </template>
 
 <script>
-import { LoginCredentials, GetCodeStatus } from '@/api/user'
+import {
+  LoginCredentials,
+  GetCodeStatus,
+  getDetail,
+  LoginQR,
+} from "@/api/user";
 export default {
-  name: 'Login',
+  name: "Login",
   data() {
     return {
       loginForm: {
-        phone: '',
-        password: ''
+        phone: "",
+        password: "",
       },
-      codeKey: '',
-      codeState: '',
+      codeKey: "",
+      codeState: "",
       loading: false,
-      passwordType: 'password',
+      passwordType: "password",
       redirect: undefined,
       otherQuery: {},
-      setInt: ''
-    }
+      setInt: "",
+      checked: "1",
+      read: false,
+      readDetail: "",
+    };
   },
   watch: {
     $route: {
-      handler: function(route) {
-        const query = route.query
+      handler: function (route) {
+        const query = route.query;
         if (query) {
-          this.redirect = query.redirect
-          this.otherQuery = this.getOtherQuery(query)
+          this.redirect = query.redirect;
+          this.otherQuery = this.getOtherQuery(query);
         }
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   created() {
-    // this.loginCredentials()
+    this.loginCredentials();
   },
   destroyed() {
-    // clearInterval(this.setInt)
+    clearInterval(this.setInt);
   },
   methods: {
     // 获取二维码状态
     getCodeStatus() {
       const params = {
-        key: this.codeKey
-      }
+        key: this.codeKey,
+      };
       GetCodeStatus(this.qs.stringify(params)).then((res) => {
-        this.codeState = res.data.state
-      })
+        this.codeState = res.data.state;
+      });
+    },
+    readBook() {
+      // 获取协议
+      const parmas = {
+        id: 9,
+      };
+      getDetail(this.qs.stringify(parmas)).then((res) => {
+        this.readDetail = res.data.data.content;
+      });
+      this.read = true;
     },
     // 获取登陆二维码凭证
     loginCredentials() {
       LoginCredentials().then((res) => {
-        this.codeKey = res.data.key
+        this.codeKey = res.data.key;
         this.setInt = setInterval(() => {
-          this.getCodeStatus()
-        }, 1500)
-      })
+          this.getCodeStatus();
+        }, 1500);
+      });
     },
     // 显示隐藏密码
     showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
+      if (this.passwordType === "password") {
+        this.passwordType = "";
       } else {
-        this.passwordType = 'password'
+        this.passwordType = "password";
       }
       this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
+        this.$refs.password.focus();
+      });
     },
     handleLogin() {
-      this.loading = true
+      if (this.checked != 1) {
+        this.$message({
+          message: "请阅读协议后，完成勾选进行登录",
+          type: "warning",
+        });
+        return;
+      }
+      this.loading = true;
       this.$store
-        .dispatch('user/login', this.loginForm)
+        .dispatch("user/login", this.loginForm)
         .then(() => {
-          this.$router.push({ path: this.redirect || '/' })
-          console.log(this.redirect)
-          this.loading = false
+          this.$router.push({ path: this.redirect || "/" });
+          console.log(this.redirect);
+          this.loading = false;
         })
         .catch(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {
-        if (cur !== 'redirect') {
-          acc[cur] = query[cur]
+        if (cur !== "redirect") {
+          acc[cur] = query[cur];
         }
-        return acc
-      }, {})
-    }
-  }
-}
+        return acc;
+      }, {});
+    },
+  },
+};
 </script>
 
 <style lang="scss">
@@ -298,6 +345,16 @@ $light_gray: #eee;
     color: $dark_gray;
     cursor: pointer;
     user-select: none;
+  }
+  .textCenter {
+    text-align: center;
+    .fontB {
+      color: #889aa4;
+    }
+    .fontP {
+      color: #18c3b1;
+      cursor: pointer;
+    }
   }
 }
 </style>
