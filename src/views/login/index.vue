@@ -95,6 +95,10 @@
                 alt=""
                 srcset=""
               />
+              <div class="code-state" v-if="codeState == 1" @click="refreshCode">二维码过期<i class="el-icon-refresh"></i></div>
+              <div class="code-state" v-if="codeState == 2">扫码成功</div>
+              <div class="code-state" v-if="codeState == 3">拒绝登录</div>
+              <div class="code-state" v-if="codeState == 4">登录成功</div>
             </div>
           </div>
         </el-col>
@@ -149,6 +153,11 @@ export default {
     clearInterval(this.setInt);
   },
   methods: {
+    //过期二维码点击刷新二维码
+    refreshCode(){
+      this.codeState = 0;
+      this.loginCredentials();
+    },
     // 获取二维码状态
     getCodeStatus() {
       const params = {
@@ -156,6 +165,9 @@ export default {
       };
       GetCodeStatus(this.qs.stringify(params)).then((res) => {
         this.codeState = res.data.state;
+        if(this.codeState == 1){
+          clearInterval(this.setInt);
+        }
         if (res.data.state == 4) {
           // 二维码扫码完成进行token操作
           this.$store
@@ -300,9 +312,24 @@ $light_gray: #eee;
   .code-img {
     width: 180px;
     margin: auto;
+    position: relative;
     img {
       width: 100%;
       height: 100%;
+    }
+    .code-state {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #777;
+      font-size: 24px;
+      cursor: pointer;
     }
   }
   .login-form {
