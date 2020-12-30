@@ -15,3 +15,11 @@ export function newsDetails(data) {
     data
   })
 }
+// 获取帮助列表
+export function getList(data) {
+  return request({
+    url: '/api/store/news/list',
+    method: 'post',
+    data
+  })
+}

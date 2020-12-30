@@ -156,6 +156,18 @@ export default {
       };
       GetCodeStatus(this.qs.stringify(params)).then((res) => {
         this.codeState = res.data.state;
+        if (res.data.state == 4) {
+          // 二维码扫码完成进行token操作
+          this.$store
+            .dispatch("user/erLogin", res.data)
+            .then(() => {
+              this.$router.push({ path: this.redirect || "/" });
+              this.loading = false;
+            })
+            .catch(() => {
+              this.loading = false;
+            });
+        }
       });
     },
     readBook() {

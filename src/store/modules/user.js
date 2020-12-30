@@ -47,6 +47,11 @@ const actions = {
       })
     })
   },
+  erLogin({ commit }, userInfo) {
+    // 二维码扫码登录
+    commit('SET_TOKEN', userInfo.token)
+    setToken(JSON.stringify({ token: userInfo.token, user_id: userInfo.user_id }))
+  },
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {

@@ -18,18 +18,24 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/workbench',
-    meta: { title: '管理', icon: 'dashboard',noCache: true },
+    meta: { title: '管理', icon: 'dashboard', noCache: true },
     children: [{
       path: 'workbench',
       name: 'Workbench',
       component: () => import('@/views/workbench/index'),
-      meta: { title: '工作台', icon: 'dashboard',noCache: true }
+      meta: { title: '工作台', icon: 'dashboard', noCache: true },
     },
     {
       path: 'scancode',
       name: 'ScanCode',
       component: () => import('@/views/scancode/index'),
-      meta: { title: '扫码量统计', icon: 'dashboard',noCache: true }
+      meta: { title: '扫码量统计', icon: 'dashboard', noCache: true }
+    },
+    {
+      path: 'help',
+      name: 'help',
+      component: () => import('@/views/workbench/help/help'),
+
     }]
   },
   {
@@ -43,34 +49,34 @@ export const constantRoutes = [
         path: 'entrycode',
         name: 'EntryCode',
         component: () => import('@/views/codelist/entrycode/index'),
-        meta: { title: '词条', icon: 'el-icon-bank-card', noCache: false,isBack: false }
+        meta: { title: '词条', icon: 'el-icon-bank-card', noCache: false, isBack: false }
       },
       {
         path: 'homepage',
         name: 'HomePage',
         component: () => import('@/views/settings/homepage/index'),
-        meta: { title: '企业主页', icon: 'table',noCache: true }
+        meta: { title: '企业主页', icon: 'table', noCache: true }
       },
       {
         path: 'entrytypecreate',
         component: () => import('@/views/codelist/entrytype/create'),
         name: 'CreateArticle',
         hidden: true,
-        meta: { title: '新增词条分类',noCache: true }
+        meta: { title: '新增词条分类', noCache: true }
       },
       {
         path: 'create',
         component: () => import('@/views/codelist/entrycode/create'),
         name: 'CreateArticle',
         hidden: true,
-        meta: { title: '新增二维码',noCache: true }
+        meta: { title: '新增二维码', noCache: true }
       },
       {
         path: 'edit',
         component: () => import('@/views/codelist/entrycode/edit'),
         name: 'EntryEdit',
         hidden: true,
-        meta: { title: '编辑词条',noCache: true }
+        meta: { title: '编辑词条', noCache: true }
       },
       // {
       //   path: 'funcode',
@@ -83,14 +89,14 @@ export const constantRoutes = [
         component: () => import('@/views/codelist/funcode/create'),
         name: 'FunCreateArticle',
         hidden: true,
-        meta: { title: '新增功能码',noCache: true }
+        meta: { title: '新增功能码', noCache: true }
       },
       {
         path: 'funedit',
         component: () => import('@/views/codelist/funcode/edit'),
         name: 'FunEntryEdit',
         hidden: true,
-        meta: { title: '编辑功能码',noCache: true }
+        meta: { title: '编辑功能码', noCache: true }
       }
     ]
   },
@@ -99,68 +105,68 @@ export const constantRoutes = [
     component: Layout,
     name: 'Product',
     redirect: '/product/productcode',
-    meta: { title: '产品管理', icon: 'el-icon-s-help',noCache: true },
+    meta: { title: '产品管理', icon: 'el-icon-s-help', noCache: true },
     children: [
       {
         path: 'productcode',
         name: 'ProductCode',
         component: () => import('@/views/product/productcode/index'),
-        meta: { title: '产品码', icon: 'table',noCache: true },
+        meta: { title: '产品码', icon: 'table', noCache: true },
       },
       {
         path: 'productcreate',
         component: () => import('@/views/product/productcode/create'),
         name: 'ProductCreate',
         hidden: true,
-        meta: { title: '新增产品码',noCache: true }
+        meta: { title: '新增产品码', noCache: true }
       },
       {
         path: 'flowcode',
         component: () => import('@/views/product/flowcode/index'),
         name: 'FlowCode',
         hidden: true,
-        meta: { title: '流程码',noCache: true }
+        meta: { title: '流程码', noCache: true }
       },
       {
         path: 'flowcodecreate',
         component: () => import('@/views/product/flowcode/create'),
         name: 'FlowcodeCreate',
         hidden: true,
-        meta: { title: '新增流程码',noCache: true }
+        meta: { title: '新增流程码', noCache: true }
       },
       {
         path: 'flowcodeedit',
         component: () => import('@/views/product/flowcode/edit'),
         name: 'flowcodeEdit',
         hidden: true,
-        meta: { title: '修改流程码',noCache: true }
+        meta: { title: '修改流程码', noCache: true }
       },
       {
         path: 'productedit',
         component: () => import('@/views/product/productcode/edit'),
         name: 'ProductEdit',
         hidden: true,
-        meta: { title: '修改产品码',noCache: true }
+        meta: { title: '修改产品码', noCache: true }
       },
       {
         path: 'instructions',
         name: 'Instructions',
         component: () => import('@/views/product/instructions/index'),
-        meta: { title: '说明书', icon: 'el-icon-bank-card',noCache: true }
+        meta: { title: '说明书', icon: 'el-icon-bank-card', noCache: true }
       },
       {
         path: 'instructionscreate',
         component: () => import('@/views/product/instructions/create'),
         name: 'InstructionsCreate',
         hidden: true,
-        meta: { title: '新增说明书',noCache: true }
+        meta: { title: '新增说明书', noCache: true }
       },
       {
         path: 'instructionsedit',
         component: () => import('@/views/product/instructions/edit'),
         name: 'InstructionsEdit',
         hidden: true,
-        meta: { title: '修改说明书',noCache: true }
+        meta: { title: '修改说明书', noCache: true }
       },
 
     ]
@@ -172,18 +178,18 @@ export const constantRoutes = [
     name: 'Settings',
     meta: { title: '设置', icon: 'el-icon-s-tools' },
     children: [
-      
+
       {
         path: 'administrator',
         name: 'Administrator',
         component: () => import('@/views/settings/administrator/index'),
-        meta: { title: '子管理员', icon: 'el-icon-user',noCache: true }
+        meta: { title: '子管理员', icon: 'el-icon-user', noCache: true }
       },
       {
         path: 'account',
         name: 'Account',
         component: () => import('@/views/settings/account/index'),
-        meta: { title: '账户设置', icon: 'el-icon-s-custom',noCache: true }
+        meta: { title: '账户设置', icon: 'el-icon-s-custom', noCache: true }
       }
     ]
   },

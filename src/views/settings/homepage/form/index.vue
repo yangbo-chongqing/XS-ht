@@ -16,7 +16,11 @@
             <p v-else>{{ info.slogan ? info.slogan : "暂无" }}</p>
           </el-form-item>
           <el-form-item label="企业简介">
-            <el-input type="textarea" v-if="isEditFlag" v-model="info.introduction" />
+            <el-input
+              type="textarea"
+              v-if="isEditFlag"
+              v-model="info.introduction"
+            />
             <p v-else>{{ info.introduction ? info.introduction : "暂无" }}</p>
           </el-form-item>
           <el-form-item label="企业音频">
@@ -81,7 +85,10 @@
               >
             </el-upload>
           </el-form-item>
-          <el-progress v-if="progressFlag" :percentage="loadProgress"></el-progress>
+          <el-progress
+            v-if="progressFlag"
+            :percentage="loadProgress"
+          ></el-progress>
           <el-form-item>
             <el-button
               v-if="isEditFlag"
@@ -104,6 +111,8 @@
           class="logo"
         />
         <el-upload
+          style="width: 200px; height: 200px"
+          :before-upload="beforeAvatarUpload"
           v-else-if="!enterpriseLogo || isEditFlag"
           class="logo-uploader"
           action="/api/store/upload"
@@ -117,26 +126,47 @@
           <div class="logo-tip">logo</div>
         </el-upload>
         <div class="home-code">
-          <img :src="'http://xsdt.xunsheng.org.cn/api/web/code?type=2&id='+userinfo.user_info.muse_id+'&muse_id='+userinfo.user_info.muse_id" class="logo" />
-          <span><el-link type="primary" @click="dialogVisible = true">下载二维码</el-link></span>
+          <img
+            :src="
+              'http://xsdt.xunsheng.org.cn/api/web/code?type=2&id=' +
+              userinfo.user_info.muse_id +
+              '&muse_id=' +
+              userinfo.user_info.muse_id
+            "
+            class="logo"
+          />
+          <span
+            ><el-link type="primary" @click="dialogVisible = true"
+              >下载二维码</el-link
+            ></span
+          >
         </div>
       </el-col>
     </el-row>
-    <codedown :dialogVisible="dialogVisible" :codeImg="'http://xsdt.xunsheng.org.cn/api/web/code?type=2&id='+userinfo.user_info.muse_id+'&muse_id='+userinfo.user_info.muse_id" @toggleDialog="toggle" />
+    <codedown
+      :dialogVisible="dialogVisible"
+      :codeImg="
+        'http://xsdt.xunsheng.org.cn/api/web/code?type=2&id=' +
+        userinfo.user_info.muse_id +
+        '&muse_id=' +
+        userinfo.user_info.muse_id
+      "
+      @toggleDialog="toggle"
+    />
   </div>
 </template>
 
 <script>
 import { getToken } from "@/utils/auth";
-import { downloadIamge } from '@/utils/utils'
+import { downloadIamge } from "@/utils/utils";
 import { editEditMuse } from "@/api/settings";
 import { preview } from "@/api/product";
 import codedown from "@/components/codeDown/index";
 import { mapGetters } from "vuex";
 export default {
   name: "HomePageForm",
-  components:{
-    codedown
+  components: {
+    codedown,
   },
   computed: {
     ...mapGetters(["userinfo"]),
@@ -159,7 +189,7 @@ export default {
       loading: "",
       loadProgress: 0, // 动态显示进度条
       progressFlag: false, // 关闭进度条
-      dialogVisible:false
+      dialogVisible: false,
     };
   },
   created() {
@@ -169,13 +199,34 @@ export default {
     this.enterpriseLogo = this.info.logo;
   },
   methods: {
-    toggle(){
-      this.dialogVisible=!this.dialogVisible
+    toggle() {
+      this.dialogVisible = !this.dialogVisible;
     },
     downloadImg(img, imgname) {
-      downloadIamge(img, imgname)
+      downloadIamge(img, imgname);
     },
-   
+    beforeAvatarUpload(file) {
+      // 限制图片尺寸大小
+      const isSize = new Promise(function (resolve, reject) {
+        let _URL = window.URL || window.webkitURL;
+        let img = new Image();
+        img.onload = function () {
+          let valid = img.width == img.height;
+          valid ? resolve() : reject();
+        };
+        img.src = _URL.createObjectURL(file);
+      }).then(
+        () => {
+          console.log(111);
+          return file;
+        },
+        () => {
+          this.$message.error("上传的图片应为正方形图片!");
+          return Promise.reject();
+        }
+      );
+      return isSize;
+    },
     toggleSave() {
       this.isEditFlag = !this.isEditFlag;
     },
@@ -190,7 +241,7 @@ export default {
         video_url: this.enterpriseVideo,
         head: this.enterpriseImage,
         logo: this.enterpriseLogo,
-        introduction:this.info.introduction,
+        introduction: this.info.introduction,
         slogan: this.info.slogan,
       };
       editEditMuse(this.qs.stringify(params)).then((res) => {
@@ -278,9 +329,9 @@ export default {
   .el-upload__tip {
     margin-left: 5px;
   }
-  .home-code{
+  .home-code {
     width: 100%;
-    span{
+    span {
       padding-left: 50px;
       box-sizing: border-box;
     }

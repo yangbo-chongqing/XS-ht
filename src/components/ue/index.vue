@@ -183,10 +183,19 @@ export default {
     addUpdate() {
       //一键排版
       console.log(this.editor.body.innerHTML);
+      let richtext = this.editor.body.innerHTML;
+      richtext.toString();
+      //清空所有样式
+      const regex = new RegExp(/[ t]*<p style[ t]*=[ t]*("[^"]+")|('[^']+')/gi);
+      richtext = richtext.replace(
+        regex,
+        `<p style="margin: 0;padding: 0; font-size: 100%;font-weight: 400;"`
+      );
+      this.editor.body.innerHTML = richtext;
     },
     //添加联系方式到富文本
     addInformation() {
-      let aStr = `
+      let aStr = `y
         <hr/>
 				<h4 style="text-align:center">联系电话：023-123456</h4>
 				<h4 style="text-align:center">手机号：12345678911</h4>

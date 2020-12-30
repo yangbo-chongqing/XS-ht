@@ -36,9 +36,11 @@
     <div class="workbench-chart-body">
       <line-chart :chart-data="chartData" />
     </div>
-    <div class="workbench-chart-hlep" v-if="newsList">
-      <div class="workbench-chart-hlep-title">帮助</div>
-      <div class="workbench-chart-hlep-list">
+    <div class="workbench-chart-hlep">
+      <router-link :to="{ name: 'help' }"
+        ><span class="helpFont">帮助</span>
+      </router-link>
+      <!-- <div class="workbench-chart-hlep-list">
         <el-row>
           <el-col :span="24"
             ><div
@@ -51,7 +53,7 @@
             </div></el-col
           >
         </el-row>
-      </div>
+      </div> -->
     </div>
     <el-dialog
       custom-class="dialogStyle"
@@ -118,7 +120,10 @@ export default {
     margin: 10px 0;
   }
   .workbench-chart-hlep {
-    padding-top: 15px;
+    padding-top: 25px;
+    .helpFont {
+      color: #2284e6;
+    }
     .workbench-chart-hlep-list {
       .el-col {
         margin: 10px 0;
