@@ -4,18 +4,22 @@
       <adminContent :relics-count="relicsCount" :relics-list="relicsList" />
     </div>
     <div class="workbench-right">
-      <chartContent :code-obj="codeObj" :chart-data="chartData" :news-list="newsList" />
+      <chartContent
+        :code-obj="codeObj"
+        :chart-data="chartData"
+        :news-list="newsList"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import adminContent from './admin'
-import chartContent from './chart'
-import { workbench } from '@/api/workbench'
+import adminContent from "./admin";
+import chartContent from "./chart";
+import { workbench } from "@/api/workbench";
 
 export default {
-  name: 'WorkbenchCode',
+  name: "WorkbenchCode",
   components: { adminContent, chartContent },
   data() {
     return {
@@ -23,29 +27,28 @@ export default {
       relicsList: [],
       codeObj: {},
       chartData: [],
-      newsList:[]
-    }
+      newsList: [],
+    };
   },
   created() {
-    this.getWorkbenchInfo()
+    this.getWorkbenchInfo();
   },
   methods: {
     getWorkbenchInfo() {
       workbench().then((res) => {
-        this.relicsCount = res.data.relics_count
-        this.relicsList = res.data.relics_list
+        this.relicsCount = res.data.relics_count;
+        this.relicsList = res.data.relics_list;
         this.codeObj = {
           monthly_count: res.data.monthly_count,
           seven_count: res.data.seven_count,
           yesterday: res.data.yesterday,
-          nowadays: res.data.nowadays
-        }
-        this.newsList = res.data.news_list
-        this.chartData = res.data.info_list
-      })
-    }
-  }
-}
+          nowadays: res.data.nowadays,
+        };
+        this.chartData = res.data.info_list;
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

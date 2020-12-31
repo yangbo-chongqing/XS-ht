@@ -148,7 +148,25 @@ export default {
             "italic", //斜体
             "underline", //下划线
             "strikethrough", //删除线
-            "|",
+            "subscript", //下标
+            "fontborder", //字符边框
+            "superscript", //上标
+            "formatmatch", //格式刷
+            "blockquote", //引用
+            "pasteplain", //纯文本粘贴模式
+            "selectall", //全选
+            "preview", //预览
+            "horizontal", //分隔线
+            "removeformat", //清除格式
+            "time", //时间
+            "date", //日期
+            "unlink", //取消链接
+            "cleardoc", //清空文档
+            "simpleupload", //单图上传
+            "insertimage", //图上传
+            "attachment", //附件上传
+            "music",
+            "insertvideo",
             "link", //超链接
             "entry", //词条
             "|",
@@ -199,6 +217,7 @@ export default {
             // "paragraph", //段落格式
             "contact", //相关链接
             "update", //一键排版
+            // "camera", //摄像头
           ],
         ],
         labelMap: {
@@ -240,11 +259,53 @@ export default {
       console.log(this.editor.body.innerHTML);
       let richtext = this.editor.body.innerHTML;
       richtext.toString();
-      //清空所有样式
+      //修改P标签内样式
       const regex = new RegExp(/[ t]*<p style[ t]*=[ t]*("[^"]+")|('[^']+')/gi);
       richtext = richtext.replace(
         regex,
         `<p style="margin: 0;padding: 0; font-size: 100%;font-weight: 400;"`
+      );
+      //修改h1标签内样式
+      const regex1 = new RegExp(
+        /[ t]*<h1 style[ t]*=[ t]*("[^"]+")|('[^']+')/gi
+      );
+      richtext = richtext.replace(
+        regex1,
+        `<h1 style=" margin: 0; padding: 0; border: 0; font-weight: normal; 
+ font-style: normal; font-size: 100%; line-height: 1; font-family: inherit;;"`
+      );
+      //修改h2标签内样式
+      const regex2 = new RegExp(
+        /[ t]*<h2 style[ t]*=[ t]*("[^"]+")|('[^']+')/gi
+      );
+      richtext = richtext.replace(
+        regex2,
+        `<h2 style=" margin: 0; padding: 0; border: 0; font-weight: normal; 
+ font-style: normal; font-size: 100%; line-height: 1; font-family: inherit;;"`
+      );
+      //修改h3标签内样式
+      const regex3 = new RegExp(
+        /[ t]*<h3 style[ t]*=[ t]*("[^"]+")|('[^']+')/gi
+      );
+      richtext = richtext.replace(
+        regex3,
+        `<h3 style=" margin: 0; padding: 0; border: 0; font-weight: normal; 
+ font-style: normal; font-size: 100%; line-height: 1; font-family: inherit;;"`
+      );
+      //修改h4标签内样式
+      const regex4 = new RegExp(
+        /[ t]*<h4 style[ t]*=[ t]*("[^"]+")|('[^']+')/gi
+      );
+      richtext = richtext.replace(
+        regex4,
+        `<h4 style=" margin: 0; padding: 0; border: 0; font-weight: normal; 
+ font-style: normal; font-size: 100%; line-height: 1; font-family: inherit;;"`
+      );
+      // 修改图片样式
+      const regex5 = new RegExp("<img", "gi");
+      richtext = richtext.replace(
+        regex5,
+        `<img style="max-width:100%;height:auto;text-align:center"`
       );
       this.editor.body.innerHTML = richtext;
     },

@@ -1,6 +1,5 @@
 <template>
   <div class="create-code">
-    
     <div class="create-code-body">
       <div class="back-box" @click="goback">
         <i class="el-icon-arrow-left"></i> 返回列表
@@ -33,7 +32,7 @@
             </div>
             <div class="create-code-body-title">
               <el-form-item label="是否隐藏">
-                 <el-checkbox v-model="endtyshowflag" label="隐藏"></el-checkbox>
+                <el-checkbox v-model="endtyshowflag" label="隐藏"></el-checkbox>
               </el-form-item>
             </div>
             <el-form-item label="词条封面">
@@ -47,7 +46,6 @@
                   <div class="upload-info-img">
                     <img :src="codeImage" width="100%" alt="" />
                   </div>
-                  
                 </div>
                 <div v-if="codeVideo" class="upload-info">
                   <div class="code-img-tips">
@@ -113,7 +111,10 @@
                     </el-upload>
                   </el-col>
                 </el-row>
-                <el-progress v-if="progressFlag" :percentage="loadProgress"></el-progress>
+                <el-progress
+                  v-if="progressFlag"
+                  :percentage="loadProgress"
+                ></el-progress>
               </div>
             </el-form-item>
             <div class="cheditor-body" v-if="loadFlag">
@@ -176,7 +177,16 @@
         </el-col>
         <el-col :span="6">
           <div class="create-code-img" v-if="codeSendImgData">
-            <img :src="'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id='+codeSendImgData.id+'&muse_id='+codeSendImgData.muse_id" alt="" srcset="" />
+            <img
+              :src="
+                'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id=' +
+                codeSendImgData.id +
+                '&muse_id=' +
+                codeSendImgData.muse_id
+              "
+              alt=""
+              srcset=""
+            />
             <div class="create-btn">
               <span
                 ><el-link type="primary" @click="togglePopover"
@@ -186,7 +196,14 @@
               <span
                 ><el-link
                   type="primary"
-                  @click="openPopover('http://xsdt.xunsheng.org.cn/api/web/code?type=1&id='+codeSendImgData.id+'&muse_id='+codeSendImgData.muse_id)"
+                  @click="
+                    openPopover(
+                      'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id=' +
+                        codeSendImgData.id +
+                        '&muse_id=' +
+                        codeSendImgData.muse_id
+                    )
+                  "
                   >下载</el-link
                 ></span
               >
@@ -506,24 +523,24 @@
             ref="multipleTable"
             v-loading="listLoading"
             :data="list"
-             height="600"
+            height="600"
             element-loading-text="拼命加载中"
             border
           >
             <el-table-column>
               <template slot="header">
                 <div class="table-header">
-                   <div>{{type == 1 ? '关联词条' : '我与'}}</div>
-                   <div>
+                  <div>{{ type == 1 ? "关联词条" : "我与" }}</div>
+                  <div>
                     <el-tooltip
                       class="item"
                       effect="dark"
                       content="双向关联为两词条相互关联上"
                       placement="left"
                     >
-                       <i class="el-icon-question"></i>
-                       </el-tooltip>
-                    </div>
+                      <i class="el-icon-question"></i>
+                    </el-tooltip>
+                  </div>
                 </div>
               </template>
               <template slot-scope="scope">
@@ -537,20 +554,30 @@
                     class="entry-toggle"
                     @click="entryToggle(scope.row)"
                     v-if="!scope.row.flag"
+                  >
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      content="双向关联"
+                      placement="top"
                     >
-                      <el-tooltip class="item" effect="dark" content="双向关联" placement="top">
-                        <i class="el-icon-connection" size="30" />
-                      </el-tooltip>
+                      <i class="el-icon-connection" size="30" />
+                    </el-tooltip>
                   </span>
                   <span
                     class="entry-toggle"
                     @click="entryToggle(scope.row)"
                     v-else
+                  >
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      content="取消双向关联"
+                      placement="top"
                     >
-                      <el-tooltip class="item" effect="dark" content="取消双向关联" placement="top">
-                         <i class="el-icon-connection red" size="30" />
-                      </el-tooltip>
-                   </span>
+                      <i class="el-icon-connection red" size="30" />
+                    </el-tooltip>
+                  </span>
                 </div>
               </template>
             </el-table-column>
@@ -577,7 +604,11 @@
         </div>
       </div>
     </div>
-    <codedown :dialogVisible="dialogVisible" :codeImg="codeImg" @toggleDialog="toggle" />
+    <codedown
+      :dialogVisible="dialogVisible"
+      :codeImg="codeImg"
+      @toggleDialog="toggle"
+    />
     <EntryQuery
       v-if="popoverFlag"
       :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id=' + id"
@@ -605,7 +636,7 @@ export default {
   components: {
     EntryQuery,
     ue,
-    codedown
+    codedown,
   },
   data() {
     return {
@@ -614,7 +645,7 @@ export default {
       activeName: "first",
       id: this.$route.query.id,
       list: null,
-      endtyshowflag:false,
+      endtyshowflag: false,
       multipleSelection: [],
       entryTipList: [],
       entryHisList: [],
@@ -651,11 +682,11 @@ export default {
       entrySelData: [],
       loadProgress: 0, // 动态显示进度条
       progressFlag: false, // 关闭进度条
-      dialogVisible:false,
-      codeImg:''
+      dialogVisible: false,
+      codeImg: "",
     };
   },
-  
+
   mounted() {
     this.$nextTick(() => {
       this.queryType();
@@ -663,19 +694,19 @@ export default {
     });
   },
   methods: {
-    toggle(){
-      this.dialogVisible=!this.dialogVisible;
-      this.codeImg = '';
+    toggle() {
+      this.dialogVisible = !this.dialogVisible;
+      this.codeImg = "";
     },
-    openPopover(code){
+    openPopover(code) {
       this.codeImg = code;
-      this.dialogVisible=true;
+      this.dialogVisible = true;
     },
     //模态窗确定
     savePopover(type) {
       if (type == 1) {
         this.checkList = this.multipleSelection;
-      }else{
+      } else {
         this.checkHisList = this.multipleSelection;
       }
       this.closePopover();
@@ -687,9 +718,9 @@ export default {
     //打开模态窗
     openPopver(type) {
       this.type = type;
-      if(type == 1){
+      if (type == 1) {
         this.multipleSelection = this.checkList;
-      }else{
+      } else {
         this.multipleSelection = this.checkHisList;
       }
       this.entryXFlag = true;
@@ -753,13 +784,13 @@ export default {
         this.codeSendImgData = res.data.relics_info;
         this.codeSort = res.data.relics_info.sort;
         this.typeCheck = res.data.relics_info.type_id;
-        res.data.relics_info.related_list.map((item)=>{
+        res.data.relics_info.related_list.map((item) => {
           item.flag = false;
-        })
+        });
         this.checkList = res.data.relics_info.related_list;
         console.log(this.checkList);
         this.checkHisList = res.data.relics_info.history_list;
-        this.endtyshowflag = res.data.relics_info.hide==0?false:true
+        this.endtyshowflag = res.data.relics_info.hide == 0 ? false : true;
         this.loadFlag = true;
       });
     },
@@ -794,16 +825,16 @@ export default {
     entryEdit(state) {
       let related_ids = [];
       let history_ids = [];
-      this.checkList.map((item)=>{
-        let flag = item.flag?1:0;
-        related_ids.push(item.id+'.'+flag);
-      })
-      this.checkHisList.map((item)=>{
+      this.checkList.map((item) => {
+        let flag = item.flag ? 1 : 0;
+        related_ids.push(item.id + "." + flag);
+      });
+      this.checkHisList.map((item) => {
         history_ids.push(item.id);
-      })
+      });
       const parmas = {
         id: this.id,
-       name: this.codeTitle,
+        name: this.codeTitle,
         image: this.codeImage,
         voice_url: this.codeAudio,
         video_url: this.codeVideo,
@@ -832,9 +863,9 @@ export default {
       this.$router.push({
         path: page,
         query: {
-          ...obj
-        }
-      })
+          ...obj,
+        },
+      });
     },
     delCodeImg() {
       this.codeImage = "";
@@ -924,7 +955,7 @@ export default {
 .create-code {
   max-height: 90vh;
   overflow-y: scroll;
-  .table-header{
+  .table-header {
     display: flex;
     justify-content: space-between;
   }

@@ -83,7 +83,7 @@
         <el-col :span="8">
           <div class="login-form">
             <div class="title-container">
-              <h3 class="title">微信快捷登录</h3>
+              <h3 class="title" style="font-size: 21px">微信快捷登录/注册</h3>
             </div>
             <div class="code-img">
               <img
@@ -95,7 +95,13 @@
                 alt=""
                 srcset=""
               />
-              <div class="code-state" v-if="codeState == 1" @click="refreshCode">二维码过期<i class="el-icon-refresh"></i></div>
+              <div
+                class="code-state"
+                v-if="codeState == 1"
+                @click="refreshCode"
+              >
+                二维码过期<i class="el-icon-refresh"></i>
+              </div>
               <div class="code-state" v-if="codeState == 2">扫码成功</div>
               <div class="code-state" v-if="codeState == 3">拒绝登录</div>
               <div class="code-state" v-if="codeState == 4">登录成功</div>
@@ -154,7 +160,7 @@ export default {
   },
   methods: {
     //过期二维码点击刷新二维码
-    refreshCode(){
+    refreshCode() {
       this.codeState = 0;
       this.loginCredentials();
     },
@@ -165,7 +171,7 @@ export default {
       };
       GetCodeStatus(this.qs.stringify(params)).then((res) => {
         this.codeState = res.data.state;
-        if(this.codeState == 1){
+        if (this.codeState == 1) {
           clearInterval(this.setInt);
         }
         if (res.data.state == 4) {

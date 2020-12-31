@@ -31,12 +31,7 @@ export const constantRoutes = [
       component: () => import('@/views/scancode/index'),
       meta: { title: '扫码量统计', icon: 'dashboard', noCache: true }
     },
-    {
-      path: 'help',
-      name: 'help',
-      component: () => import('@/views/workbench/help/help'),
-
-    }]
+    ]
   },
   {
     path: '/codelist',
@@ -194,7 +189,14 @@ export const constantRoutes = [
     ]
   },
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  { path: '*', redirect: '/404', hidden: true },
+  {
+    path: '/help',
+    name: 'help',
+    meta: { title: '帮助' },
+    component: () => import('@/views/workbench/help/help'),
+
+  }
 ]
 export const asyncRoutes = []
 

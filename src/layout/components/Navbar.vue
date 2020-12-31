@@ -8,10 +8,13 @@
 
     <breadcrumb class="breadcrumb-container" />
     <div class="right-menu">
-      <!-- <div class="avatar-hlpe"><i class="el-icon-question" />帮助</div> -->
+      <router-link :to="{ name: 'help' }">
+        <div class="avatar-hlpe"><i class="el-icon-question" />帮助</div>
+      </router-link>
+
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar" class="user-avatar">
+          <img :src="avatar" class="user-avatar" />
           {{ name }}
           <i class="el-icon-caret-bottom" />
         </div>
@@ -32,35 +35,35 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
+import { mapGetters } from "vuex";
+import Breadcrumb from "@/components/Breadcrumb";
+import Hamburger from "@/components/Hamburger";
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger
+    Hamburger,
   },
   computed: {
-    ...mapGetters(['sidebar', 'avatar', 'name'])
+    ...mapGetters(["sidebar", "avatar", "name"]),
   },
   mounted() {
-    console.log(this.avatar)
+    console.log(this.avatar);
   },
   methods: {
     toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
+      this.$store.dispatch("app/toggleSideBar");
     },
     settings() {
       console.log(111111111);
-      this.$router.push('/settings/account')
+      this.$router.push("/settings/account");
     },
     async logout() {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-    }
-  }
-}
+      await this.$store.dispatch("user/logout");
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

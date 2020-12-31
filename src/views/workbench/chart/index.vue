@@ -37,15 +37,13 @@
       <line-chart :chart-data="chartData" />
     </div>
     <div class="workbench-chart-hlep">
-      <router-link :to="{ name: 'help' }"
-        ><span class="helpFont">帮助</span>
-      </router-link>
-      <!-- <div class="workbench-chart-hlep-list">
+      帮助
+      <div class="workbench-chart-hlep-list">
         <el-row>
           <el-col :span="24"
             ><div
               class="news-list-item"
-              v-for="item in newsList"
+              v-for="item in newsList.news"
               :key="item.id"
               @click="openNewInfo(item.id)"
             >
@@ -53,7 +51,7 @@
             </div></el-col
           >
         </el-row>
-      </div> -->
+      </div>
     </div>
     <el-dialog
       custom-class="dialogStyle"
@@ -69,6 +67,8 @@
 <script>
 import LineChart from "./components/LineChart";
 import { newsDetails } from "@/api/workbench";
+import { getList } from "@/api/workbench";
+
 export default {
   name: "EntryCode",
   components: { LineChart },
@@ -82,10 +82,6 @@ export default {
         nowadays: 0,
       },
     },
-    newsList: {
-      type: Array,
-      default: [],
-    },
     chartData: {
       type: Array,
       default: [],
@@ -95,16 +91,25 @@ export default {
     return {
       dialogVisible: false,
       newsinfo: "",
+      newsList: [],
     };
   },
   created() {
     console.log(this.newsList);
+    this.getList();
   },
   methods: {
     openNewInfo(id) {
-      newsDetails(this.qs.stringify({ news_id: id })).then((res) => {
-        this.newsinfo = res.data.data;
-        this.dialogVisible = true;
+      this.$router.push({
+        name: "help",
+        params: {
+          id,
+        },
+      });
+    },
+    async getList() {
+      getList().then((res) => {
+        this.newsList = res.data.list[0];
       });
     },
   },
