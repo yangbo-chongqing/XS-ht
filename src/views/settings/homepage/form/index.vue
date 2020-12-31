@@ -72,6 +72,7 @@
             <el-upload
               v-if="!enterpriseImage || isEditFlag"
               class="upload-demo"
+              :before-upload="beforeUpload"
               action="/api/store/upload"
               :headers="headers"
               accept=".png,.jpg"
@@ -163,6 +164,7 @@ import { editEditMuse } from "@/api/settings";
 import { preview } from "@/api/product";
 import codedown from "@/components/codeDown/index";
 import { mapGetters } from "vuex";
+import * as imageConversion from "image-conversion";
 export default {
   name: "HomePageForm",
   components: {
@@ -247,6 +249,23 @@ export default {
       editEditMuse(this.qs.stringify(params)).then((res) => {
         this.loading.close();
         this.isEditFlag = false;
+      });
+    },
+    beforeUpload(file) {
+      return new Promise((resolve, reject) => {
+        // 压缩图片;
+        let isLt2M = file.size / 1024 / 1024 < 1; // 判定图片大小是否小于4MB
+        if (isLt2M) {
+          resolve(file);
+          console.log(file); // 压缩到400KB,这里的400就是要压缩的大小,可自定义
+        } else {
+          console.log(file); // 压缩到400KB,这里的400就是要压缩的大小,可自定义
+          console.log(imageConversion);
+          imageConversion.compressAccurately(file, 300).then((res) => {
+            console.log(res);
+            resolve(res);
+          });
+        }
       });
     },
     uploadProgress(file, fileList) {
