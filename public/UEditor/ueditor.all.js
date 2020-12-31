@@ -18813,6 +18813,10 @@
             }
           },
           updateTargetElement: function() {
+           
+
+
+
             var me = this;
             domUtils.setStyles(me.target, {
               width: me.resizer.style.width,
@@ -32205,7 +32209,11 @@
                     "</span>&nbsp;&nbsp;" +
                     ' <span onclick="$$._updateIframe( this);" class="edui-clickable">' +
                     editor.getLang("modify") +
-                    "</span></nobr>"
+                    "</span>&nbsp;&nbsp;"+
+                    ' <span onclick="$$._updateIframe( this);" class="edui-clickable">' +
+                    '链接'+
+                    "</span>&nbsp;&nbsp;"+
+                    "</nobr>"
                 );
                 if (html) {
                   popup.getDom("content").innerHTML = html;

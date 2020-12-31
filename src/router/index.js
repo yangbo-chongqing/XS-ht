@@ -100,77 +100,77 @@ export const constantRoutes = [
       }
     ]
   },
-  {
-    path: '/product',
-    component: Layout,
-    name: 'Product',
-    redirect: '/product/productcode',
-    meta: { title: '产品管理', icon: 'el-icon-s-help', noCache: true },
-    children: [
-      {
-        path: 'productcode',
-        name: 'ProductCode',
-        component: () => import('@/views/product/productcode/index'),
-        meta: { title: '产品码', icon: 'table', noCache: true },
-      },
-      {
-        path: 'productcreate',
-        component: () => import('@/views/product/productcode/create'),
-        name: 'ProductCreate',
-        hidden: true,
-        meta: { title: '新增产品码', noCache: true }
-      },
-      {
-        path: 'flowcode',
-        component: () => import('@/views/product/flowcode/index'),
-        name: 'FlowCode',
-        hidden: true,
-        meta: { title: '流程码', noCache: true }
-      },
-      {
-        path: 'flowcodecreate',
-        component: () => import('@/views/product/flowcode/create'),
-        name: 'FlowcodeCreate',
-        hidden: true,
-        meta: { title: '新增流程码', noCache: true }
-      },
-      {
-        path: 'flowcodeedit',
-        component: () => import('@/views/product/flowcode/edit'),
-        name: 'flowcodeEdit',
-        hidden: true,
-        meta: { title: '修改流程码', noCache: true }
-      },
-      {
-        path: 'productedit',
-        component: () => import('@/views/product/productcode/edit'),
-        name: 'ProductEdit',
-        hidden: true,
-        meta: { title: '修改产品码', noCache: true }
-      },
-      {
-        path: 'instructions',
-        name: 'Instructions',
-        component: () => import('@/views/product/instructions/index'),
-        meta: { title: '说明书', icon: 'el-icon-bank-card', noCache: true }
-      },
-      {
-        path: 'instructionscreate',
-        component: () => import('@/views/product/instructions/create'),
-        name: 'InstructionsCreate',
-        hidden: true,
-        meta: { title: '新增说明书', noCache: true }
-      },
-      {
-        path: 'instructionsedit',
-        component: () => import('@/views/product/instructions/edit'),
-        name: 'InstructionsEdit',
-        hidden: true,
-        meta: { title: '修改说明书', noCache: true }
-      },
+  // {
+  //   path: '/product',
+  //   component: Layout,
+  //   name: 'Product',
+  //   redirect: '/product/productcode',
+  //   meta: { title: '产品管理', icon: 'el-icon-s-help', noCache: true },
+  //   children: [
+  //     {
+  //       path: 'productcode',
+  //       name: 'ProductCode',
+  //       component: () => import('@/views/product/productcode/index'),
+  //       meta: { title: '产品码', icon: 'table', noCache: true },
+  //     },
+  //     {
+  //       path: 'productcreate',
+  //       component: () => import('@/views/product/productcode/create'),
+  //       name: 'ProductCreate',
+  //       hidden: true,
+  //       meta: { title: '新增产品码', noCache: true }
+  //     },
+  //     {
+  //       path: 'flowcode',
+  //       component: () => import('@/views/product/flowcode/index'),
+  //       name: 'FlowCode',
+  //       hidden: true,
+  //       meta: { title: '流程码', noCache: true }
+  //     },
+  //     {
+  //       path: 'flowcodecreate',
+  //       component: () => import('@/views/product/flowcode/create'),
+  //       name: 'FlowcodeCreate',
+  //       hidden: true,
+  //       meta: { title: '新增流程码', noCache: true }
+  //     },
+  //     {
+  //       path: 'flowcodeedit',
+  //       component: () => import('@/views/product/flowcode/edit'),
+  //       name: 'flowcodeEdit',
+  //       hidden: true,
+  //       meta: { title: '修改流程码', noCache: true }
+  //     },
+  //     {
+  //       path: 'productedit',
+  //       component: () => import('@/views/product/productcode/edit'),
+  //       name: 'ProductEdit',
+  //       hidden: true,
+  //       meta: { title: '修改产品码', noCache: true }
+  //     },
+  //     {
+  //       path: 'instructions',
+  //       name: 'Instructions',
+  //       component: () => import('@/views/product/instructions/index'),
+  //       meta: { title: '说明书', icon: 'el-icon-bank-card', noCache: true }
+  //     },
+  //     {
+  //       path: 'instructionscreate',
+  //       component: () => import('@/views/product/instructions/create'),
+  //       name: 'InstructionsCreate',
+  //       hidden: true,
+  //       meta: { title: '新增说明书', noCache: true }
+  //     },
+  //     {
+  //       path: 'instructionsedit',
+  //       component: () => import('@/views/product/instructions/edit'),
+  //       name: 'InstructionsEdit',
+  //       hidden: true,
+  //       meta: { title: '修改说明书', noCache: true }
+  //     },
 
-    ]
-  },
+  //   ]
+  // },
   {
     path: '/settings',
     component: Layout,

@@ -31,6 +31,7 @@
         <el-button type="primary" @click="addEntry">添加</el-button>
       </div>
     </div>
+    <!-- 相关链接 -->
     <el-dialog
       width="500px"
       title="相关链接"
@@ -69,6 +70,48 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="contactFlag = false">取 消</el-button>
+        <el-button type="primary" @click="addXurl">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 直播视频添加 -->
+    <el-dialog
+      width="500px"
+      title="直播地址"
+      :visible.sync="cameraFlag"
+      label-position="top"
+    >
+      <el-form ref="form" :inline="true" size="mini">
+        <div v-for="(item, index) in form" :key="index + 'item'">
+          <h3 style="margin-bottom: 15px">链接{{ index + 1 }}</h3>
+          <el-form-item label="标题" label-width="30px">
+            <el-input v-model="item.title" placeholder="例如名称"></el-input>
+          </el-form-item>
+          <el-form-item label="链接" label-width="30px">
+            <el-input
+              v-model="item.url"
+              placeholder="url:http://或者/https://"
+            ></el-input>
+          </el-form-item>
+          <span v-if="index > 0"
+            ><el-button
+              size="mini"
+              @click="delFromItem(index)"
+              icon="el-icon-minus"
+              circle
+            ></el-button
+          ></span>
+        </div>
+        <div>
+          <el-button
+            @click="addFromItem"
+            type="primary"
+            icon="el-icon-plus"
+            circle
+          ></el-button>
+        </div>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cameraFlag = false">取 消</el-button>
         <el-button type="primary" @click="addXurl">确 定</el-button>
       </div>
     </el-dialog>
@@ -115,6 +158,7 @@ export default {
             "cleardoc", //清空文档
             "simpleupload", //单图上传
             "insertimage", //图上传
+            "attachment",//附件上传
             "music",
             "insertvideo",
             "link", //超链接
@@ -146,6 +190,7 @@ export default {
             "contact", //相关链接
             "information", //联系方式
             "update", //一键排版
+            "camera"//摄像头
           ],
         ],
         labelMap: {
@@ -153,6 +198,7 @@ export default {
           contact: "添加相关链接",
           information: "添加联系方式",
           update: "一键排版",
+          camera: "直播视频地址"
         },
         catchRemoteImageEnable: true,
         // 初始容器高度
@@ -171,6 +217,7 @@ export default {
       entrykey: "",
       entryFlag: false,
       contactFlag: false,
+      cameraFlag:false,
       form: [
         {
           title: "",
@@ -255,11 +302,15 @@ export default {
       let contact = document.querySelector(".edui-for-contact");
       let information = document.querySelector(".edui-for-information");
       let update = document.querySelector(".edui-for-update");
+      let camera = document.querySelector(".edui-for-camera");
       entry.addEventListener("click", () => {
         this.entryFlag = true;
       });
       contact.addEventListener("click", () => {
         this.contactFlag = true;
+      });
+      camera.addEventListener("click", () => {
+        this.cameraFlag = true;
       });
       information.addEventListener("click", () => {
         this.addInformation();
