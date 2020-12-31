@@ -137,60 +137,68 @@ export default {
           [
             "undo", //撤销
             "redo", //重做
+            "removeformat", //清除格式
+            "|",
+            "fontsize", //字号
+            "fontfamily", //字体
+            "|",
+            "forecolor", //字体颜色
+            "backcolor", //背景色
             "bold", //加粗
-            "indent", //首行缩进
             "italic", //斜体
             "underline", //下划线
             "strikethrough", //删除线
-            "subscript", //下标
-            "fontborder", //字符边框
-            "superscript", //上标
-            "formatmatch", //格式刷
-            "blockquote", //引用
-            "pasteplain", //纯文本粘贴模式
-            "selectall", //全选
-            "preview", //预览
-            "horizontal", //分隔线
-            "removeformat", //清除格式
-            "time", //时间
-            "date", //日期
-            "unlink", //取消链接
-            "cleardoc", //清空文档
-            "simpleupload", //单图上传
-            "insertimage", //图上传
-            "attachment",//附件上传
-            "music",
-            "insertvideo",
+            "|",
             "link", //超链接
             "entry", //词条
+            "|",
+            "blockquote", //引用
+            "horizontal", //分隔线
+            "|",
+            "information", //联系方式
+            "camera", //摄像头
+            "indent", //首行缩进
             "justifyleft", //居左对齐
             "justifyright", //居右对齐
             "justifycenter", //居中对齐
             "justifyjustify", //两端对齐
+            "|",
             "rowspacingtop", //段前距
             "rowspacingbottom", //段后距
             "lineheight", //行间距
             "letterspacing", //字间距
-            "forecolor", //字体颜色
-            "backcolor", //背景色
             "insertorderedlist", //有序列表
             "insertunorderedlist", //无序列表
-            "fullscreen", //全屏
-            "directionalityltr", //从左向右输入
-            "directionalityrtl", //从右向左输入
-            "imagenone", //默认
-            "imageleft", //左浮动
-            "imageright", //右浮动
-            "imagecenter", //居中
-            "inserttable", //插入表格
-            "customstyle", //自定义标题
-            "fontfamily", //字体
-            "fontsize", //字号
-            "paragraph", //段落格式
+            "|",
+            // "subscript", //下标
+            // "fontborder", //字符边框
+            // "superscript", //上标
+            // "formatmatch", //格式刷
+            // "pasteplain", //纯文本粘贴模式
+            // "selectall", //全选
+            // "preview", //预览
+            // "time", //时间
+            // "date", //日期
+            // "unlink", //取消链接
+            // "cleardoc", //清空文档
+            "simpleupload", //单图上传
+            "insertimage", //图上传
+            "attachment", //附件上传
+            "music",
+            "insertvideo",
+
+            // "fullscreen", //全屏
+            // "directionalityltr", //从左向右输入
+            // "directionalityrtl", //从右向左输入
+            // "imagenone", //默认
+            // "imageleft", //左浮动
+            // "imageright", //右浮动
+            // "imagecenter", //居中
+            // "inserttable", //插入表格
+            // "customstyle", //自定义标题
+            // "paragraph", //段落格式
             "contact", //相关链接
-            "information", //联系方式
             "update", //一键排版
-            "camera"//摄像头
           ],
         ],
         labelMap: {
@@ -198,7 +206,7 @@ export default {
           contact: "添加相关链接",
           information: "添加联系方式",
           update: "一键排版",
-          camera: "直播视频地址"
+          camera: "直播视频地址",
         },
         catchRemoteImageEnable: true,
         // 初始容器高度
@@ -217,7 +225,7 @@ export default {
       entrykey: "",
       entryFlag: false,
       contactFlag: false,
-      cameraFlag:false,
+      cameraFlag: false,
       form: [
         {
           title: "",
