@@ -19,7 +19,7 @@
      * 因此，UEditor提供了针对不同页面的编辑器可单独配置的根路径，具体来说，在需要实例化编辑器的页面最顶部写上如下代码即可。当然，需要令此处的URL等于对应的配置。
      * window.UEDITOR_HOME_URL = "/xxxx/xxxx/";
      */
-    window.UEDITOR_HOME_URL =  "/public/UEditor/";
+    window.UEDITOR_HOME_URL = "/public/UEditor/";
     var URL = window.UEDITOR_HOME_URL || getUEBasePath();
 
     /**
@@ -37,7 +37,7 @@
         , toolbars: [[
             'fullscreen', 'source', '|', 'undo', 'redo', '|',
             'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
-            'rowspacingtop', 'rowspacingbottom', 'lineheight','letterspacing', '|',
+            'rowspacingtop', 'rowspacingbottom', 'lineheight', 'letterspacing', '|',
             'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
             'directionalityltr', 'directionalityrtl', 'indent', '|',
             'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
@@ -191,7 +191,6 @@
         //    { label:'',name:'impact',val:'impact,chicago'},
         //    { label:'',name:'timesNewRoman',val:'times new roman'}
         //]
-        ,thismytest:"nihao"
         //fontsize
         //字号
         //,'fontsize':[10, 11, 12, 14, 16, 18, 20, 24, 36]
@@ -248,7 +247,7 @@
 
         //elementPathEnabled
         //是否启用元素路径，默认是显示
-        //,elementPathEnabled : true
+        , elementPathEnabled: false
 
         //wordCount
         //,wordCount:true          //是否开启字数统计
@@ -278,17 +277,17 @@
 
         //autoHeightEnabled
         // 是否自动长高,默认true
-        ,autoHeightEnabled:false
+        // ,autoHeightEnabled:false
 
         //scaleEnabled
         //是否可以拉伸长高,默认true(当开启时，自动长高失效)
-        ,scaleEnabled:false
+        , scaleEnabled: false
         //,minFrameWidth:800    //编辑器拖动时最小宽度,默认800
         //,minFrameHeight:220  //编辑器拖动时最小高度,默认220
 
         //autoFloatEnabled
         //是否保持toolbar的位置不动,默认true
-        ,autoFloatEnabled:false
+        , autoFloatEnabled: false
         //浮动时工具栏距离浏览器顶部的高度，用于某些具有固定头部的页面
         //,topOffset:30
         //编辑器底部距离工具栏高度(如果参数大于等于编辑器高度，则设置无效)
@@ -355,78 +354,81 @@
         //,allowDivTransToP:true      //允许进入编辑器的div标签自动变成p标签
         //,rgb2Hex:true               //默认产出的数据中的color自动从rgb格式变成16进制格式
 
-		// xss 过滤是否开启,inserthtml等操作
-		,xssFilterRules: true
-		//input xss过滤
-		,inputXssFilter: true
-		//output xss过滤
-		,outputXssFilter: true
-		// xss过滤白名单 名单来源: https://raw.githubusercontent.com/leizongmin/js-xss/master/lib/default.js
-		,whiteList: {
-			a:      ['target', 'href', 'title', 'class', 'style'],
-			abbr:   ['title', 'class', 'style'],
-			address: ['class', 'style'],
-			area:   ['shape', 'coords', 'href', 'alt'],
-			article: [],
-			aside:  [],
-			audio:  ['autoplay', 'controls', 'loop', 'preload', 'src', 'class', 'style'],
-			b:      ['class', 'style'],
-			bdi:    ['dir'],
-			bdo:    ['dir'],
-			big:    [],
-			blockquote: ['cite', 'class', 'style'],
-			br:     [],
-			caption: ['class', 'style'],
-			center: [],
-			cite:   [],
-			code:   ['class', 'style'],
-			col:    ['align', 'valign', 'span', 'width', 'class', 'style'],
-			colgroup: ['align', 'valign', 'span', 'width', 'class', 'style'],
-			dd:     ['class', 'style'],
-			del:    ['datetime'],
-			details: ['open'],
-			div:    ['class', 'style'],
-			dl:     ['class', 'style'],
-			dt:     ['class', 'style'],
-			em:     ['class', 'style'],
-			font:   ['color', 'size', 'face'],
-			footer: [],
-			h1:     ['class', 'style'],
-			h2:     ['class', 'style'],
-			h3:     ['class', 'style'],
-			h4:     ['class', 'style'],
-			h5:     ['class', 'style'],
-			h6:     ['class', 'style'],
-			header: [],
-			hr:     [],
-			i:      ['class', 'style'],
-			img:    ['src', 'alt', 'title', 'width', 'height', 'id', '_src', 'loadingclass', 'class', 'data-latex'],
-			ins:    ['datetime'],
-			li:     ['class', 'style'],
-			mark:   [],
-			nav:    [],
-			ol:     ['class', 'style'],
-			p:      ['class', 'style'],
-			pre:    ['class', 'style'],
-			s:      [],
-			section:[],
-			small:  [],
-			span:   ['class', 'style'],
-			sub:    ['class', 'style'],
-			sup:    ['class', 'style'],
-			strong: ['class', 'style'],
-			table:  ['width', 'border', 'align', 'valign', 'class', 'style'],
-			tbody:  ['align', 'valign', 'class', 'style'],
-			td:     ['width', 'rowspan', 'colspan', 'align', 'valign', 'class', 'style'],
-			tfoot:  ['align', 'valign', 'class', 'style'],
-			th:     ['width', 'rowspan', 'colspan', 'align', 'valign', 'class', 'style'],
-			thead:  ['align', 'valign', 'class', 'style'],
-			tr:     ['rowspan', 'align', 'valign', 'class', 'style'],
-			tt:     [],
-			u:      [],
-			ul:     ['class', 'style'],
-			video:  ['autoplay', 'controls', 'loop', 'preload', 'src', 'height', 'width', 'class', 'style']
-		}
+        // xss 过滤是否开启,inserthtml等操作
+        , xssFilterRules: true
+        //input xss过滤
+        , inputXssFilter: true
+        //output xss过滤
+        , outputXssFilter: true
+        // xss过滤白名单 名单来源: https://raw.githubusercontent.com/leizongmin/js-xss/master/lib/default.js
+        , whiteList: {
+            a: ['target', 'href', 'title', 'class', 'style'],
+            abbr: ['title', 'class', 'style'],
+            address: ['class', 'style'],
+            area: ['shape', 'coords', 'href', 'alt'],
+            article: [],
+            aside: [],
+            audio: ['autoplay', 'controls', 'loop', 'preload', 'src', 'class', 'style'],
+            b: ['class', 'style'],
+            bdi: ['dir'],
+            bdo: ['dir'],
+            big: [],
+            blockquote: ['cite', 'class', 'style'],
+            br: [],
+            caption: ['class', 'style'],
+            center: [],
+            cite: [],
+            code: ['class', 'style'],
+            col: ['align', 'valign', 'span', 'width', 'class', 'style'],
+            colgroup: ['align', 'valign', 'span', 'width', 'class', 'style'],
+            dd: ['class', 'style'],
+            del: ['datetime'],
+            details: ['open'],
+            div: ['class', 'style'],
+            dl: ['class', 'style'],
+            dt: ['class', 'style'],
+            em: ['class', 'style'],
+            font: ['color', 'size', 'face'],
+            footer: [],
+            h1: ['class', 'style'],
+            h2: ['class', 'style'],
+            h3: ['class', 'style'],
+            h4: ['class', 'style'],
+            h5: ['class', 'style'],
+            h6: ['class', 'style'],
+            header: [],
+            hr: [],
+            i: ['class', 'style'],
+            img: ['src', 'alt', 'title', 'width', 'height', 'id', '_src', 'loadingclass', 'class', 'data-latex'],
+            ins: ['datetime'],
+            li: ['class', 'style'],
+            mark: [],
+            nav: [],
+            ol: ['class', 'style'],
+            p: ['class', 'style'],
+            pre: ['class', 'style'],
+            s: [],
+            section: [],
+            small: [],
+            span: ['class', 'style'],
+            sub: ['class', 'style'],
+            sup: ['class', 'style'],
+            strong: ['class', 'style'],
+            table: ['width', 'border', 'align', 'valign', 'class', 'style'],
+            tbody: ['align', 'valign', 'class', 'style'],
+            td: ['width', 'rowspan', 'colspan', 'align', 'valign', 'class', 'style'],
+            tfoot: ['align', 'valign', 'class', 'style'],
+            th: ['width', 'rowspan', 'colspan', 'align', 'valign', 'class', 'style'],
+            thead: ['align', 'valign', 'class', 'style'],
+            tr: ['rowspan', 'align', 'valign', 'class', 'style'],
+            tt: [],
+            u: [],
+            ul: ['class', 'style'],
+            video: ['autoplay', 'controls', 'loop', 'preload', 'src', 'height', 'width', 'class', 'style'],
+            source: ['src', 'type'],
+            embed: ['type', 'class', 'pluginspage', 'src', 'width', 'height', 'align', 'style', 'wmode', 'play', 'autoplay', 'loop', 'menu', 'allowscriptaccess', 'allowfullscreen', 'controls', 'preload'],
+            iframe: ['src', 'class', 'height', 'width', 'max-width', 'max-height', 'align', 'frameborder', 'allowfullscreen']
+        }
     };
 
     function getUEBasePath(docUrl, confUrl) {
@@ -439,7 +441,7 @@
 
         var configPath = document.getElementsByTagName('script');
 
-        return configPath[ configPath.length - 1 ].src;
+        return configPath[configPath.length - 1].src;
 
     }
 
@@ -466,7 +468,7 @@
 
     function optimizationPath(path) {
 
-        var protocol = /^[a-z]+:\/\//.exec(path)[ 0 ],
+        var protocol = /^[a-z]+:\/\//.exec(path)[0],
             tmp = null,
             res = [];
 
@@ -474,11 +476,11 @@
 
         path = path.replace(/\\/g, '/').split(/\//);
 
-        path[ path.length - 1 ] = "";
+        path[path.length - 1] = "";
 
         while (path.length) {
 
-            if (( tmp = path.shift() ) === "..") {
+            if ((tmp = path.shift()) === "..") {
                 res.pop();
             } else if (tmp !== ".") {
                 res.push(tmp);
