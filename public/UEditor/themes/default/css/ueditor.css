@@ -21,39 +21,43 @@
 .edui-default a.edui-box:active {
     text-decoration: none;
 }
+.edui-button-wrap,.edui-combox-body,.edui-splitbutton-body,.edui-menubutton-body{
+    margin: 2px;
+}
 .edui-default  .edui-for-entry .edui-button-body .edui-icon {
     background-repeat: no-repeat;
     background-image: url(../images/entry.png) !important;
-    background-size: 100%;
+    background-size: 20px;
+    background-position: center;
 }
 .edui-default  .edui-for-letterspacing .edui-button-body .edui-icon {
     background-repeat: no-repeat;
     background-image: url(../images/zijj.png) !important;
-    background-size: 15px auto;
+    background-size: 20px;
     background-position: center;
 }
 .edui-default  .edui-for-contact .edui-button-body .edui-icon {
     background-repeat: no-repeat;
     background-image: url(../images/contcat.png) !important;
-    background-size: 15px auto;
+    background-size: 20px;
     background-position: center;
 }
 .edui-default  .edui-for-information .edui-button-body .edui-icon {
     background-repeat: no-repeat;
     background-image: url(../images/information.png) !important;
-    background-size: 15px auto;
+    background-size: 20px;
     background-position: center;
 }
 .edui-default  .edui-for-update .edui-button-body .edui-icon {
     background-repeat: no-repeat;
     background-image: url(../images/update.png) !important;
-    background-size: 15px auto;
+    background-size: 20px;
     background-position: center;
 }
 .edui-default  .edui-for-camera .edui-button-body .edui-icon {
     background-repeat: no-repeat;
     background-image: url(../images/camera.png) !important;
-    background-size: 15px auto;
+    background-size: 20px;
     background-position: center;
 }
 .edui-default table.edui-box {
@@ -1781,7 +1785,7 @@ div.edui-box {
 .edui-default .edui-toolbar .edui-separator {
     width: 2px;
     height: 20px;
-    margin: 2px 4px 2px 3px;
+    margin: 5px 4px 5px 3px;
     background: url(../images/icons.png) -181px 0;
     background: url(../images/icons.gif) -181px 0 \9;
 }
