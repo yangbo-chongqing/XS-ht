@@ -148,25 +148,6 @@ export default {
             "italic", //斜体
             "underline", //下划线
             "strikethrough", //删除线
-            "subscript", //下标
-            "fontborder", //字符边框
-            "superscript", //上标
-            "formatmatch", //格式刷
-            "blockquote", //引用
-            "pasteplain", //纯文本粘贴模式
-            "selectall", //全选
-            "preview", //预览
-            "horizontal", //分隔线
-            "removeformat", //清除格式
-            "time", //时间
-            "date", //日期
-            "unlink", //取消链接
-            "cleardoc", //清空文档
-            "simpleupload", //单图上传
-            "insertimage", //图上传
-            "attachment", //附件上传
-            "music",
-            "insertvideo",
             "link", //超链接
             "entry", //词条
             "|",
@@ -174,7 +155,7 @@ export default {
             "horizontal", //分隔线
             "|",
             "information", //联系方式
-            "camera", //摄像头
+            // "camera", //摄像头
             "indent", //首行缩进
             "justifyleft", //居左对齐
             "justifyright", //居右对齐
@@ -186,7 +167,7 @@ export default {
             "lineheight", //行间距
             "letterspacing", //字间距
             "insertorderedlist", //有序列表
-            "insertunorderedlist", //无序列表
+            // "insertunorderedlist", //无序列表
             "|",
             // "subscript", //下标
             // "fontborder", //字符边框
@@ -217,7 +198,6 @@ export default {
             // "paragraph", //段落格式
             "contact", //相关链接
             "update", //一键排版
-            // "camera", //摄像头
           ],
         ],
         labelMap: {
@@ -371,16 +351,16 @@ export default {
       let contact = document.querySelector(".edui-for-contact");
       let information = document.querySelector(".edui-for-information");
       let update = document.querySelector(".edui-for-update");
-      let camera = document.querySelector(".edui-for-camera");
+      // let camera = document.querySelector(".edui-for-camera");
       entry.addEventListener("click", () => {
         this.entryFlag = true;
       });
       contact.addEventListener("click", () => {
         this.contactFlag = true;
       });
-      camera.addEventListener("click", () => {
-        this.cameraFlag = true;
-      });
+      // camera.addEventListener("click", () => {
+      //   this.cameraFlag = true;
+      // });
       information.addEventListener("click", () => {
         this.addInformation();
       });
