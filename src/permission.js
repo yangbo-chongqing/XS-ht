@@ -10,15 +10,18 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login'] // no redirect whitelist
 
-router.beforeEach(async(to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   // start progress bar
   NProgress.start()
 
   // set page title
   document.title = getPageTitle(to.meta.title)
-
-  // determine whether the user has logged in
   const hasToken = getToken()
+
+  // if (document.title == '帮助') {
+  //   console.log(1111)
+  // } else
+  // determine whether the user has logged in
 
   if (hasToken) {
     if (to.path === '/login') {
@@ -63,8 +66,12 @@ router.beforeEach(async(to, from, next) => {
       next()
     } else {
       // other pages that do not have permission to access are redirected to the login page.
-      next(`/login?redirect=${to.path}`)
-      NProgress.done()
+      if (to.path === '/help') {
+        next()
+      } else {
+        next(`/login?redirect=${to.path}`)
+        NProgress.done()
+      }
     }
   }
 })

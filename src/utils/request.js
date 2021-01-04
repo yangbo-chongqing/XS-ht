@@ -48,8 +48,12 @@ const http = function (options) {
         if (res.status == 200) {
           resolve(res)
         } else {
-          if (res.status === 401) {
+          if (res.msg == '获取用户信息失败：-41005') {
+            // return false
+          }
+          else if (res.status === 401) {
             // to re-login
+            console.log(res)
             MessageBox.confirm('登录已过期请重新登录', {
               confirmButtonText: '去登陆',
               cancelButtonText: '取消',
@@ -61,11 +65,12 @@ const http = function (options) {
             })
             return false
           } else if (res.status == 400) {
-            // Message({
-            //   message: res.message,
-            //   type: 'error',
-            //   duration: 5 * 1000
-            // })
+            Message({
+              message: res.message,
+              type: 'error',
+              duration: 5 * 1000
+            })
+            resolve(res)
           }
 
           setTimeout(() => {

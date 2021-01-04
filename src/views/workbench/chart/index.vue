@@ -100,12 +100,11 @@ export default {
   },
   methods: {
     openNewInfo(id) {
-      this.$router.push({
-        name: "help",
-        params: {
-          id,
-        },
+      let routeUrl = this.$router.resolve({
+        path: "/help",
+        query: { id: id },
       });
+      window.open(routeUrl.href, "_blank");
     },
     async getList() {
       getList().then((res) => {

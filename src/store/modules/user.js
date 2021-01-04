@@ -2,6 +2,7 @@ import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import qs from 'qs'
+import { Message } from 'element-ui';
 
 const getDefaultState = () => {
   return {
@@ -41,6 +42,7 @@ const actions = {
         const { data } = response
         commit('SET_TOKEN', data.token)
         setToken(JSON.stringify({ token: data.token, user_id: data.user_id }))
+        console.log(response)
         resolve()
       }).catch(error => {
         reject(error)

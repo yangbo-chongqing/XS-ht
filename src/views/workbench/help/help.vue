@@ -9,7 +9,7 @@
       <breadcrumb class="breadcrumb-container" />
       <div class="right-menu">
         <!-- <div class="avatar-hlpe"><i class="el-icon-question" />帮助</div> -->
-        <el-dropdown class="avatar-container" trigger="click">
+        <!-- <el-dropdown class="avatar-container" trigger="click">
           <div class="avatar-wrapper">
             <img :src="avatar" class="user-avatar" />
             {{ name }}
@@ -26,7 +26,7 @@
               <span style="display: block">退出</span>
             </el-dropdown-item>
           </el-dropdown-menu>
-        </el-dropdown>
+        </el-dropdown> -->
       </div>
     </div>
     <div class="helpAll">
@@ -39,7 +39,7 @@
           <el-submenu
             v-for="(item, index) of newsList"
             :key="index"
-            :index="index + 1"
+            :index="index + '-' + 1"
           >
             <template slot="title">
               <span>{{ item.name }}</span>
@@ -80,7 +80,7 @@ export default {
     };
   },
   methods: {
-    async getList() {
+    getList() {
       getList().then((res) => {
         this.newsList = res.data.list;
       });
@@ -107,8 +107,8 @@ export default {
     },
   },
   created() {
-    if (this.$route.params.id) {
-      this.id = this.$route.params.id;
+    if (this.$route.query.id) {
+      this.id = this.$route.query.id;
     }
     this.getList();
     this.getDetail();

@@ -8,7 +8,7 @@
 
     <breadcrumb class="breadcrumb-container" />
     <div class="right-menu">
-      <router-link :to="{ name: 'help' }">
+      <router-link target="_blank" :to="{ name: 'help' }">
         <div class="avatar-hlpe"><i class="el-icon-question" />帮助</div>
       </router-link>
 

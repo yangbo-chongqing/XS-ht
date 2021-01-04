@@ -841,6 +841,10 @@ export default {
       this.checkHisList.map((item) => {
         history_ids.push(item.id);
       });
+      if (this.editorData.indexOf("loadingclass") != "-1") {
+        this.$message.error("对不起，请加载完成后提交！");
+        return;
+      }
       const parmas = {
         name: this.codeTitle,
         image: this.codeImage,
@@ -862,6 +866,9 @@ export default {
     },
     // 编辑
     entryEdit(state) {
+      if (this.editorData.indexOf("loadingclass")) {
+        console.log(1111);
+      }
       let related_ids = [];
       let history_ids = [];
       this.checkList.map((item) => {
@@ -966,7 +973,7 @@ export default {
 <style lang="scss">
 .create-code {
   .edui-editor-toolbarbox {
-    padding:10px  0 0 75px;
+    padding: 10px 0 0 75px;
 
     box-sizing: border-box;
   }

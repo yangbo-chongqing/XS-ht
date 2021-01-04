@@ -832,6 +832,10 @@ export default {
       this.checkHisList.map((item) => {
         history_ids.push(item.id);
       });
+      if (this.editorData.indexOf("loadingclass") != "-1") {
+        this.$message.error("对不起，请加载完成后提交！");
+        return;
+      }
       const parmas = {
         id: this.id,
         name: this.codeTitle,

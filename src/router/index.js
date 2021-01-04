@@ -195,7 +195,6 @@ export const constantRoutes = [
     name: 'help',
     meta: { title: '帮助' },
     component: () => import('@/views/workbench/help/help'),
-
   }
 ]
 export const asyncRoutes = []
