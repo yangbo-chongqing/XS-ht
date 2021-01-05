@@ -924,7 +924,7 @@ export default {
 <style lang="scss">
 .create-code {
   .edui-editor-toolbarbox {
-    padding-left: 75px;
+    padding-left:75px;
     box-sizing: border-box;
   }
   .create-tips {
