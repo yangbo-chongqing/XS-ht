@@ -397,7 +397,7 @@ export default {
         };
         RelicsList(this.qs.stringify(parmas)).then((res) => {
           this.loading = false;
-          this.options = res.data.relics_list;
+          this.options = res.data.relics_list.data;
         });
       } else {
         this.options = [];
