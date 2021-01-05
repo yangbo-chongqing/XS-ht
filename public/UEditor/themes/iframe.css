@@ -5,3 +5,27 @@ img{
 video{
     max-width: 100%;
 }
+body {
+    overflow-y:scroll !important;
+}
+body::-webkit-scrollbar {
+    width: 0px;
+}
+body::-webkit-scrollbar-thumb {
+    background: #99a9bf;
+    border-radius: 20px;
+}
+body::-webkit-scrollbar-track-piece {
+    background: #d3dce6;
+}
+.view {
+word-break: break-all;
+}
+.vote_area {
+display: block;
+}
+.vote_iframe {
+background-color: transparent;
+border: 0 none;
+height: 100%;
+}
