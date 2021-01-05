@@ -1,7 +1,7 @@
 <template>
   <div class="entry-code">
     <el-row :gutter="20">
-      <el-col :span="14"><div class="entry-title">词条码分类</div></el-col>
+      <el-col :span="14"><div class="entry-title">分馆管理</div></el-col>
       <el-col :span="10">
         <el-row :gutter="20">
           <!-- <el-col :span="18">
@@ -20,7 +20,8 @@
               <el-button
                 type="primary"
                 @click="golinkpage('/codelist/entrytypecreate')"
-              >新增词条码分类</el-button>
+                >新增分馆</el-button
+              >
             </div>
           </el-col>
         </el-row>
@@ -37,30 +38,32 @@
         highlight-current-row
         @selection-change="handleSelectionChange"
       >
-        <el-table-column label="分类名称">
+        <el-table-column label="分馆名称">
           <template slot-scope="scope">
-            <span class="code-name">{{ scope.row.type_name }}</span>
+            <span class="code-name">{{ scope.row.part_name }}</span>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" align="center">
           <template slot-scope="scope">
-            {{ scope.row.create_time }}
+            {{ scope.row.create_time | getLocalTime }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作" width="220">
           <template slot-scope="scope">
-            <span
-              class="el-link-btn"
-            ><el-link
-              type="primary"
-              @click="golinkpage('/codelist/entrytypeedit', { id: scope.row.id })"
-            >编辑</el-link></span>
-            <span
-              class="el-link-btn"
-            ><el-link
-              type="primary"
-              @click="delType(scope.row.id, scope)"
-            >删除</el-link></span>
+            <span class="el-link-btn"
+              ><el-link
+                type="primary"
+                @click="
+                  golinkpage('/codelist/entrytypeedit', { id: scope.row.id })
+                "
+                >编辑</el-link
+              ></span
+            >
+            <span class="el-link-btn"
+              ><el-link type="primary" @click="delType(scope.row.id, scope)"
+                >删除</el-link
+              ></span
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -75,18 +78,29 @@
         />
       </div>
     </div>
-    <EntryQuery v-if="popoverFlag" :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id='+id" :id="id" @popoverEven="togglePopover" />
+    <EntryQuery
+      v-if="popoverFlag"
+      :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id=' + id"
+      :id="id"
+      @popoverEven="togglePopover"
+    />
   </div>
 </template>
 <script>
-import { downloadIamge } from '@/utils/utils'
-import table2excel from 'js-table2excel'
-import { postTypeList, postDelRelics,postTypeDel } from '@/api/entrycode'
-import EntryQuery from '@/components/EntryQuery'
+import { downloadIamge } from "@/utils/utils";
+import table2excel from "js-table2excel";
+import {
+  postTypeList,
+  postDelRelics,
+  postTypeDel,
+  getList,
+  deteleOne,
+} from "@/api/entrycode";
+import EntryQuery from "@/components/EntryQuery";
 export default {
-  name: 'EntryCode',
+  name: "EntryCode",
   components: {
-    EntryQuery
+    EntryQuery,
   },
   data() {
     return {
@@ -94,139 +108,103 @@ export default {
       listLoading: true,
       multipleSelection: [],
       downloadLoading: false,
-      filename: '',
+      filename: "",
       page: 1,
       pages: 0,
       count: 0,
       page_size: 10,
-      keyword: '',
+      keyword: "",
       popoverFlag: false,
-    }
+    };
   },
   created() {
-    this.fetchData()
+    this.fetchData();
   },
   methods: {
     togglePopover(id) {
-      this.id=id;
-      this.popoverFlag = !this.popoverFlag
+      this.id = id;
+      this.popoverFlag = !this.popoverFlag;
     },
     downloadImg(img, imgname) {
-      downloadIamge(img, imgname)
+      downloadIamge(img, imgname);
     },
-    // 删除词条分类
+    // 删除分馆
     delType(id, item) {
-      this.$confirm('此操作将删除该分类, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("此操作将删除该分类, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
           const parmas = {
-            id: id
-          }
-          postTypeDel(this.qs.stringify(parmas)).then((res) => {
+            id: id,
+          };
+          deteleOne(this.qs.stringify(parmas)).then((res) => {
             if (res.status == 200) {
-              this.list.splice(item.$index, 1)
+              this.list.splice(item.$index, 1);
               this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
+                type: "success",
+                message: "删除成功!",
+              });
             }
-          })
+          });
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
 
     golinkpage(page, obj) {
       this.$router.push({
         path: page,
         query: {
-          ...obj
-        }
-      })
+          ...obj,
+        },
+      });
     },
     onSearch() {
-      this.page = 1
-      this.fetchData()
+      this.page = 1;
+      this.fetchData();
     },
     handleSizeChange(size) {
-      this.page = size
-      this.fetchData()
+      this.page = size;
+      this.fetchData();
     },
     handleCurrentChange(size) {
-      this.page = size
-      this.fetchData()
+      this.page = size;
+      this.fetchData();
     },
     fetchData() {
-      this.listLoading = true
+      this.listLoading = true;
       const params = {
-        type:0,
         page: this.page,
-        page_size: this.page_size,
-        keyword: this.keyword
-      }
-      postTypeList(this.qs.stringify(params)).then((res) => {
-        this.pages = res.data.data.last_page
-        this.count = res.data.data.total
-        this.list = res.data.data.data
-        this.listLoading = false
-      })
+        keyword: this.keyword,
+      };
+      getList(this.qs.stringify(params)).then((res) => {
+        this.pages = res.data.list.last_page;
+        this.count = res.data.list.total;
+        this.list = res.data.list.data;
+        this.listLoading = false;
+      });
     },
     handleSelectionChange(val) {
-      this.multipleSelection = val
-    },
-    handleDownload() {
-      if (this.multipleSelection.length) {
-        this.downloadLoading = true
-        const tHeader = [
-          {
-            title: '二维码名称',
-            key: 'name',
-            type: 'text'
-          },
-          {
-            title: '二维码',
-            key: 'mini_code',
-            type: 'image',
-            width: 100,
-            height: 100
-          },
-          {
-            title: '分类',
-            key: 'typename',
-            type: 'text'
-          },
-          {
-            title: '创建时间',
-            key: 'create_time',
-            type: 'text'
-          }
-        ]
-        this.multipleSelection.map((item, index) => {
-          item.typename = item.type.type_name
-        })
-
-        console.log(this.multipleSelection)
-        table2excel(tHeader, this.multipleSelection, '词条码.xls')
-        this.downloadLoading = false
-      } else {
-        this.$message({
-          message: '请选择导出的数据',
-          type: 'warning'
-        })
-      }
+      this.multipleSelection = val;
     },
     formatJson(filterVal, jsonData) {
-      return jsonData.map((v) => filterVal.map((j) => v[j]))
-    }
-  }
-}
+      return jsonData.map((v) => filterVal.map((j) => v[j]));
+    },
+  },
+  filters: {
+    getLocalTime: function (value) {
+      return new Date(parseInt(value) * 1000)
+        .toLocaleString()
+        .replace(/:\d{1,2}$/, " ");
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -238,7 +216,7 @@ export default {
     font-size: 16px;
     font-weight: 600;
   }
-  .entry-table{
+  .entry-table {
     margin-top: 20px;
   }
   .code-img {

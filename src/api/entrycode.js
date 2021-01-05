@@ -152,3 +152,27 @@ export function postDelRelics(data) {
   })
 }
 
+// 分馆列表
+export function getList(data) {
+  return request({
+    url: '/api/store/part/list',
+    method: 'post',
+    data
+  })
+}
+// 删除分馆
+export function deteleOne(data) {
+  return request({
+    url: '/api/store/part/del',
+    method: 'post',
+    data
+  })
+}
+// 删除分馆
+export function getDetails(data) {
+  return request({
+    url: '/api/store/part/details',
+    method: 'post',
+    data
+  })
+}

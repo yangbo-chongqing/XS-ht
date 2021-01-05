@@ -53,6 +53,17 @@ export const constantRoutes = [
         meta: { title: '企业主页', icon: 'table', noCache: true }
       },
       {
+        path: 'entrytype',
+        component: () => import('@/views/codelist/entrytype/index'),
+        name: 'CreateArticle',
+        meta: { title: '分馆管理', icon: 'el-icon-menu', noCache: true }
+      },
+      {
+        path: '/codelist/entrytypeedit',
+        component: () => import('@/views/codelist/entrytype/edit/index'),
+        name: 'CreateArticle',
+      },
+      {
         path: 'entrytypecreate',
         component: () => import('@/views/codelist/entrytype/create'),
         name: 'CreateArticle',
