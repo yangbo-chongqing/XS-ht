@@ -52,12 +52,12 @@ export const constantRoutes = [
         component: () => import('@/views/settings/homepage/index'),
         meta: { title: '企业主页', icon: 'table', noCache: true }
       },
-      {
-        path: 'entrytype',
-        component: () => import('@/views/codelist/entrytype/index'),
-        name: 'CreateArticle',
-        meta: { title: '分馆管理', icon: 'el-icon-menu', noCache: true }
-      },
+      // {
+      //   path: 'entrytype',
+      //   component: () => import('@/views/codelist/entrytype/index'),
+      //   name: 'CreateArticle',
+      //   meta: { title: '分馆管理', icon: 'el-icon-menu', noCache: true }
+      // },
       {
         path: '/codelist/entrytypeedit',
         component: () => import('@/views/codelist/entrytype/edit/index'),
