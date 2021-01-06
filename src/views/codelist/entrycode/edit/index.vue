@@ -41,7 +41,7 @@
                 ></el-button>
               </el-form-item>
             </div>
-            <div class="create-code-body-title">
+            <!-- <div class="create-code-body-title">
               <el-form-item label="分馆">
                 <el-select v-model="branch" placeholder="请选择">
                   <el-option
@@ -53,7 +53,7 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-            </div>
+            </div> -->
             <div class="create-code-body-title">
               <el-form-item label="是否隐藏">
                 <el-checkbox v-model="endtyshowflag" label="隐藏"></el-checkbox>
