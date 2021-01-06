@@ -393,6 +393,7 @@ export default {
       tree: "",
       treeCount: 0,
       type_id: 0,
+      scopeLabel:''
     };
   },
   beforeRouteEnter(to, from, next) {
@@ -618,8 +619,7 @@ export default {
             type: "success",
             message: "添加成功",
           });
-          this.list[scope.$index].tag.push(instance.inputValue);
-          this.GetMuse();
+          this.fetchData();
         }
       });
     },
@@ -631,8 +631,9 @@ export default {
         })
         .catch((_) => {});
     },
-    // 添加分组
+    // 添加标签弹窗显示查看历史记录
     addTips(scope) {
+      this.scopeLabel = scope;
       this.entryId = scope.row.id;
       this.dialogVisible = true;
       const params = {
