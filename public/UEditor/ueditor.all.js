@@ -18758,7 +18758,6 @@
         },
         initEvents: function () {
           var me = this;
-
           me.startPos.x = me.startPos.y = 0;
           me.isDraging = false;
         },
@@ -18813,24 +18812,27 @@
           }
         },
         updateTargetElement: function () {
-
-
-
-
           var me = this;
-          domUtils.setStyles(me.target, {
-            width: me.resizer.style.width,
-            height: me.resizer.style.height
-          });
-          me.target.width = parseInt(me.resizer.style.width);
-          me.target.height = parseInt(me.resizer.style.height);
-          me.attachTo(me.target);
+				var newWidth = parseInt(me.resizer.style.width);
+				// var newHeight = parseInt(me.resizer.style.height);
+				var oldHeight = parseInt(me.target.naturalHeight);
+				var oldWidth = parseInt(me.target.naturalWidth);
+				var c =(oldHeight*newWidth)/oldWidth;
+				domUtils.setStyles(me.target, {
+				'width': me.resizer.style.width,
+				'height': c+'px'
+				});
+				   var scale = parseInt(me.target.height)/parseInt(me.target.width);
+				   me.target.width = parseInt(me.resizer.style.width);
+				   me.target.height = parseInt(me.target.width)*scale;
+				   me.target.width = parseInt(me.resizer.style.width);
+				   me.target.height = parseInt(me.resizer.style.height);
+				me.attachTo(me.target);
         },
         updateContainerStyle: function (dir, offset) {
           var me = this,
             dom = me.resizer,
             tmp;
-
           if (rect[dir][0] != 0) {
             tmp = parseInt(dom.style.left) + offset.x;
             dom.style.left = me._validScaledProp("left", tmp) + "px";
@@ -18851,7 +18853,6 @@
         _validScaledProp: function (prop, value) {
           var ele = this.resizer,
             wrap = document;
-
           value = isNaN(value) ? 0 : value;
           switch (prop) {
             case "left":
@@ -18956,9 +18957,7 @@
     return function () {
       var me = this,
         imageScale;
-
       me.setOpt("imageScaleEnabled", true);
-
       if (!browser.ie && me.options.imageScaleEnabled) {
         me.addListener("click", function (type, e) {
           var range = me.selection.getRange(),
