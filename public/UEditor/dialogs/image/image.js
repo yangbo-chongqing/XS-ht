@@ -4,7 +4,6 @@
  * Time: 下午16:34
  * 上传图片对话框逻辑代码,包括tab: 远程图片/上传图片/在线图片/搜索图片
  */
-import { getToken } from '@/utils/auth'
 
 (function () {
 
@@ -702,10 +701,11 @@ import { getToken } from '@/utils/auth'
             });
 
             uploader.on('uploadBeforeSend', function (file, data, header) {
-                // var token = window.localStorage.getItem('token') || '';
-                // if (token) {
-                //     header['Authorization'] = token;
-                // }
+                var token = window.localStorage.getItem('userInfo') || '';
+                if (token) {
+                    header['Authorization'] = token;
+                }
+
                 // //这里可以通过data对象添加POST参数
                 header['X_Requested_With'] = 'XMLHttpRequest';
 

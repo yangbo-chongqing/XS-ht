@@ -22,7 +22,7 @@
             v-for="item in options"
             :key="item.id"
             :label="item.name"
-            :value="item"
+            :value="item.id"
           >
           </el-option>
         </el-select>
@@ -208,8 +208,8 @@ export default {
           // update: "一键排版",
           camera: "直播视频地址",
         },
-        compressSide:0,
-        maxImageSideLength:500,
+        compressSide: 0,
+        maxImageSideLength: 500,
         catchRemoteImageEnable: true,
         // 初始容器高度
         initialFrameHeight: 500,
@@ -325,7 +325,11 @@ export default {
             });
             return false;
           } else {
-            aStr += `<p><a style="color:#333;text-decoration: none;" href="${item.url}">${index + 1}、${item.title}</a><img width='13px' style='margin-left:5px' src='https://voice.xunsheng.org.cn/sydt/muse_0/63b9127961b3bede237e8dd3267514c9.png' /></p>`;
+            aStr += `<p><a style="color:#333;text-decoration: none;" href="${
+              item.url
+            }">${index + 1}、${
+              item.title
+            }</a><img width='13px' style='margin-left:5px' src='https://voice.xunsheng.org.cn/sydt/muse_0/63b9127961b3bede237e8dd3267514c9.png' /></p>`;
           }
         }
       });
@@ -387,9 +391,9 @@ export default {
       if (mySelection) {
         let a = document.createElement("a");
         a.appendChild(mySelection);
-        aStr = `<a href="http://xs_j1_${this.entrykey.id}">${a.innerText}</a>`;
+        aStr = `<a href="http://xs_j1_${this.entrykey}">${a.innerText}</a>`;
       } else {
-        aStr = `<a href="http://xs_j1_${this.entrykey.id}">${this.entrykey.name}</a>`;
+        aStr = `<a href="http://xs_j1_${this.entrykey}">${this.entrykey.name}</a>`;
       }
       this.editor.execCommand("inserthtml", aStr);
       this.entryFlag = false;

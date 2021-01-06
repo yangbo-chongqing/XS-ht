@@ -27,7 +27,7 @@
             </p>
             <i @click="change(2)" class="el-icon-edit"></i>
           </el-form-item>
-          <el-form-item label="口号">
+          <!-- <el-form-item label="口号">
             <el-input
               style="width: 220px"
               @blur="saveEditEditMuse"
@@ -36,7 +36,7 @@
             />
             <p class="pDis" v-else>{{ info.slogan ? info.slogan : "暂无" }}</p>
             <i @click="change(3)" class="el-icon-edit"></i>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="企业简介">
             <el-input
               type="textarea"

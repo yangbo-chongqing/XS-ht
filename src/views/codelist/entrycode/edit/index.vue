@@ -41,7 +41,19 @@
                 ></el-button>
               </el-form-item>
             </div>
-
+            <div class="create-code-body-title">
+              <el-form-item label="分馆">
+                <el-select v-model="branch" placeholder="请选择">
+                  <el-option
+                    v-for="item in branchList"
+                    :key="item.id"
+                    :label="item.part_name"
+                    :value="item.id"
+                  >
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </div>
             <div class="create-code-body-title">
               <el-form-item label="是否隐藏">
                 <el-checkbox v-model="endtyshowflag" label="隐藏"></el-checkbox>
@@ -642,6 +654,7 @@ import {
   typeList,
   postGetRelics,
   postEdit,
+  getList,
 } from "@/api/entrycode";
 import ue from "@/components/ue";
 import EntryQuery from "@/components/EntryQuery";
@@ -685,6 +698,7 @@ export default {
       isEdit: false,
       loadFlag: false,
       typeCheck: 0,
+      branch: "",
       codeSort: 0,
       options: [],
       count: "",
@@ -741,6 +755,15 @@ export default {
       }
       this.entryXFlag = true;
       this.fetchData(type);
+    },
+    getListGuan() {
+      const params = {
+        page: 1,
+        keyword: "",
+      };
+      getList(this.qs.stringify(params)).then((res) => {
+        this.branchList = res.data.list.data;
+      });
     },
     entryToggle(row) {
       row.flag = !row.flag;
@@ -935,6 +958,9 @@ export default {
       console.log(tab, event);
     },
   },
+  created() {
+    this.getListGuan();
+  },
   watch: {
     createEntryTypeFlag(val) {
       console.log(val);
@@ -948,7 +974,7 @@ export default {
 <style lang="scss">
 .create-code {
   .edui-editor-toolbarbox {
-    padding-left:75px;
+    padding-left: 75px;
     box-sizing: border-box;
   }
   .create-tips {

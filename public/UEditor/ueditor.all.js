@@ -9024,6 +9024,7 @@
 
       if (method == "POST") {
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        // xhr.setRequestHeader("Authorization", localStorage.getItem('userInfo'));
         xhr.send(submitStr);
       } else {
         xhr.send(null);
