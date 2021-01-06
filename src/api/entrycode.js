@@ -168,10 +168,26 @@ export function deteleOne(data) {
     data
   })
 }
-// 删除分馆
+// 分馆详情
 export function getDetails(data) {
   return request({
     url: '/api/store/part/details',
+    method: 'post',
+    data
+  })
+}
+// 分馆详情
+export function updateDetail(data) {
+  return request({
+    url: '/api/store/part/edit',
+    method: 'post',
+    data
+  })
+}
+// 添加分馆
+export function addDetail(data) {
+  return request({
+    url: '/api/store/part/create',
     method: 'post',
     data
   })

@@ -52,20 +52,20 @@ export const constantRoutes = [
         component: () => import('@/views/settings/homepage/index'),
         meta: { title: '企业主页', icon: 'table', noCache: true }
       },
-      // {
-      //   path: 'entrytype',
-      //   component: () => import('@/views/codelist/entrytype/index'),
-      //   name: 'CreateArticle',
-      //   meta: { title: '分馆管理', icon: 'el-icon-menu', noCache: true }
-      // },
+      {
+        path: '/entrytype',
+        component: () => import('@/views/codelist/entrytype/index'),
+        name: 'entrytype',
+        meta: { title: '分馆管理', icon: 'el-icon-menu', noCache: true }
+      },
       {
         path: '/codelist/entrytypeedit',
         component: () => import('@/views/codelist/entrytype/edit/index'),
-        name: 'CreateArticle',
+        name: 'entrytypeedit',
       },
       {
-        path: 'entrytypecreate',
-        component: () => import('@/views/codelist/entrytype/create'),
+        path: '/entrytypecreate',
+        component: () => import('@/views/codelist/entrytype/create/index'),
         name: 'CreateArticle',
         hidden: true,
         meta: { title: '新增词条分类', noCache: true }

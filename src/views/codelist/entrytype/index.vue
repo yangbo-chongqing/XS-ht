@@ -17,9 +17,7 @@
           </el-col> -->
           <el-col :offset="18" :span="6">
             <div class="entry-search">
-              <el-button
-                type="primary"
-                @click="golinkpage('/codelist/entrytypecreate')"
+              <el-button type="primary" @click="golinkpage('/entrytypecreate')"
                 >新增分馆</el-button
               >
             </div>

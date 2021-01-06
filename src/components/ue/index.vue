@@ -137,6 +137,7 @@ export default {
           [
             "undo", //撤销
             "redo", //重做
+            "autotypeset", //自动排版'
             "removeformat", //清除格式
             "|",
             "fontsize", //字号
@@ -197,14 +198,14 @@ export default {
             // "customstyle", //自定义标题
             // "paragraph", //段落格式
             "contact", //相关链接
-            "update", //一键排版
+            // "update", //一键排版
           ],
         ],
         labelMap: {
           entry: "添加词条链接",
           contact: "添加相关链接",
           information: "添加联系方式",
-          update: "一键排版",
+          // update: "一键排版",
           camera: "直播视频地址",
         },
         catchRemoteImageEnable: true,
@@ -234,61 +235,61 @@ export default {
     };
   },
   methods: {
-    addUpdate() {
-      //一键排版
-      console.log(this.editor.body.innerHTML);
-      let richtext = this.editor.body.innerHTML;
-      richtext.toString();
-      //修改P标签内样式
-      const regex = new RegExp(/[ t]*<p style[ t]*=[ t]*("[^"]+")|('[^']+')/gi);
-      richtext = richtext.replace(
-        regex,
-        `<p style="margin: 0;padding: 0; font-size: 100%;font-weight: 400;"`
-      );
-      //修改h1标签内样式
-      const regex1 = new RegExp(
-        /[ t]*<h1 style[ t]*=[ t]*("[^"]+")|('[^']+')/gi
-      );
-      richtext = richtext.replace(
-        regex1,
-        `<h1 style=" margin: 0; padding: 0; border: 0; font-weight: normal; 
- font-style: normal; font-size: 100%; line-height: 1; font-family: inherit;;"`
-      );
-      //修改h2标签内样式
-      const regex2 = new RegExp(
-        /[ t]*<h2 style[ t]*=[ t]*("[^"]+")|('[^']+')/gi
-      );
-      richtext = richtext.replace(
-        regex2,
-        `<h2 style=" margin: 0; padding: 0; border: 0; font-weight: normal; 
- font-style: normal; font-size: 100%; line-height: 1; font-family: inherit;;"`
-      );
-      //修改h3标签内样式
-      const regex3 = new RegExp(
-        /[ t]*<h3 style[ t]*=[ t]*("[^"]+")|('[^']+')/gi
-      );
-      richtext = richtext.replace(
-        regex3,
-        `<h3 style=" margin: 0; padding: 0; border: 0; font-weight: normal; 
- font-style: normal; font-size: 100%; line-height: 1; font-family: inherit;;"`
-      );
-      //修改h4标签内样式
-      const regex4 = new RegExp(
-        /[ t]*<h4 style[ t]*=[ t]*("[^"]+")|('[^']+')/gi
-      );
-      richtext = richtext.replace(
-        regex4,
-        `<h4 style=" margin: 0; padding: 0; border: 0; font-weight: normal; 
- font-style: normal; font-size: 100%; line-height: 1; font-family: inherit;;"`
-      );
-      // 修改图片样式
-      const regex5 = new RegExp("<img", "gi");
-      richtext = richtext.replace(
-        regex5,
-        `<img style="max-width:100%;height:auto;text-align:center"`
-      );
-      this.editor.body.innerHTML = richtext;
-    },
+    //     addUpdate() {
+    //       //一键排版
+    //       console.log(this.editor.body.innerHTML);
+    //       let richtext = this.editor.body.innerHTML;
+    //       richtext.toString();
+    //       //修改P标签内样式
+    //       const regex = new RegExp(/[ t]*<p style[ t]*=[ t]*("[^"]+")|('[^']+')/gi);
+    //       richtext = richtext.replace(
+    //         regex,
+    //         `<p style="margin: 0;padding: 0; font-size: 100%;font-weight: 400;"`
+    //       );
+    //       //修改h1标签内样式
+    //       const regex1 = new RegExp(
+    //         /[ t]*<h1 style[ t]*=[ t]*("[^"]+")|('[^']+')/gi
+    //       );
+    //       richtext = richtext.replace(
+    //         regex1,
+    //         `<h1 style=" margin: 0; padding: 0; border: 0; font-weight: normal;
+    //  font-style: normal; font-size: 100%; line-height: 1; font-family: inherit;;"`
+    //       );
+    //       //修改h2标签内样式
+    //       const regex2 = new RegExp(
+    //         /[ t]*<h2 style[ t]*=[ t]*("[^"]+")|('[^']+')/gi
+    //       );
+    //       richtext = richtext.replace(
+    //         regex2,
+    //         `<h2 style=" margin: 0; padding: 0; border: 0; font-weight: normal;
+    //  font-style: normal; font-size: 100%; line-height: 1; font-family: inherit;;"`
+    //       );
+    //       //修改h3标签内样式
+    //       const regex3 = new RegExp(
+    //         /[ t]*<h3 style[ t]*=[ t]*("[^"]+")|('[^']+')/gi
+    //       );
+    //       richtext = richtext.replace(
+    //         regex3,
+    //         `<h3 style=" margin: 0; padding: 0; border: 0; font-weight: normal;
+    //  font-style: normal; font-size: 100%; line-height: 1; font-family: inherit;;"`
+    //       );
+    //       //修改h4标签内样式
+    //       const regex4 = new RegExp(
+    //         /[ t]*<h4 style[ t]*=[ t]*("[^"]+")|('[^']+')/gi
+    //       );
+    //       richtext = richtext.replace(
+    //         regex4,
+    //         `<h4 style=" margin: 0; padding: 0; border: 0; font-weight: normal;
+    //  font-style: normal; font-size: 100%; line-height: 1; font-family: inherit;;"`
+    //       );
+    //       // 修改图片样式
+    //       const regex5 = new RegExp("<img", "gi");
+    //       richtext = richtext.replace(
+    //         regex5,
+    //         `<img style="max-width:100%;height:auto;text-align:center"`
+    //       );
+    //       this.editor.body.innerHTML = richtext;
+    //     },
     //添加联系方式到富文本
     addInformation() {
       let aStr = `y
@@ -350,7 +351,7 @@ export default {
       let entry = document.querySelector(".edui-for-entry");
       let contact = document.querySelector(".edui-for-contact");
       let information = document.querySelector(".edui-for-information");
-      let update = document.querySelector(".edui-for-update");
+      // let update = document.querySelector(".edui-for-update");
       // let camera = document.querySelector(".edui-for-camera");
       entry.addEventListener("click", () => {
         this.entryFlag = true;
@@ -364,9 +365,9 @@ export default {
       information.addEventListener("click", () => {
         this.addInformation();
       });
-      update.addEventListener("click", () => {
-        this.addUpdate();
-      });
+      // update.addEventListener("click", () => {
+      //   this.addUpdate();
+      // });
     },
     addEntry() {
       if (!this.entrykey) {

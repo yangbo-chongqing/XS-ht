@@ -10,13 +10,13 @@
         </el-form-item>
         <el-form-item label="分馆图片">
           <el-upload
-            style="width: 200px; height: 200px"
+            style="width: 200px; height: 220px"
             :before-upload="beforeAvatarUpload"
             class="logo-uploader"
             action="/api/store/upload"
             :headers="headers"
             :show-file-list="false"
-            :on-success="logoUploadSuccess"
+            :on-success="imageUploadSuccess"
             :on-change="uploadProgress"
           >
             <img v-if="enterpriseLogo" :src="enterpriseLogo" class="logo" />
@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { getDetails } from "@/api/entrycode";
+import { getDetails, updateDetail } from "@/api/entrycode";
 import { getToken } from "@/utils/auth";
 import { Loading } from "element-ui";
 export default {
@@ -48,7 +48,7 @@ export default {
   data() {
     return {
       headers: { Authorization: "Bearer " + getToken() },
-      id: this.$route.query.id,
+      id: "",
       form: {
         name: "",
         sort: 0,
@@ -58,13 +58,33 @@ export default {
       uploadLoading: "",
       options: [],
       list: [],
+      enterpriseLogo: "",
       loading: false,
     };
   },
   created() {
+    this.id = this.$route.query.id;
     this.getType();
   },
   methods: {
+    uploadProgress(file, fileList) {
+      if (file.status === "ready") {
+        this.loadProgress = 0;
+        this.progressFlag = true; // 显示进度条
+        let intval = setInterval(() => {
+          if (this.loadProgress >= 99) {
+            clearInterval(intval);
+          }
+          this.loadProgress += 1;
+        }, 20);
+      }
+      if (file.status === "success") {
+        this.loadProgress = 100;
+      }
+      setTimeout(() => {
+        this.progressFlag = false;
+      }, 1000); // 一秒后关闭进度条
+    },
     onSubmit() {
       if (!this.form.name) {
         this.$message({
@@ -80,8 +100,9 @@ export default {
         id: this.id,
         name: this.form.name,
         sort: this.form.sort,
+        image: this.enterpriseLogo,
       };
-      postTypeEdit(this.qs.stringify(params)).then((res) => {
+      updateDetail(this.qs.stringify(params)).then((res) => {
         loading.close();
         if (res.status == 200) {
           this.$message({
@@ -105,8 +126,13 @@ export default {
         if (res.status == 200) {
           this.form.name = res.data.part.part_name;
           this.form.sort = res.data.part.sort;
+          this.enterpriseLogo = res.data.part.image;
         }
       });
+    },
+    imageUploadSuccess(response, file, fileList) {
+      //  拿到上传图片地址
+      this.enterpriseLogo = response.data.file_path;
     },
     beforeAvatarUpload(file) {
       // 限制图片尺寸大小
@@ -128,7 +154,23 @@ export default {
       return isSize;
     },
     back() {
-      this.$router.go(-1);
+      this.$router.push({ path: "/entrytype" });
+    },
+    getview(to, from) {
+      this.getType();
+    },
+  },
+  watch: {
+    $route: {
+      handler(newVal, oldVal) {
+        if (newVal.name == "entrytypeedit") {
+          console.log(newVal);
+          this.id = newVal.query.id;
+          this.getview(newVal, oldVal);
+        }
+      },
+      deep: true,
+      immediate: true,
     },
   },
 };

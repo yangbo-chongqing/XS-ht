@@ -4,29 +4,54 @@
       <el-col :span="18"
         ><el-form ref="form" label-width="80px">
           <el-form-item label="企业名称">
-            <el-input v-if="isEditFlag" v-model="info.muse_name" />
-            <p v-else>{{ info.muse_name ? info.muse_name : "暂无" }}</p>
+            <el-input
+              style="width: 220px"
+              v-if="isEditFlag == 1"
+              v-model="info.muse_name"
+              @blur="saveEditEditMuse"
+            />
+            <p class="pDis" v-else>
+              {{ info.muse_name ? info.muse_name : "暂无" }}
+            </p>
+            <i @click="change(1)" class="el-icon-edit"></i>
           </el-form-item>
           <el-form-item label="经营地址">
-            <el-input v-if="isEditFlag" v-model="info.address" />
-            <p v-else>{{ info.address ? info.address : "暂无" }}</p>
+            <el-input
+              style="width: 220px"
+              v-if="isEditFlag == 2"
+              @blur="saveEditEditMuse"
+              v-model="info.address"
+            />
+            <p class="pDis" v-else>
+              {{ info.address ? info.address : "暂无" }}
+            </p>
+            <i @click="change(2)" class="el-icon-edit"></i>
           </el-form-item>
           <el-form-item label="口号">
-            <el-input v-if="isEditFlag" v-model="info.slogan" />
-            <p v-else>{{ info.slogan ? info.slogan : "暂无" }}</p>
+            <el-input
+              style="width: 220px"
+              @blur="saveEditEditMuse"
+              v-if="isEditFlag == 3"
+              v-model="info.slogan"
+            />
+            <p class="pDis" v-else>{{ info.slogan ? info.slogan : "暂无" }}</p>
+            <i @click="change(3)" class="el-icon-edit"></i>
           </el-form-item>
           <el-form-item label="企业简介">
             <el-input
               type="textarea"
-              v-if="isEditFlag"
+              @blur="saveEditEditMuse"
+              v-if="isEditFlag == 4"
               v-model="info.introduction"
             />
-            <p v-else>{{ info.introduction ? info.introduction : "暂无" }}</p>
+            <p class="pDis" v-else>
+              {{ info.introduction ? info.introduction : "暂无" }}
+            </p>
+            <i @click="change(4)" class="el-icon-edit"></i>
           </el-form-item>
           <el-form-item label="企业音频">
             <audio v-if="enterpriseAudio" controls :src="enterpriseAudio" />
             <el-upload
-              v-if="!enterpriseAudio || isEditFlag"
               class="upload-demo"
               action="/api/store/upload"
               accept=".mp3,.m4a"
@@ -49,7 +74,6 @@
               :src="enterpriseVideo"
             />
             <el-upload
-              v-if="!enterpriseVideo || isEditFlag"
               class="upload-demo"
               action="/api/store/upload"
               accept=".mp4"
@@ -70,7 +94,6 @@
               alt=""
             />
             <el-upload
-              v-if="!enterpriseImage || isEditFlag"
               class="upload-demo"
               :before-upload="beforeUpload"
               action="/api/store/upload"
@@ -89,32 +112,17 @@
           <el-progress
             v-if="progressFlag"
             :percentage="loadProgress"
-          ></el-progress>
-          <el-form-item>
-            <el-button
-              v-if="isEditFlag"
-              type="primary"
-              @click="saveEditEditMuse"
-              >保存</el-button
-            >
-            <el-button
-              :type="isEditFlag ? 'danger' : 'primary'"
-              @click="toggleSave"
-              >{{ isEditFlag ? "取消" : "编辑" }}</el-button
-            >
-          </el-form-item>
-        </el-form></el-col
-      >
+          ></el-progress> </el-form
+      ></el-col>
       <el-col :span="6">
-        <img
+        <!-- <img
           v-if="enterpriseLogo && !isEditFlag"
           :src="enterpriseLogo"
           class="logo"
-        />
+        /> -->
         <el-upload
           style="width: 200px; height: 200px"
           :before-upload="beforeAvatarUpload"
-          v-else-if="!enterpriseLogo || isEditFlag"
           class="logo-uploader"
           action="/api/store/upload"
           :headers="headers"
@@ -232,6 +240,9 @@ export default {
     toggleSave() {
       this.isEditFlag = !this.isEditFlag;
     },
+    change(n) {
+      this.isEditFlag = n;
+    },
     saveEditEditMuse() {
       this.loading = this.$loading({
         text: "保存中",
@@ -288,15 +299,19 @@ export default {
     },
     logoUploadSuccess(response, file, fileList) {
       this.enterpriseLogo = response.data.file_path;
+      this.saveEditEditMuse();
     },
     imageUploadSuccess(response, file, fileList) {
       this.enterpriseImage = response.data.file_path;
+      this.saveEditEditMuse();
     },
     audioUploadSuccess(response, file, fileList) {
       this.enterpriseAudio = response.data.file_path;
+      this.saveEditEditMuse();
     },
     videoUploadSuccess(response, file, fileList) {
       this.enterpriseVideo = response.data.file_path;
+      this.saveEditEditMuse();
     },
   },
 };
@@ -347,6 +362,9 @@ export default {
 .pageform-container {
   .el-upload__tip {
     margin-left: 5px;
+  }
+  .pDis {
+    display: inline-block;
   }
   .home-code {
     width: 100%;

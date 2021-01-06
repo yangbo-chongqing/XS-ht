@@ -4,6 +4,16 @@
       <div class="back-box" @click="goback">
         <i class="el-icon-arrow-left"></i> 返回列表
       </div>
+      <el-dialog
+        title="添加分类"
+        :visible.sync="createEntryTypeFlag"
+        width="40%"
+      >
+        <entrytype
+          @createType="createEntryTypeFlag = false"
+          :back-flag="false"
+        />
+      </el-dialog>
       <el-row :gutter="20">
         <el-col :span="18">
           <el-form ref="form" label-width="80px" label-position="top">
@@ -24,12 +34,14 @@
                   </el-option>
                 </el-select>
                 <el-button
+                  @click="createEntryTypeFlag = true"
                   type="primary"
                   :style="{ 'margin-left': '10px' }"
                   icon="el-icon-plus"
                 ></el-button>
               </el-form-item>
             </div>
+
             <div class="create-code-body-title">
               <el-form-item label="是否隐藏">
                 <el-checkbox v-model="endtyshowflag" label="隐藏"></el-checkbox>
@@ -623,6 +635,8 @@ import { downloadIamge } from "@/utils/utils";
 import { Loading } from "element-ui";
 import { getToken } from "@/utils/auth";
 import codedown from "@/components/codeDown/index";
+import entrytype from "@/views/codelist/entrytype/create/index";
+
 import {
   postEntryList,
   typeList,
@@ -635,6 +649,7 @@ export default {
   name: "EntryEdit",
   components: {
     EntryQuery,
+    entrytype,
     ue,
     codedown,
   },
@@ -678,6 +693,7 @@ export default {
       pages: "",
       type: 1,
       entryXFlag: false,
+      createEntryTypeFlag: false,
       flag: false,
       entrySelData: [],
       loadProgress: 0, // 动态显示进度条
@@ -917,6 +933,14 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab, event);
+    },
+  },
+  watch: {
+    createEntryTypeFlag(val) {
+      console.log(val);
+      if (!val) {
+        this.queryType();
+      }
     },
   },
 };
