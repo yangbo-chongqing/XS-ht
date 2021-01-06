@@ -2038,8 +2038,8 @@
              * ```
              */
             compress: {
-                width: 1600,
-                height: 1600,
+                width: 500,
+                height: 500,
                 quality: 90,
                 allowMagnify: false,
                 crop: false,
