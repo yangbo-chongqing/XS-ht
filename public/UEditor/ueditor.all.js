@@ -18814,6 +18814,7 @@
           }
         },
         updateTargetElement: function () {
+          //图片缩放处理等比例
           var me = this;
           var newWidth = parseInt(me.resizer.style.width);
           // var newHeight = parseInt(me.resizer.style.height);
