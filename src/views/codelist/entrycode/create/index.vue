@@ -931,11 +931,12 @@ export default {
         this.loadProgress = 0;
         this.progressFlag = true; // 显示进度条
         let intval = setInterval(() => {
-          this.loadProgress += 1;
           if (this.loadProgress >= 90) {
             clearInterval(intval);
           }
-          
+          if(this.loadProgress < 100){
+            this.loadProgress += 1;
+          }
         }, 20);
       }
       if (file.status === "success") {
