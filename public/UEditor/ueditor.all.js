@@ -18815,21 +18815,21 @@
         },
         updateTargetElement: function () {
           var me = this;
-				var newWidth = parseInt(me.resizer.style.width);
-				// var newHeight = parseInt(me.resizer.style.height);
-				var oldHeight = parseInt(me.target.naturalHeight);
-				var oldWidth = parseInt(me.target.naturalWidth);
-				var c =(oldHeight*newWidth)/oldWidth;
-				domUtils.setStyles(me.target, {
-				'width': me.resizer.style.width,
-				'height': c+'px'
-				});
-				   var scale = parseInt(me.target.height)/parseInt(me.target.width);
-				   me.target.width = parseInt(me.resizer.style.width);
-				   me.target.height = parseInt(me.target.width)*scale;
-				   me.target.width = parseInt(me.resizer.style.width);
-				   me.target.height = parseInt(me.resizer.style.height);
-				me.attachTo(me.target);
+          var newWidth = parseInt(me.resizer.style.width);
+          // var newHeight = parseInt(me.resizer.style.height);
+          var oldHeight = parseInt(me.target.naturalHeight);
+          var oldWidth = parseInt(me.target.naturalWidth);
+          var c = (oldHeight * newWidth) / oldWidth;
+          domUtils.setStyles(me.target, {
+            'width': me.resizer.style.width,
+            'height': c + 'px'
+          });
+          var scale = parseInt(me.target.height) / parseInt(me.target.width);
+          me.target.width = parseInt(me.resizer.style.width);
+          me.target.height = parseInt(me.target.width) * scale;
+          me.target.width = parseInt(me.resizer.style.width);
+          me.target.height = parseInt(me.resizer.style.height);
+          me.attachTo(me.target);
         },
         updateContainerStyle: function (dir, offset) {
           var me = this,
@@ -27459,6 +27459,8 @@
 
                   // Set the multipart content type and boudary
                   this.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + boundary);
+
+
                   XMLHttpRequest.prototype.send = oldSend;
                 }
                 else {
@@ -27561,13 +27563,20 @@
                   loader.setAttribute("_src", link);
                   loader.setAttribute("alt", json.original || "");
                   loader.removeAttribute("id");
-                  me.fireEvent("contentchange");
+                  me.fireEvent("contentchange")
                 }
 
               };
+
               var imageActionUrl = me.getActionUrl(me.getOpt("imageActionName"));
               var params = utils.serializeParam(me.queryCommandValue("serverparam")) || "";
               xhr.open('post', utils.formatUrl(imageActionUrl + (imageActionUrl.indexOf("?") == -1 ? "?" : "&") + params));//这里写你之前在ueditor里设置的地址
+              //添加用户信息头
+              var token = window.localStorage.getItem('userInfo') || '';
+              if (token) {
+                console.log(xhr)
+                xhr.setRequestHeader('Authorization', token);
+              }
               xhr.send(formdata);
               //发送结束；
               var _image = new Image();

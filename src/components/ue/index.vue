@@ -19,10 +19,10 @@
           :loading="loading"
         >
           <el-option
-            v-for="item in options"
-            :key="item.id"
+            v-for="(item, index) of options"
+            :key="index"
             :label="item.name"
-            :value="item.id"
+            :value="index"
           >
           </el-option>
         </el-select>
@@ -378,7 +378,8 @@ export default {
       // });
     },
     addEntry() {
-      if (!this.entrykey) {
+      console.log(this.entrykey);
+      if (!this.entrykey && this.entrykey != 0) {
         this.$message({
           type: "error",
           message: "词条不能为空",
@@ -391,9 +392,13 @@ export default {
       if (mySelection) {
         let a = document.createElement("a");
         a.appendChild(mySelection);
-        aStr = `<a href="http://xs_j1_${this.entrykey}">${a.innerText}</a>`;
+        aStr = `<a href="http://xs_j1_${this.options[this.entrykey].id}">${
+          a.innerText
+        }</a>`;
       } else {
-        aStr = `<a href="http://xs_j1_${this.entrykey}">${this.entrykey.name}</a>`;
+        aStr = `<a href="http://xs_j1_${this.options[this.entrykey].id}">${
+          this.options[this.entrykey].name
+        }</a>`;
       }
       this.editor.execCommand("inserthtml", aStr);
       this.entryFlag = false;
