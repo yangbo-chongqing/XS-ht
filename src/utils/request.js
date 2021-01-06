@@ -11,6 +11,8 @@ axios.interceptors.request.use(
     if (!config.signature) {
       if (store.getters.token) {
         config.headers['Authorization'] = 'Bearer ' + getToken()
+          // localStorage.setItem('userInfo','Bearer ' + getToken() );
+
       }
       if (config.method === 'post') {
         axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'

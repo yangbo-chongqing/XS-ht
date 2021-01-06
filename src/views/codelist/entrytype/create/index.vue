@@ -73,7 +73,9 @@ export default {
       enterpriseImage: "",
     };
   },
-  created() {},
+  created() {
+    console.log(this.$store);
+  },
 
   methods: {
     imageUploadSuccess(response, file, fileList) {
