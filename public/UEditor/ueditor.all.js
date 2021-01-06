@@ -18760,7 +18760,6 @@
         },
         initEvents: function () {
           var me = this;
-
           me.startPos.x = me.startPos.y = 0;
           me.isDraging = false;
         },
@@ -18815,24 +18814,27 @@
           }
         },
         updateTargetElement: function () {
-
-
-
-
           var me = this;
-          domUtils.setStyles(me.target, {
-            width: me.resizer.style.width,
-            height: me.resizer.style.height
-          });
-          me.target.width = parseInt(me.resizer.style.width);
-          me.target.height = parseInt(me.resizer.style.height);
-          me.attachTo(me.target);
+				var newWidth = parseInt(me.resizer.style.width);
+				// var newHeight = parseInt(me.resizer.style.height);
+				var oldHeight = parseInt(me.target.naturalHeight);
+				var oldWidth = parseInt(me.target.naturalWidth);
+				var c =(oldHeight*newWidth)/oldWidth;
+				domUtils.setStyles(me.target, {
+				'width': me.resizer.style.width,
+				'height': c+'px'
+				});
+				   var scale = parseInt(me.target.height)/parseInt(me.target.width);
+				   me.target.width = parseInt(me.resizer.style.width);
+				   me.target.height = parseInt(me.target.width)*scale;
+				   me.target.width = parseInt(me.resizer.style.width);
+				   me.target.height = parseInt(me.resizer.style.height);
+				me.attachTo(me.target);
         },
         updateContainerStyle: function (dir, offset) {
           var me = this,
             dom = me.resizer,
             tmp;
-
           if (rect[dir][0] != 0) {
             tmp = parseInt(dom.style.left) + offset.x;
             dom.style.left = me._validScaledProp("left", tmp) + "px";
@@ -18853,7 +18855,6 @@
         _validScaledProp: function (prop, value) {
           var ele = this.resizer,
             wrap = document;
-
           value = isNaN(value) ? 0 : value;
           switch (prop) {
             case "left":
@@ -18958,9 +18959,7 @@
     return function () {
       var me = this,
         imageScale;
-
       me.setOpt("imageScaleEnabled", true);
-
       if (!browser.ie && me.options.imageScaleEnabled) {
         me.addListener("click", function (type, e) {
           var range = me.selection.getRange(),
@@ -27305,154 +27304,87 @@
    * @author Jinqn
    * @date 2014-03-31
    */
-  UE.plugin.register("simpleupload", function () {
+  UE.plugin.register('simpleupload', function () {
     var me = this,
       isLoaded = false,
       containerBtn;
 
     function initUploadBtn() {
-      var w = containerBtn.offsetWidth || 20,
-        h = containerBtn.offsetHeight || 20,
-        btnIframe = document.createElement("iframe"),
-        btnStyle =
-          "display:block;width:" +
-          w +
-          "px;height:" +
-          h +
-          "px;overflow:hidden;border:0;margin:0;padding:0;position:absolute;top:0;left:0;filter:alpha(opacity=0);-moz-opacity:0;-khtml-opacity: 0;opacity: 0;cursor:pointer;";
+      var timestrap = (+new Date()).toString(36),
+        doc = containerBtn.ownerDocument,
+        wrapper = document.createElement('div');
 
-      domUtils.on(btnIframe, "load", function () {
-        var timestrap = (+new Date()).toString(36),
-          wrapper,
-          btnIframeDoc,
-          btnIframeBody;
+      wrapper.innerHTML = '<form id="edui_form_' + timestrap + '" target="edui_iframe_' + timestrap + '" method="POST" enctype="multipart/form-data" action="' + me.getOpt('serverUrl') + '" ' +
+        'style="display:block;width:100%;height:100%;border:0;margin:0;padding:0;position:absolute;">' +
+        '<input id="edui_input_' + timestrap + '" type="file" accept="image/*" name="' + me.options.imageFieldName + '" ' +
+        'style="background:red;display:block;width:100%;height:100%;border:0;margin:0;padding:0;position:absolute;filter:alpha(opacity=0);-moz-opacity:0;-khtml-opacity: 0;opacity: 0;">' +
+        '</form>' +
+        '<iframe id="edui_iframe_' + timestrap + '" name="edui_iframe_' + timestrap + '" ' +
+        'style="display:none;width:0;height:0;border:0;margin:0;padding:0;position:absolute;"></iframe>';
 
-        btnIframeDoc =
-          btnIframe.contentDocument || btnIframe.contentWindow.document;
-        btnIframeBody = btnIframeDoc.body;
-        wrapper = btnIframeDoc.createElement("div");
+      wrapper.className = 'edui-' + me.options.theme;
+      wrapper.id = me.ui.id + '_iframeupload';
+      containerBtn.appendChild(wrapper);
 
-        wrapper.innerHTML =
-          '<form id="edui_form_' +
-          timestrap +
-          '" target="edui_iframe_' +
-          timestrap +
-          '" method="POST" enctype="multipart/form-data" action="' +
-          me.getOpt("serverUrl") +
-          '" ' +
-          'style="' +
-          btnStyle +
-          '">' +
-          '<input id="edui_input_' +
-          timestrap +
-          '" type="file" accept="image/jpg,image/jpeg,image/png,image/bmp,image/gif" name="' +
-          me.options.imageFieldName +
-          '" ' +
-          'style="' +
-          btnStyle +
-          '">' +
-          "</form>" +
-          '<iframe id="edui_iframe_' +
-          timestrap +
-          '" name="edui_iframe_' +
-          timestrap +
-          '" style="display:none;width:0;height:0;border:0;margin:0;padding:0;position:absolute;"></iframe>';
+      var form = doc.getElementById('edui_form_' + timestrap);
+      var input = doc.getElementById('edui_input_' + timestrap);
+      var iframe = doc.getElementById('edui_iframe_' + timestrap);
 
-        wrapper.className = "edui-" + me.options.theme;
-        wrapper.id = me.ui.id + "_iframeupload";
-        btnIframeBody.style.cssText = btnStyle;
-        btnIframeBody.style.width = w + "px";
-        btnIframeBody.style.height = h + "px";
-        btnIframeBody.appendChild(wrapper);
+      domUtils.on(input, 'change', function () {
+        if (!input.value) return;
+        var loadingId = 'loading_' + (+new Date()).toString(36);
+        var params = utils.serializeParam(me.queryCommandValue('serverparam')) || '';
 
-        if (btnIframeBody.parentNode) {
-          btnIframeBody.parentNode.style.width = w + "px";
-          btnIframeBody.parentNode.style.height = w + "px";
+        var imageActionUrl = me.getActionUrl(me.getOpt('imageActionName'));
+        var allowFiles = me.getOpt('imageAllowFiles');
+
+        me.focus();
+        me.execCommand('inserthtml', '<img class="loadingclass" id="' + loadingId + '" src="' + me.options.themePath + me.options.theme + '/images/spacer.gif" title="' + (me.getLang('simpleupload.loading') || '') + '" >');
+
+        function callback() {
+          try {
+            var link, json, loader,
+              body = (iframe.contentDocument || iframe.contentWindow.document).body,
+              result = body.innerText || body.textContent || '';
+            json = (new Function("return " + result))();
+            link = me.options.imageUrlPrefix + json.url;
+            if (json.state == 'SUCCESS' && json.url) {
+              loader = me.document.getElementById(loadingId);
+              loader.setAttribute('src', link);
+              loader.setAttribute('_src', link);
+              loader.setAttribute('title', json.title || '');
+              loader.setAttribute('alt', json.original || '');
+              loader.removeAttribute('id');
+              domUtils.removeClasses(loader, 'loadingclass');
+            } else {
+              showErrorLoader && showErrorLoader(json.state);
+            }
+          } catch (er) {
+            showErrorLoader && showErrorLoader(me.getLang('simpleupload.loadError'));
+          }
+          form.reset();
+          domUtils.un(iframe, 'load', callback);
+        }
+        function showErrorLoader(title) {
+          if (loadingId) {
+            var loader = me.document.getElementById(loadingId);
+            domUtils.removeClasses(loader, 'loadingclass');
+            domUtils.addClass(loader, 'loaderrorclass');
+            loader.setAttribute('title', title || '');
+          }
         }
 
-        var form = btnIframeDoc.getElementById("edui_form_" + timestrap);
-        var input = btnIframeDoc.getElementById("edui_input_" + timestrap);
-        var iframe = btnIframeDoc.getElementById("edui_iframe_" + timestrap);
+        // 判断文件格式是否错误
+        var filename = input.value,
+          fileext = filename ? filename.substr(filename.lastIndexOf('.')) : '';
+        if (!fileext || (allowFiles && (allowFiles.join('') + '.').indexOf(fileext.toLowerCase() + '.') == -1)) {
+          showErrorLoader(me.getLang('simpleupload.exceedTypeError'));
+          return;
+        }
 
-        domUtils.on(input, "change", function () {
-          if (!input.value) return;
-          var loadingId = "loading_" + (+new Date()).toString(36);
-          var params =
-            utils.serializeParam(me.queryCommandValue("serverparam")) || "";
-
-          var imageActionUrl = me.getActionUrl(me.getOpt("imageActionName"));
-          var allowFiles = me.getOpt("imageAllowFiles");
-
-          me.focus();
-          me.execCommand(
-            "inserthtml",
-            '<img class="loadingclass" id="' +
-            loadingId +
-            '" src="' +
-            me.options.themePath +
-            me.options.theme +
-            '/images/spacer.gif">'
-          );
-
-          function callback() {
-            try {
-              var link,
-                json,
-                loader,
-                body = (iframe.contentDocument || iframe.contentWindow.document)
-                  .body,
-                result = body.innerText || body.textContent || "";
-              json = new Function("return " + result)();
-              link = me.options.imageUrlPrefix + json.url;
-              if (json.state == "SUCCESS" && json.url) {
-                loader = me.document.getElementById(loadingId);
-                domUtils.removeClasses(loader, "loadingclass");
-                loader.setAttribute("src", link);
-                loader.setAttribute("_src", link);
-                loader.setAttribute("alt", json.original || "");
-                loader.removeAttribute("id");
-                me.fireEvent("contentchange");
-              } else {
-                showErrorLoader && showErrorLoader(json.state);
-              }
-            } catch (er) {
-              showErrorLoader &&
-                showErrorLoader(me.getLang("simpleupload.loadError"));
-            }
-            form.reset();
-            domUtils.un(iframe, "load", callback);
-          }
-          function showErrorLoader(title) {
-            if (loadingId) {
-              var loader = me.document.getElementById(loadingId);
-              loader && domUtils.remove(loader);
-              me.fireEvent("showmessage", {
-                id: loadingId,
-                content: title,
-                type: "error",
-                timeout: 4000
-              });
-            }
-          }
-
-          /* 判断后端配置是否没有加载成功 */
-          if (!me.getOpt("imageActionName")) {
-            errorHandler(me.getLang("autoupload.errorLoadConfig"));
-            return;
-          }
-          // 判断文件格式是否错误
-          var filename = input.value,
-            fileext = filename ? filename.substr(filename.lastIndexOf(".")) : "";
-          if (
-            !fileext ||
-            (allowFiles &&
-              (allowFiles.join("") + ".").indexOf(fileext.toLowerCase() + ".") ==
-              -1)
-          ) {
-            showErrorLoader(me.getLang("simpleupload.exceedTypeError"));
-            return;
-          }
-
+        domUtils.on(iframe, 'load', callback);
+        let w = input;
+        if (w.files[0].type == 'image/gif') {
           domUtils.on(iframe, "load", callback);
           form.action = utils.formatUrl(
             imageActionUrl +
@@ -27460,67 +27392,453 @@
             params
           );
           form.submit();
-        });
+        } else {
+          // return false;
+          w.files[0] = function () {
+            //这里开始进行图片压缩
 
-        var stateTimer;
-        me.addListener("selectionchange", function () {
-          clearTimeout(stateTimer);
-          stateTimer = setTimeout(function () {
-            var state = me.queryCommandState("simpleupload");
-            if (state == -1) {
-              input.disabled = "disabled";
-            } else {
-              input.disabled = false;
+            /**
+            * 获取formdata
+            */
+            function getFormData() {
+              var isNeedShim = ~navigator.userAgent.indexOf('Android')
+                && ~navigator.vendor.indexOf('Google')
+                && !~navigator.userAgent.indexOf('Chrome')
+                && navigator.userAgent.match(/AppleWebKit\/(\d+)/).pop() <= 534;
+
+              return isNeedShim ? new FormDataShim() : new FormData()
             }
-          }, 400);
-        });
-        isLoaded = true;
+
+            /**
+            * formdata 补丁, 给不支持formdata上传blob的android机打补丁
+            * constructor
+            */
+            function FormDataShim() {
+              console.warn('using formdata shim');
+
+              var o = this,
+                parts = [],
+                boundary = Array(21).join('-') + (+new Date() * (1e16 * Math.random())).toString(36),
+                oldSend = XMLHttpRequest.prototype.send;
+
+              this.append = function (name, value, filename) {
+                parts.push('--' + boundary + '\r\nContent-Disposition: form-data; name="' + name + '"');
+
+                if (value instanceof Blob) {
+                  parts.push('; filename="' + (filename || 'blob') + '"\r\nContent-Type: ' + value.type + '\r\n\r\n');
+                  parts.push(value);
+                }
+                else {
+                  parts.push('\r\n\r\n' + value);
+                }
+                parts.push('\r\n');
+              };
+
+              // Override XHR send()
+              XMLHttpRequest.prototype.send = function (val) {
+                var fr,
+                  data,
+                  oXHR = this;
+
+                if (val === o) {
+                  // Append the final boundary string
+                  parts.push('--' + boundary + '--\r\n');
+
+                  // Create the blob
+                  data = getBlob(parts);
+
+                  // Set up and read the blob into an array to be sent
+                  fr = new FileReader();
+                  fr.onload = function () {
+                    oldSend.call(oXHR, fr.result);
+                  };
+                  fr.onerror = function (err) {
+                    throw err;
+                  };
+                  fr.readAsArrayBuffer(data);
+
+                  // Set the multipart content type and boudary
+                  this.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + boundary);
+                  XMLHttpRequest.prototype.send = oldSend;
+                }
+                else {
+                  oldSend.call(this, val);
+                }
+              };
+            }
+
+            /**
+            * 获取blob对象的兼容性写法
+            * param buffer
+            * param format
+            * returns {*}
+            */
+            function getBlob(buffer, format) {
+              try {
+                return new Blob(buffer, { type: format });
+              } catch (e) {
+                var bb = new (window.BlobBuilder || window.WebKitBlobBuilder || window.MSBlobBuilder);
+                buffer.forEach(function (buf) {
+                  bb.append(buf);
+                });
+                return bb.getBlob(format);
+              }
+            }
+
+            var blob = URL.createObjectURL(w.files[0]);
+            var img = new Image();
+            img.src = blob;
+            var obj = w.files[0];
+
+            img.onload = function () {
+              var _this = img;
+
+              //生成比例
+              var _w = _this.width,
+                h = _this.height;
+              if (_w > 1000) {
+                var rate = _w / 1000;
+                _w = 1000;
+                h = h / rate;
+              }
+              //生成canvas
+              var canvas = document.createElement('canvas');
+              var ctx = canvas.getContext('2d');
+              canvas.setAttribute('width', _w);
+              canvas.setAttribute('height', h);
+              ctx.drawImage(_this, 0, 0, _w, h);
+
+              /**
+              * 生成base64
+              * 兼容修复移动设备需要引入mobileBUGFix.js
+              */
+              var base64 = ''
+              if (w.files[0].type == 'image/jpeg') {
+                base64 = canvas.toDataURL('image/jpeg', obj.quality || 0.8);
+              }
+              if (w.files[0].type == 'image/png') {
+                base64 = canvas.toDataURL('image/png', obj.quality || 0.8);
+              }
+
+              // 生成结果
+              var result = {
+                blob: blob,
+                base64: base64,
+                clearBase64: base64.substr(base64.indexOf(',') + 1)
+              };
+              // 执行后函数
+              //开始通过XHR发送
+              var xhr = new XMLHttpRequest();
+              var formdata = getFormData();
+
+              //base64转二进制
+              var text = window.atob(base64.split(",")[1]);
+              var buffer = new Uint8Array(text.length);
+              var pecent = 0, loop = null;
+
+              for (var i = 0; i < text.length; i++) {
+                buffer[i] = text.charCodeAt(i);
+              }
+
+              var _blob = getBlob([buffer], "image/jpeg");
+              ///
+              formdata.append('upfile', _blob, 'upfile.jpg');
+
+              xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                  clearInterval(loop);
+                  var link,
+                    json,
+                    loader,
+                    body = (iframe.contentDocument || iframe.contentWindow.document)
+                      .body,
+                    result = body.innerText || body.textContent || "";
+                  json = JSON.parse(xhr.responseText);
+                  link = me.options.imageUrlPrefix + json.url;
+                  loader = me.document.getElementById(loadingId);
+                  domUtils.removeClasses(loader, "loadingclass");
+                  loader.setAttribute("src", link);
+                  loader.setAttribute("_src", link);
+                  loader.setAttribute("alt", json.original || "");
+                  loader.removeAttribute("id");
+                  me.fireEvent("contentchange");
+                }
+
+              };
+              var imageActionUrl = me.getActionUrl(me.getOpt("imageActionName"));
+              var params = utils.serializeParam(me.queryCommandValue("serverparam")) || "";
+              xhr.open('post', utils.formatUrl(imageActionUrl + (imageActionUrl.indexOf("?") == -1 ? "?" : "&") + params));//这里写你之前在ueditor里设置的地址
+              xhr.send(formdata);
+              //发送结束；
+              var _image = new Image();
+              _image.src = base64;
+              return _image;
+            }
+            //图片压缩结束
+          }();
+        }
       });
 
-      btnIframe.style.cssText = btnStyle;
-      containerBtn.appendChild(btnIframe);
+      var stateTimer;
+      me.addListener('selectionchange', function () {
+        clearTimeout(stateTimer);
+        stateTimer = setTimeout(function () {
+          var state = me.queryCommandState('simpleupload');
+          if (state == -1) {
+            input.disabled = 'disabled';
+          } else {
+            input.disabled = false;
+          }
+        }, 400);
+      });
+      isLoaded = true;
     }
 
     return {
       bindEvents: {
-        ready: function () {
+        'ready': function () {
           //设置loading的样式
-          utils.cssRule(
-            "loading",
-            ".loadingclass{display:inline-block;cursor:default;background: url('" +
-            this.options.themePath +
-            this.options.theme +
-            "/images/loading.gif') no-repeat center center transparent;border:1px solid #cccccc;margin-right:1px;height: 22px;width: 22px;}\n" +
-            ".loaderrorclass{display:inline-block;cursor:default;background: url('" +
-            this.options.themePath +
-            this.options.theme +
-            "/images/loaderror.png') no-repeat center center transparent;border:1px solid #cccccc;margin-right:1px;height: 22px;width: 22px;" +
-            "}",
-            this.document
-          );
+          utils.cssRule('loading',
+            '.loadingclass{display:inline-block;cursor:default;background: url(\''
+            + this.options.themePath
+            + this.options.theme + '/images/loading.gif\') no-repeat center center transparent;border:1px solid #cccccc;margin-right:1px;height: 22px;width: 22px;}\n' +
+            '.loaderrorclass{display:inline-block;cursor:default;background: url(\''
+            + this.options.themePath
+            + this.options.theme + '/images/loaderror.png\') no-repeat center center transparent;border:1px solid #cccccc;margin-right:1px;height: 22px;width: 22px;' +
+            '}',
+            this.document);
         },
         /* 初始化简单上传按钮 */
-        simpleuploadbtnready: function (type, container) {
+        'simpleuploadbtnready': function (type, container) {
           containerBtn = container;
           me.afterConfigReady(initUploadBtn);
         }
       },
       outputRule: function (root) {
-        utils.each(root.getNodesByTagName("img"), function (n) {
-          if (/\b(loaderrorclass)|(bloaderrorclass)\b/.test(n.getAttr("class"))) {
+        utils.each(root.getNodesByTagName('img'), function (n) {
+          if (/\b(loaderrorclass)|(bloaderrorclass)\b/.test(n.getAttr('class'))) {
             n.parentNode.removeChild(n);
           }
         });
       },
       commands: {
-        simpleupload: {
+        'simpleupload': {
           queryCommandState: function () {
             return isLoaded ? 0 : -1;
           }
         }
       }
-    };
+    }
   });
+
+  // UE.plugin.register("simpleupload", function () {
+  //   var me = this,
+  //     isLoaded = false,
+  //     containerBtn;
+
+  //   function initUploadBtn() {
+  //     var w = containerBtn.offsetWidth || 20,
+  //       h = containerBtn.offsetHeight || 20,
+  //       btnIframe = document.createElement("iframe"),
+  //       btnStyle =
+  //         "display:block;width:" +
+  //         w +
+  //         "px;height:" +
+  //         h +
+  //         "px;overflow:hidden;border:0;margin:0;padding:0;position:absolute;top:0;left:0;filter:alpha(opacity=0);-moz-opacity:0;-khtml-opacity: 0;opacity: 0;cursor:pointer;";
+
+  //     domUtils.on(btnIframe, "load", function () {
+  //       var timestrap = (+new Date()).toString(36),
+  //         wrapper,
+  //         btnIframeDoc,
+  //         btnIframeBody;
+
+  //       btnIframeDoc =
+  //         btnIframe.contentDocument || btnIframe.contentWindow.document;
+  //       btnIframeBody = btnIframeDoc.body;
+  //       wrapper = btnIframeDoc.createElement("div");
+
+  //       wrapper.innerHTML =
+  //         '<form id="edui_form_' +
+  //         timestrap +
+  //         '" target="edui_iframe_' +
+  //         timestrap +
+  //         '" method="POST" enctype="multipart/form-data" action="' +
+  //         me.getOpt("serverUrl") +
+  //         '" ' +
+  //         'style="' +
+  //         btnStyle +
+  //         '">' +
+  //         '<input id="edui_input_' +
+  //         timestrap +
+  //         '" type="file" accept="image/jpg,image/jpeg,image/png,image/bmp,image/gif" name="' +
+  //         me.options.imageFieldName +
+  //         '" ' +
+  //         'style="' +
+  //         btnStyle +
+  //         '">' +
+  //         "</form>" +
+  //         '<iframe id="edui_iframe_' +
+  //         timestrap +
+  //         '" name="edui_iframe_' +
+  //         timestrap +
+  //         '" style="display:none;width:0;height:0;border:0;margin:0;padding:0;position:absolute;"></iframe>';
+  //       wrapper.className = "edui-" + me.options.theme;
+  //       wrapper.id = me.ui.id + "_iframeupload";
+  //       btnIframeBody.style.cssText = btnStyle;
+  //       btnIframeBody.style.width = w + "px";
+  //       btnIframeBody.style.height = h + "px";
+  //       btnIframeBody.appendChild(wrapper);
+  //       if (btnIframeBody.parentNode) {
+  //         btnIframeBody.parentNode.style.width = w + "px";
+  //         btnIframeBody.parentNode.style.height = w + "px";
+  //       }
+  //       var form = btnIframeDoc.getElementById("edui_form_" + timestrap);
+  //       var input = btnIframeDoc.getElementById("edui_input_" + timestrap);
+  //       var iframe = btnIframeDoc.getElementById("edui_iframe_" + timestrap);
+  //       domUtils.on(input, "change", function () {
+  //         if (!input.value) return;
+  //         var loadingId = "loading_" + (+new Date()).toString(36);
+  //         var params =
+  //           utils.serializeParam(me.queryCommandValue("serverparam")) || "";
+  //         var imageActionUrl = me.getActionUrl(me.getOpt("imageActionName"));
+  //         var allowFiles = me.getOpt("imageAllowFiles");
+  //         me.focus();
+  //         me.execCommand(
+  //           "inserthtml",
+  //           '<img class="loadingclass" id="' +
+  //           loadingId +
+  //           '" src="' +
+  //           me.options.themePath +
+  //           me.options.theme +
+  //           '/images/spacer.gif">'
+  //         );
+  //         function callback() {
+  //           try {
+  //             var link,
+  //               json,
+  //               loader,
+  //               body = (iframe.contentDocument || iframe.contentWindow.document)
+  //                 .body,
+  //               result = body.innerText || body.textContent || "";
+  //             json = new Function("return " + result)();
+  //             link = me.options.imageUrlPrefix + json.url;
+  //             if (json.state == "SUCCESS" && json.url) {
+  //               loader = me.document.getElementById(loadingId);
+  //               domUtils.removeClasses(loader, "loadingclass");
+  //               loader.setAttribute("src", link);
+  //               loader.setAttribute("_src", link);
+  //               loader.setAttribute("alt", json.original || "");
+  //               loader.removeAttribute("id");
+  //               me.fireEvent("contentchange");
+  //             } else {
+  //               showErrorLoader && showErrorLoader(json.state);
+  //             }
+  //           } catch (er) {
+  //             showErrorLoader &&
+  //               showErrorLoader(me.getLang("simpleupload.loadError"));
+  //           }
+  //           form.reset();
+  //           domUtils.un(iframe, "load", callback);
+  //         }
+  //         function showErrorLoader(title) {
+  //           if (loadingId) {
+  //             var loader = me.document.getElementById(loadingId);
+  //             loader && domUtils.remove(loader);
+  //             me.fireEvent("showmessage", {
+  //               id: loadingId,
+  //               content: title,
+  //               type: "error",
+  //               timeout: 4000
+  //             });
+  //           }
+  //         }
+  //         /* 判断后端配置是否没有加载成功 */
+  //         if (!me.getOpt("imageActionName")) {
+  //           errorHandler(me.getLang("autoupload.errorLoadConfig"));
+  //           return;
+  //         }
+  //         // 判断文件格式是否错误
+  //         var filename = input.value,
+  //           fileext = filename ? filename.substr(filename.lastIndexOf(".")) : "";
+  //         if (
+  //           !fileext ||
+  //           (allowFiles &&
+  //             (allowFiles.join("") + ".").indexOf(fileext.toLowerCase() + ".") ==
+  //             -1)
+  //         ) {
+  //           showErrorLoader(me.getLang("simpleupload.exceedTypeError"));
+  //           return;
+  //         }
+
+  //         domUtils.on(iframe, "load", callback);
+  //         form.action = utils.formatUrl(
+  //           imageActionUrl +
+  //           (imageActionUrl.indexOf("?") == -1 ? "?" : "&") +
+  //           params
+  //         );
+  //         form.submit();
+  //       });
+
+  //       var stateTimer;
+  //       me.addListener("selectionchange", function () {
+  //         clearTimeout(stateTimer);
+  //         stateTimer = setTimeout(function () {
+  //           var state = me.queryCommandState("simpleupload");
+  //           if (state == -1) {
+  //             input.disabled = "disabled";
+  //           } else {
+  //             input.disabled = false;
+  //           }
+  //         }, 400);
+  //       });
+  //       isLoaded = true;
+  //     });
+
+  //     btnIframe.style.cssText = btnStyle;
+  //     containerBtn.appendChild(btnIframe);
+  //   }
+
+  //   return {
+  //     bindEvents: {
+  //       ready: function () {
+  //         //设置loading的样式
+  //         utils.cssRule(
+  //           "loading",
+  //           ".loadingclass{display:inline-block;cursor:default;background: url('" +
+  //           this.options.themePath +
+  //           this.options.theme +
+  //           "/images/loading.gif') no-repeat center center transparent;border:1px solid #cccccc;margin-right:1px;height: 22px;width: 22px;}\n" +
+  //           ".loaderrorclass{display:inline-block;cursor:default;background: url('" +
+  //           this.options.themePath +
+  //           this.options.theme +
+  //           "/images/loaderror.png') no-repeat center center transparent;border:1px solid #cccccc;margin-right:1px;height: 22px;width: 22px;" +
+  //           "}",
+  //           this.document
+  //         );
+  //       },
+  //       /* 初始化简单上传按钮 */
+  //       simpleuploadbtnready: function (type, container) {
+  //         containerBtn = container;
+  //         me.afterConfigReady(initUploadBtn);
+  //       }
+  //     },
+  //     outputRule: function (root) {
+  //       utils.each(root.getNodesByTagName("img"), function (n) {
+  //         if (/\b(loaderrorclass)|(bloaderrorclass)\b/.test(n.getAttr("class"))) {
+  //           n.parentNode.removeChild(n);
+  //         }
+  //       });
+  //     },
+  //     commands: {
+  //       simpleupload: {
+  //         queryCommandState: function () {
+  //           return isLoaded ? 0 : -1;
+  //         }
+  //       }
+  //     }
+  //   };
+  // });
 
 
   // plugins/serverparam.js
