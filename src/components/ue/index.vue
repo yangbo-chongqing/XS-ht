@@ -207,6 +207,8 @@ export default {
           update: "一键排版",
           camera: "直播视频地址",
         },
+        compressSide:0,
+        maxImageSideLength:500,
         catchRemoteImageEnable: true,
         // 初始容器高度
         initialFrameHeight: 500,
