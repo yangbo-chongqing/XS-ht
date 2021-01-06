@@ -21,6 +21,9 @@ body::-webkit-scrollbar-track-piece {
 .view {
 word-break: break-all;
 }
+ul{
+    list-style: none;
+}
 .vote_area {
 display: block;
 }

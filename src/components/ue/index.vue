@@ -292,12 +292,13 @@ export default {
     //     },
     //添加联系方式到富文本
     addInformation() {
-      let aStr = `y
-        <hr/>
-				<h4 style="text-align:center">联系电话：023-123456</h4>
-				<h4 style="text-align:center">手机号：12345678911</h4>
-        <h4 style="text-align:center">公司地址：xxxxxxxxx</h4>
-        <hr/>`;
+      let aStr = `
+        <ul style='background: #f5f5f5;width:100%;border-radius: 10px;padding: 10px;box-sizing: border-box;'>
+          <li style="text-align:center"><span style='font-size:18px;font-weight: bold;'>基本信息</span></li>
+          <li style="text-align:center;color:#333"><span style='color:#999;margin-right:20px'>联系电话：</span>023-123456</li>
+          <li style="text-align:center;color:#333"><span style='color:#999;margin-right:20px'>联系手机：</span>12345678911</li>
+          <li style="text-align:center;color:#333"><span style='color:#999;margin-right:20px'>联系地址：</span>某某市某某区某某街道</li>
+        </ul>`;
       this.editor.execCommand("inserthtml", aStr);
     },
     //添加相关链接到富文本
@@ -309,6 +310,7 @@ export default {
             type: "error",
             message: "请填写完整链接信息",
           });
+          return false;
         } else {
           if (
             !item.url.match(
@@ -321,18 +323,18 @@ export default {
             });
             return false;
           } else {
-            aStr += `<p ><a style="color:#333" href="${item.url}">${item.title}</a></p>`;
-            this.editor.execCommand("inserthtml", aStr);
-            this.form = [
-              {
-                title: "",
-                url: "",
-              },
-            ];
-            this.contactFlag = false;
+            aStr += `<p><a style="color:#333;text-decoration: none;" href="${item.url}">${index + 1}、${item.title}</a><img width='13px' style='margin-left:5px' src='https://voice.xunsheng.org.cn/sydt/muse_0/63b9127961b3bede237e8dd3267514c9.png' /></p>`;
           }
         }
       });
+      this.editor.execCommand("inserthtml", aStr);
+      this.form = [
+        {
+          title: "",
+          url: "",
+        },
+      ];
+      this.contactFlag = false;
     },
     //删除相关链接
     delFromItem(index) {
