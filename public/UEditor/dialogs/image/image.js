@@ -866,12 +866,14 @@
         /* 向后台拉取图片列表数据 */
         getImageData: function () {
             var _this = this;
+            var token = window.localStorage.getItem('userInfo') || '';
 
             if (!_this.listEnd && !this.isLoadingData) {
                 this.isLoadingData = true;
                 var url = editor.getActionUrl(editor.getOpt('imageManagerActionName')),
                     isJsonp = utils.isCrossDomainUrl(url);
                 ajax.request(url, {
+                    'Authorization': token,
                     'timeout': 100000,
                     'dataType': isJsonp ? 'jsonp' : '',
                     'data': utils.extend({

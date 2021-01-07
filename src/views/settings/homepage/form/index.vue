@@ -58,7 +58,7 @@
               :headers="headers"
               :show-file-list="false"
               :on-success="audioUploadSuccess"
-              :on-progress="uploadProgress"
+              :on-change="uploadProgress"
             >
               <el-button size="small" type="primary">上传音频</el-button>
               <span slot="tip" class="el-upload__tip"
@@ -124,8 +124,9 @@
           style="width: 200px; height: 200px"
           :before-upload="beforeAvatarUpload"
           class="logo-uploader"
-          action="/api/store/upload"
+          action="http://upload.qiniup.com"
           :headers="headers"
+          :data="qiToken"
           :show-file-list="false"
           :on-success="logoUploadSuccess"
           :on-change="uploadProgress"
@@ -167,6 +168,7 @@
 
 <script>
 import { getToken } from "@/utils/auth";
+import { getQiToken } from "@/api/user";
 import { downloadIamge } from "@/utils/utils";
 import { editEditMuse } from "@/api/settings";
 import { preview } from "@/api/product";
@@ -200,6 +202,10 @@ export default {
       loadProgress: 0, // 动态显示进度条
       progressFlag: false, // 关闭进度条
       dialogVisible: false,
+      qiToken: {
+        key: "",
+        token: "",
+      },
     };
   },
   created() {
@@ -207,8 +213,19 @@ export default {
     this.enterpriseAudio = this.info.voice_url;
     this.enterpriseVideo = this.info.video_url;
     this.enterpriseLogo = this.info.logo;
+    this.getTK();
   },
   methods: {
+    getTK() {
+      let params = {
+        suffix: "png",
+      };
+      getQiToken(this.qs.stringify(params)).then((res) => {
+        this.qiToken.key = res.data.data.key;
+        this.qiToken.token = res.data.data.upToken;
+        console.log(2222);
+      });
+    },
     toggle() {
       this.dialogVisible = !this.dialogVisible;
     },
@@ -284,21 +301,43 @@ export default {
         this.loadProgress = 0;
         this.progressFlag = true; // 显示进度条
         let intval = setInterval(() => {
-          if (this.loadProgress >= 99) {
+          if (this.loadProgress >= 90) {
             clearInterval(intval);
           }
-          this.loadProgress += 1;
+          if (this.loadProgress < 100) {
+            this.loadProgress += 1;
+          }
         }, 20);
       }
       if (file.status === "success") {
         this.loadProgress = 100;
+        setTimeout(() => {
+          this.progressFlag = false;
+        }, 1000); // 一秒后关闭进度条
       }
-      setTimeout(() => {
-        this.progressFlag = false;
-      }, 1000); // 一秒后关闭进度条
     },
+    // uploadProgress(file, fileList) {
+    //   if (file.status === "ready") {
+    //     this.loadProgress = 0;
+    //     this.progressFlag = true; // 显示进度条
+    //     let intval = setInterval(() => {
+    //       if (this.loadProgress >= 99) {
+    //         clearInterval(intval);
+    //       }
+    //       this.loadProgress += 1;
+    //     }, 20);
+    //   }
+    //   if (file.status === "success") {
+    //     this.loadProgress = 100;
+    //   }
+    //   setTimeout(() => {
+    //     this.progressFlag = false;
+    //   }, 1000); // 一秒后关闭进度条
+    // },
     logoUploadSuccess(response, file, fileList) {
-      this.enterpriseLogo = response.data.file_path;
+      let path = `http://voice.xunsheng.org.cn/${response.key}`;
+      console.log(response);
+      this.enterpriseLogo = path;
       this.saveEditEditMuse();
     },
     imageUploadSuccess(response, file, fileList) {

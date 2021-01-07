@@ -699,6 +699,7 @@ export default {
       loadFlag: false,
       typeCheck: 0,
       branch: "",
+      branchList: [],
       codeSort: 0,
       options: [],
       count: "",
@@ -823,6 +824,7 @@ export default {
         this.codeSendImgData = res.data.relics_info;
         this.codeSort = res.data.relics_info.sort;
         this.typeCheck = res.data.relics_info.type_id;
+        this.branch = res.data.relics_info.part_id;
         res.data.relics_info.related_list.map((item) => {
           item.flag = false;
         });
@@ -884,6 +886,7 @@ export default {
         content: this.editorData,
         sort: this.codeSort,
         type_id: this.typeCheck,
+        part_id: this.branch,
         related_ids: related_ids.toString(),
         history_ids: history_ids.toString(),
         hide: this.endtyshowflag ? 1 : 0,
@@ -939,7 +942,7 @@ export default {
           if (this.loadProgress >= 90) {
             clearInterval(intval);
           }
-          if(this.loadProgress < 100){
+          if (this.loadProgress < 100) {
             this.loadProgress += 1;
           }
         }, 20);

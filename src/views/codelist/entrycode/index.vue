@@ -393,18 +393,19 @@ export default {
       tree: "",
       treeCount: 0,
       type_id: 0,
-      scopeLabel:''
+      scopeLabel: "",
     };
   },
-  beforeRouteEnter(to, from, next) {
-    if (from.name === "EntryEdit" || from.name === "CreateArticle") {
-      //判断是从哪个路由过来的，若是detail页面不需要刷新获取新数据，直接用之前缓存的数据即可
-      to.meta.isBack = true;
-    }
-    next();
-  },
+  // beforeRouteEnter(to, from, next) {
+  //   if (from.name === "EntryEdit" || from.name === "CreateArticle") {
+  //     //判断是从哪个路由过来的，若是detail页面不需要刷新获取新数据，直接用之前缓存的数据即可
+  //     to.meta.isBack = true;
+  //   }
+  //   next();
+  // },
   activated() {
     if (!this.$route.meta.isBack) {
+      console.log(111);
       this.page = 1;
       // 如果isBack是false，表明需要获取新数据，否则就不再请求，直接使用缓存的数据
       this.fetchData();
@@ -419,6 +420,11 @@ export default {
     this.GetMuse();
     this.typeList();
   },
+  // updated() {
+  //   this.fetchData();
+  //   this.GetMuse();
+  //   this.typeList();
+  // },
   methods: {
     //拖动完成提交数据
     node_drop() {
@@ -781,6 +787,7 @@ export default {
       this.draft = 0;
       this.type_id = 0;
       this.tipValue = "标签";
+      console.log(this.keyword);
       localStorage.setItem("entrykeyword", this.keyword);
       this.fetchData();
     },

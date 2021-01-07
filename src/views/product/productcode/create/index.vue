@@ -15,12 +15,13 @@
           <el-date-picker
             v-model="form.listed"
             type="date"
-            placeholder="选择日期">
+            placeholder="选择日期"
+          >
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="厂家">
+        <!-- <el-form-item label="厂家">
           <el-input v-model="form.factory"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="产品图标">
           <el-upload
             class="upload-demo"
@@ -62,8 +63,8 @@ export default {
         name: "",
         unique: "",
         dialogImageUrl: "",
-        factory:"",
-        listed:""
+        factory: "",
+        listed: "",
       },
       dialogVisible: false,
       disabled: false,

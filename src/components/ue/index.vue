@@ -392,8 +392,9 @@ export default {
       if (mySelection) {
         let a = document.createElement("a");
         a.appendChild(mySelection);
+
         aStr = `<a href="http://xs_j1_${this.options[this.entrykey].id}">${
-          a.innerText
+          a.innerHTML
         }</a>`;
       } else {
         aStr = `<a href="http://xs_j1_${this.options[this.entrykey].id}">${

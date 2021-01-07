@@ -2,7 +2,11 @@
   <div class="fun-code">
     <div class="fun-code-head">
       <el-row>
-        <el-col :span="14"><div class="entry-title" @click="back"><i class="el-icon-arrow-left"></i>返回产品码</div></el-col>
+        <el-col :span="14"
+          ><div class="entry-title" @click="back">
+            <i class="el-icon-arrow-left"></i>返回产品码
+          </div></el-col
+        >
         <el-col :span="10">
           <el-row :gutter="20">
             <el-col :span="20">
@@ -14,7 +18,7 @@
                   placeholder="请输入唯一码"
                   clearable
                   ><i slot="prefix" class="el-input__icon el-icon-search" />
-                  <el-button slot="append"  @click="onSearch">搜索</el-button>
+                  <el-button slot="append" @click="onSearch">搜索</el-button>
                 </el-input>
               </div>
             </el-col>
@@ -22,7 +26,7 @@
               <div class="entry-search">
                 <el-button
                   type="primary"
-                  @click="golinkpage('/product/flowcodecreate',{id:id})"
+                  @click="golinkpage('/product/flowcodecreate', { id: id })"
                   >新增流程码</el-button
                 >
               </div>
@@ -42,7 +46,7 @@
         fit
         highlight-current-row
       >
-        <el-table-column label="唯一编号" >
+        <el-table-column label="唯一编号">
           <template slot-scope="scope">
             <span class="code-name">{{ scope.row.pkid }}</span>
           </template>
@@ -67,19 +71,33 @@
             <span class="code-name">{{ scope.row.certificate_core }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center"  label="操作" width="220">
+        <el-table-column align="center" label="操作" width="220">
           <template slot-scope="scope">
             <span class="el-link-btn"
               ><el-link
                 type="primary"
-                @click="golinkpage('/product/flowcodeedit', { id: scope.row.id })"
-                >编辑</el-link
+                @click="
+                  openPopover(
+                    'http://xsdt.xunsheng.org.cn/api/web/code?type=3&id=' +
+                      scope.row.id +
+                      '&muse_id=' +
+                      userinfo.user_info.muse_id
+                  )
+                "
+                >下载二维码</el-link
               ></span
             >
             <span class="el-link-btn"
               ><el-link
                 type="primary"
-                @click="delFow(scope.row.id,scope)"
+                @click="
+                  golinkpage('/product/flowcodeedit', { id: scope.row.id })
+                "
+                >编辑</el-link
+              ></span
+            >
+            <span class="el-link-btn"
+              ><el-link type="primary" @click="delFow(scope.row.id, scope)"
                 >删除</el-link
               ></span
             >
@@ -97,16 +115,27 @@
         />
       </div>
     </div>
+    <codedown
+      :dialogVisible="codeDialog"
+      :codeImg="codeImg"
+      @toggleDialog="toggle"
+    />
   </div>
 </template>
 
 <script>
-import { floWingList,floWingDel } from "@/api/product";
+import { floWingList, floWingDel } from "@/api/product";
+import codedown from "@/components/codeDown/index";
+import { mapGetters } from "vuex";
+
 export default {
+  components: {
+    codedown,
+  },
   name: "FlowCode",
   data() {
     return {
-      id:this.$route.query.id,
+      id: this.$route.query.id,
       list: null,
       listLoading: true,
       keyword: "",
@@ -114,39 +143,50 @@ export default {
       count: 0,
       showPage: false,
       tableHeight: document.body.clientHeight - 220,
+      codeDialog: false,
+      codeImg: "",
     };
   },
   created() {
     this.fetchData();
   },
   methods: {
+    openPopover(code) {
+      // 打开二维码
+      this.codeImg = code;
+      this.codeDialog = true;
+    },
+    toggle() {
+      this.codeDialog = !this.codeDialog;
+      this.codeImg = "";
+    },
     //删除
-    delFow(id,item){
-      this.$confirm('此操作将删除该流程, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+    delFow(id, item) {
+      this.$confirm("此操作将删除该流程, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
           const parmas = {
-            id: id
-          }
+            id: id,
+          };
           floWingDel(this.qs.stringify(parmas)).then((res) => {
             if (res.status == 200) {
-              this.list.splice(item.$index, 1)
+              this.list.splice(item.$index, 1);
               this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
+                type: "success",
+                message: "删除成功!",
+              });
             }
-          })
+          });
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
     onSearch() {
       this.page = 1;
@@ -171,7 +211,7 @@ export default {
     fetchData() {
       this.listLoading = true;
       let parmas = {
-        product_id:this.id,
+        product_id: this.id,
         page: this.page,
         keyword: this.keyword,
       };
@@ -182,9 +222,12 @@ export default {
         this.showPage = res.data.data.last_page > 1 ? true : false;
       });
     },
-    back(){
+    back() {
       this.$router.go(-1);
-    }
+    },
+  },
+  computed: {
+    ...mapGetters(["userinfo"]),
   },
 };
 </script>

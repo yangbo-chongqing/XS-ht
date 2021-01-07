@@ -38,6 +38,19 @@
                 <el-checkbox v-model="endtyshowflag" label="隐藏"></el-checkbox>
               </el-form-item>
             </div>
+            <!-- <div class="create-code-body-title">
+              <el-form-item label="分馆">
+                <el-select v-model="branch" placeholder="请选择">
+                  <el-option
+                    v-for="item in branchList"
+                    :key="item.id"
+                    :label="item.part_name"
+                    :value="item.id"
+                  >
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </div> -->
             <el-form-item label="词条封面">
               <div class="create-code-body-upload">
                 <div v-if="codeImage" class="upload-info">
@@ -644,6 +657,7 @@ import {
   RelicsList,
   entryCodeList,
   postEdit,
+  getList,
 } from "@/api/entrycode";
 import ue from "@/components/ue";
 export default {
@@ -703,9 +717,13 @@ export default {
       createEntryTypeFlag: false,
       dialogVisible: false,
       codeImg: "",
+      branch: "",
+      branchList: [],
     };
   },
-  created() {},
+  created() {
+    this.getListGuan();
+  },
   mounted() {
     this.$nextTick(() => {
       setTimeout(() => {
@@ -749,6 +767,16 @@ export default {
     },
     entryToggle(row) {
       row.flag = !row.flag;
+    },
+    getListGuan() {
+      // 获取分馆列表
+      const params = {
+        page: 1,
+        keyword: "",
+      };
+      getList(this.qs.stringify(params)).then((res) => {
+        this.branchList = res.data.list.data;
+      });
     },
     //删除选中的相关数据
     entrySelDel(index, item) {
@@ -856,6 +884,8 @@ export default {
         related_ids: related_ids.toString(),
         history_ids: history_ids.toString(),
         hide: this.endtyshowflag ? 1 : 0,
+        part_id: this.branch,
+
         state: state, //1发布2草稿
       };
       const loading = this.$loading();
@@ -890,6 +920,7 @@ export default {
         related_ids: related_ids.toString(),
         history_ids: history_ids.toString(),
         hide: this.endtyshowflag ? 1 : 0,
+        part_id: this.branch,
         state: state, //1发布2草稿
       };
       const loading = this.$loading();
@@ -934,7 +965,7 @@ export default {
           if (this.loadProgress >= 90) {
             clearInterval(intval);
           }
-          if(this.loadProgress < 100){
+          if (this.loadProgress < 100) {
             this.loadProgress += 1;
           }
         }, 20);
@@ -945,7 +976,6 @@ export default {
           this.progressFlag = false;
         }, 1000); // 一秒后关闭进度条
       }
-      
     },
     onNamespaceLoaded(CKEDITOR) {},
     ckeditorReady() {
@@ -976,9 +1006,8 @@ export default {
 <style lang="scss">
 .create-code {
   .edui-editor-toolbarbox {
-    padding-left:75px;
+    padding-left: 75px;
     box-sizing: border-box;
-    
   }
   .create-tips {
     display: flex;

@@ -57,11 +57,11 @@
             <span class="code-name">{{ scope.row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="厂家">
+        <!-- <el-table-column label="厂家">
           <template slot-scope="scope">
             {{ scope.row.factory }}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="装潢视频" align="center">
           <template slot-scope="scope">
             <el-button type="text" size="mini" v-if="scope.row.video"
@@ -112,7 +112,7 @@
             {{ scope.row.listed }}
           </template>
         </el-table-column>
-        <el-table-column label="是否上架" width="120" align="center">
+        <!-- <el-table-column label="是否上架" width="120" align="center">
           <template slot-scope="scope">
             <el-switch
               v-model="scope.row.showFlag"
@@ -122,7 +122,7 @@
             >
             </el-switch>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column align="center" label="操作" width="220">
           <template slot-scope="scope">
             <span class="el-link-btn"
@@ -132,13 +132,20 @@
                 >查看流程码</el-link
               ></span
             >
-            <span class="el-link-btn"
+            <!-- <span class="el-link-btn"
               ><el-link
                 type="primary"
-                @click="openPopover('http://xsdt.xunsheng.org.cn/api/web/code?type=3&id='+scope.row.id+'&muse_id='+userinfo.user_info.muse_id)"
+                @click="
+                  openPopover(
+                    'http://xsdt.xunsheng.org.cn/api/web/code?type=3&id=' +
+                      scope.row.id +
+                      '&muse_id=' +
+                      userinfo.user_info.muse_id
+                  )
+                "
                 >下载二维码</el-link
               ></span
-            >
+            > -->
             <span class="el-link-btn"
               ><el-link
                 type="primary"
@@ -238,7 +245,7 @@
         </span>
       </el-dialog>
       <el-dialog
-        :title="type=='video'?'添加装潢视频':'添加质检报告'"
+        :title="type == 'video' ? '添加装潢视频' : '添加质检报告'"
         :visible.sync="addInspectionFlag"
         width="30%"
       >
@@ -266,7 +273,11 @@
           >
         </span>
       </el-dialog>
-      <codedown :dialogVisible="codeDialog" :codeImg="codeImg" @toggleDialog="toggle" />
+      <codedown
+        :dialogVisible="codeDialog"
+        :codeImg="codeImg"
+        @toggleDialog="toggle"
+      />
     </div>
   </div>
 </template>
@@ -281,12 +292,12 @@ import {
 } from "@/api/product";
 import { downloadIamge } from "@/utils/utils";
 import { getToken } from "@/utils/auth";
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 import codedown from "@/components/codeDown/index";
 export default {
   name: "ProductCode",
-  components:{
-    codedown
+  components: {
+    codedown,
   },
   data() {
     return {
@@ -310,12 +321,12 @@ export default {
         manual_name: "",
         fileList: [],
       },
-      codeDialog:false,
-      codeImg:''
+      codeDialog: false,
+      codeImg: "",
     };
   },
   computed: {
-    ...mapGetters(['userinfo'])
+    ...mapGetters(["userinfo"]),
   },
   created() {
     this.fetchData();
@@ -342,7 +353,7 @@ export default {
           });
           return false;
         }
-        parmas.video=this.form.fileList[0].response.data.file_path;
+        parmas.video = this.form.fileList[0].response.data.file_path;
       } else {
         if (this.form.fileList.length == 0) {
           this.$message({
@@ -351,7 +362,7 @@ export default {
           });
           return false;
         }
-        parmas.inspection=this.form.fileList[0].response.data.file_path;
+        parmas.inspection = this.form.fileList[0].response.data.file_path;
       }
       let loading = this.$loading({
         text: "关联中...",

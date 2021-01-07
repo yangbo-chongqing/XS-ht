@@ -1,4 +1,6 @@
 import request from '@/utils/request'
+import axios from 'axios'
+
 // 修改用户信息
 export function postAccountSettings(data) {
   return request({
@@ -48,5 +50,60 @@ export function logout() {
   return request({
     url: '',
     method: 'post'
+  })
+}
+
+//获取七牛云上传token
+export function getQiToken(data) {
+  return request({
+    url: '/api/qiniu',
+    method: 'post',
+    data
+  })
+}
+
+// //获取七牛云上传token
+// export function getQiniuTk(mid, tk, suffix = 'png') {
+//   return new Promise((resolve, reject) => {
+//     let params = {
+//       member_id: mid,
+//       token: tk,
+//       device_id: 'share-poster',
+//       suffix: suffix,
+//       bucket: 'resource'
+//     };
+//     axios.post("/api/voice/qiniu/uploadtoken", qs.stringify(params)).then(res => {
+//       let data = res.data;
+//       if (data.code == 200) {
+//         resolve(data.data);
+//       } else {
+//         Toast(data.msg);
+//         reject({ upToken: '', key: '' });
+//       }
+//     }).catch(err => {
+//       Toast(err.message);
+//       reject({ upToken: '', key: '' });
+//     })
+//   })
+// }
+//上传base64图片到七牛云
+export function uploadToQiniu(upToken, key, pic) {
+  return new Promise((resolve, reject) => {
+    pic = pic.replace(/^data[\S]+;base64,/, '');
+    axios.post('https://upload.qiniup.com/putb64/-1', pic, {
+      headers: { 'Content-Type': 'application/octet-stream', 'Authorization': "UpToken " + upToken },
+      signature: 'yes'
+    }).then(res => {
+      let data = res.data;
+      if (res.status == 200) {
+        resolve('http://resource.xunsheng.org.cn/' + key);
+      } else {
+        Toast(data.msg);
+        reject('');
+      }
+    }).catch(err => {
+      Toast(err.message);
+      reject('');
+    })
   })
 }

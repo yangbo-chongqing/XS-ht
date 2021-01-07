@@ -15,12 +15,13 @@
           <el-date-picker
             v-model="form.listed"
             type="date"
-            placeholder="选择日期">
+            placeholder="选择日期"
+          >
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="厂家">
+        <!-- <el-form-item label="厂家">
           <el-input v-model="form.factory"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="产品图标">
           <el-upload
             class="upload-demo"
@@ -51,7 +52,7 @@
 </template>
 
 <script>
-import { productEdit,productDetails } from "@/api/product";
+import { productEdit, productDetails } from "@/api/product";
 import { getToken } from "@/utils/auth";
 import { Loading } from "element-ui";
 export default {
@@ -59,13 +60,13 @@ export default {
   data() {
     return {
       headers: { Authorization: "Bearer " + getToken() },
-      id:this.$route.query.id,
+      id: this.$route.query.id,
       form: {
         name: "",
         unique: "",
         dialogImageUrl: "",
-        factory:"",
-        listed:""
+        factory: "",
+        listed: "",
       },
       dialogVisible: false,
       disabled: false,
@@ -77,21 +78,21 @@ export default {
   },
   methods: {
     //查询产品码
-    queryDetails(){
+    queryDetails() {
       let loading = this.$loading({
-        text:'加载中...'
-      })
+        text: "加载中...",
+      });
       let params = {
-        id:this.id
-      }
-      productDetails(this.qs.stringify(params)).then((res)=>{
+        id: this.id,
+      };
+      productDetails(this.qs.stringify(params)).then((res) => {
         loading.close();
         this.form.name = res.data.data.name;
         this.form.unique = res.data.data.unique;
         this.form.dialogImageUrl = res.data.data.image;
         this.form.factory = res.data.data.factory;
         this.form.listed = res.data.data.listed;
-      })
+      });
     },
     onSubmit() {
       let loading = this.$loading({
@@ -111,7 +112,7 @@ export default {
             message: res.message,
             type: "success",
           });
-          this.back()
+          this.back();
         }
       });
     },
