@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout, getInfo, } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import qs from 'qs'
@@ -9,7 +9,7 @@ const getDefaultState = () => {
     userinfo: '',
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
   }
 }
 
@@ -28,6 +28,7 @@ const mutations = {
   SET_NAME: (state, name) => {
     state.name = name
   },
+
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
   }

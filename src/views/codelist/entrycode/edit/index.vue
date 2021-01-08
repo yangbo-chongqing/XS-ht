@@ -92,7 +92,9 @@
                   <el-col :span="4">
                     <el-upload
                       class="upload-demo"
-                      action="/api/store/upload"
+                      :before-upload="uploadPic"
+                      :data="qiToken"
+                      action="http://upload.qiniup.com"
                       :headers="headers"
                       :on-success="imageUploadSuccess"
                       accept=".jpg,.png"
@@ -107,7 +109,9 @@
                   <el-col :span="4">
                     <el-upload
                       class="upload-demo"
-                      action="/api/store/upload"
+                      :before-upload="uploadAudio"
+                      :data="qiToken"
+                      action="http://upload.qiniup.com"
                       :headers="headers"
                       :show-file-list="false"
                       accept=".MPEG,.MP3,.MPEG-4,.MIDI,.WMA"
@@ -122,7 +126,9 @@
                   <el-col :span="4">
                     <el-upload
                       class="upload-demo"
-                      action="/api/store/upload"
+                      action="http://upload.qiniup.com"
+                      :data="qiToken"
+                      :before-upload="uploadVideo"
                       :headers="headers"
                       accept=".MPEG,.baiAVI,.nAVI,.ASF,.MOV,.3GP,.mp4"
                       :show-file-list="false"
@@ -635,7 +641,7 @@
     />
     <EntryQuery
       v-if="popoverFlag"
-      :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id=' + id"
+      :infoUrl="'http://xsdth5.xunsheng.org.cn/entryinfo?id=' + id"
       :id="id"
       @popoverEven="togglePopover"
     />
@@ -707,6 +713,7 @@ export default {
       page_size: 10,
       pages: "",
       type: 1,
+      qiToken: {},
       entryXFlag: false,
       createEntryTypeFlag: false,
       flag: false,
@@ -800,6 +807,18 @@ export default {
     },
     setEditorData(data) {
       this.editorData = data;
+    },
+    uploadPic(file) {
+      let newTime = new Date().getTime();
+      this.qiToken.key = `${this.qiToken.key}${newTime}.png`;
+    },
+    uploadAudio() {
+      let newTime = new Date().getTime();
+      this.qiToken.key = `${this.qiToken.key}${newTime}.mp3`;
+    },
+    uploadVideo() {
+      let newTime = new Date().getTime();
+      this.qiToken.key = `${this.qiToken.key}${newTime}.mp4`;
     },
     togglePopover() {
       this.popoverFlag = !this.popoverFlag;
@@ -896,13 +915,13 @@ export default {
       postEdit(this.qs.stringify(parmas)).then((res) => {
         if (res.status == 200) {
           this.isEdit = true;
+          if (state == 1) {
+            this.golinkpage("/codelist/entrycode", {
+              keyword: localStorage.getItem("entrykeyword"),
+            });
+          }
         }
         loading.close();
-        if (state == 1) {
-          this.golinkpage("/codelist/entrycode", {
-            keyword: localStorage.getItem("entrykeyword"),
-          });
-        }
       });
     },
     golinkpage(page, obj) {
@@ -923,13 +942,16 @@ export default {
       this.codeAudio = "";
     },
     imageUploadSuccess(response, file, fileList) {
-      this.codeImage = response.data.file_path;
+      let path = `http://voice.xunsheng.org.cn/${response.key}`;
+      this.codeImage = path;
     },
     audioUploadSuccess(response, file, fileList) {
-      this.codeAudio = response.data.file_path;
+      let path = `http://voice.xunsheng.org.cn/${response.key}`;
+      this.codeAudio = path;
     },
     videoUploadSuccess(response, file, fileList) {
-      this.codeVideo = response.data.file_path;
+      let path = `http://voice.xunsheng.org.cn/${response.key}`;
+      this.codeVideo = path;
     },
     setCheditor(e) {
       this.mobHtml = e.target.innerHTML;
@@ -965,6 +987,7 @@ export default {
   },
   created() {
     this.getListGuan();
+    this.qiToken = JSON.parse(sessionStorage.qiToken);
   },
   watch: {
     createEntryTypeFlag(val) {

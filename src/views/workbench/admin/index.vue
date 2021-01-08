@@ -96,7 +96,7 @@
     />
     <EntryQuery
       v-if="popoverFlag"
-      :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id=' + id"
+      :infoUrl="'http://xsdth5.xunsheng.org.cn/entryinfo?id=' + id"
       :id="id"
       @popoverEven="togglePopover"
     />

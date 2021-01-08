@@ -119,6 +119,7 @@ import {
   GetCodeStatus,
   getDetail,
   LoginQR,
+  getQiToken,
 } from "@/api/user";
 export default {
   name: "Login",

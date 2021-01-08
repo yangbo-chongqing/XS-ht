@@ -327,7 +327,7 @@
     />
     <EntryQuery
       v-if="popoverFlag"
-      :infoUrl="'http://xsdth5.xunsheng.org.cn/#/entryinfo?id=' + id"
+      :infoUrl="'http://xsdth5.xunsheng.org.cn/entryinfo?id=' + id"
       :id="id"
       @popoverEven="togglePopover"
     />
@@ -349,6 +349,7 @@ import {
   postTypeCreate,
   postTypeSort,
 } from "@/api/entrycode";
+import { getQiToken } from "@/api/user";
 import { getGetMuse } from "@/api/settings";
 import { mapGetters } from "vuex";
 import EntryQuery from "@/components/EntryQuery";
@@ -405,7 +406,7 @@ export default {
   // },
   activated() {
     if (!this.$route.meta.isBack) {
-      console.log(111);
+      console.log(sessionStorage.getItem("qiToken"));
       this.page = 1;
       // 如果isBack是false，表明需要获取新数据，否则就不再请求，直接使用缓存的数据
       this.fetchData();
@@ -419,6 +420,15 @@ export default {
     this.fetchData();
     this.GetMuse();
     this.typeList();
+    if (!sessionStorage.getItem("qiToken")) {
+      //是否有qiToken
+      getQiToken({}).then((res) => {
+        let str = res.data.data;
+        str.key = JSON.parse(JSON.stringify(str.path));
+        delete str.path;
+        sessionStorage.setItem("qiToken", JSON.stringify(str));
+      });
+    }
   },
   // updated() {
   //   this.fetchData();

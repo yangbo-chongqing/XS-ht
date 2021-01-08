@@ -329,7 +329,7 @@ export default {
               item.url
             }">${index + 1}、${
               item.title
-            }</a><img width='13px' style='margin-left:5px' src='https://voice.xunsheng.org.cn/sydt/muse_0/63b9127961b3bede237e8dd3267514c9.png' /></p>`;
+            }</a><img class="a-href-icon" width='13px' style='margin-left:5px' src='https://voice.xunsheng.org.cn/sydt/muse_0/63b9127961b3bede237e8dd3267514c9.png' /></p>`;
           }
         }
       });

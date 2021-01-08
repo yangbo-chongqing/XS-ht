@@ -53,8 +53,10 @@
             <audio v-if="enterpriseAudio" controls :src="enterpriseAudio" />
             <el-upload
               class="upload-demo"
-              action="/api/store/upload"
+              action="http://upload.qiniup.com"
+              :before-upload="beforeUp"
               accept=".mp3,.m4a"
+              :data="qiToken"
               :headers="headers"
               :show-file-list="false"
               :on-success="audioUploadSuccess"
@@ -75,9 +77,11 @@
             />
             <el-upload
               class="upload-demo"
-              action="/api/store/upload"
               accept=".mp4"
+              :before-upload="beforeUpVideo"
               :headers="headers"
+              action="http://upload.qiniup.com"
+              :data="qiToken"
               :show-file-list="false"
               :on-success="videoUploadSuccess"
               :on-change="uploadProgress"
@@ -96,7 +100,8 @@
             <el-upload
               class="upload-demo"
               :before-upload="beforeUpload"
-              action="/api/store/upload"
+              :data="qiToken"
+              action="http://upload.qiniup.com"
               :headers="headers"
               accept=".png,.jpg"
               :show-file-list="false"
@@ -213,26 +218,25 @@ export default {
     this.enterpriseAudio = this.info.voice_url;
     this.enterpriseVideo = this.info.video_url;
     this.enterpriseLogo = this.info.logo;
-    this.getTK();
+    let qiT = JSON.parse(sessionStorage.qiToken);
+    this.qiToken.key = qiT.key;
+    this.qiToken.token = qiT.token;
   },
   methods: {
-    getTK() {
-      let params = {
-        suffix: "png",
-      };
-      getQiToken(this.qs.stringify(params)).then((res) => {
-        this.qiToken.key = res.data.data.key;
-        this.qiToken.token = res.data.data.upToken;
-        console.log(2222);
-      });
-    },
     toggle() {
       this.dialogVisible = !this.dialogVisible;
     },
     downloadImg(img, imgname) {
       downloadIamge(img, imgname);
     },
+    beforeUpVideo() {
+      let newTime = new Date().getTime();
+      this.qiToken.key = `${this.qiToken.key}${newTime}.mp4`;
+    },
     beforeAvatarUpload(file) {
+      let newTime = new Date().getTime();
+      this.qiToken.key = `${this.qiToken.key}${newTime}.png`;
+
       // 限制图片尺寸大小
       const isSize = new Promise(function (resolve, reject) {
         let _URL = window.URL || window.webkitURL;
@@ -279,7 +283,13 @@ export default {
         this.isEditFlag = false;
       });
     },
+    beforeUp() {
+      let newTime = new Date().getTime();
+      this.qiToken.key = `${this.qiToken.key}${newTime}.mp3`;
+    },
     beforeUpload(file) {
+      let newTime = new Date().getTime();
+      this.qiToken.key = `${this.qiToken.key}${newTime}.png`;
       return new Promise((resolve, reject) => {
         // 压缩图片;
         let isLt2M = file.size / 1024 / 1024 < 1; // 判定图片大小是否小于4MB
@@ -341,15 +351,19 @@ export default {
       this.saveEditEditMuse();
     },
     imageUploadSuccess(response, file, fileList) {
-      this.enterpriseImage = response.data.file_path;
+      let path = `http://voice.xunsheng.org.cn/${response.key}`;
+      this.enterpriseImage = path;
       this.saveEditEditMuse();
     },
     audioUploadSuccess(response, file, fileList) {
-      this.enterpriseAudio = response.data.file_path;
+      let path = `http://voice.xunsheng.org.cn/${response.key}`;
+
+      this.enterpriseAudio = path;
       this.saveEditEditMuse();
     },
     videoUploadSuccess(response, file, fileList) {
-      this.enterpriseVideo = response.data.file_path;
+      let path = `http://voice.xunsheng.org.cn/${response.key}`;
+      this.enterpriseVideo = path;
       this.saveEditEditMuse();
     },
   },
