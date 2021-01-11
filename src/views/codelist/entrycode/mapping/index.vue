@@ -31,7 +31,6 @@
           v-for="(item, index) in entryObj"
           :key="index"
           :style="{ left: item.x + 'px', top: item.y + 'px' }"
-          
         >
           <div @click.stop="setTip(index)">{{ item.title }}</div>
           <span></span>
@@ -53,9 +52,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="setTipData"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="setTipData">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -82,16 +79,16 @@ export default {
       },
       entryObj: [],
       downFlag: false,
-      clickFlag:false,
-      firstTime:'',
-      lastTime:'',
+      clickFlag: false,
+      firstTime: "",
+      lastTime: "",
       sX: 0,
       sY: 0,
       tipIndex: 0,
-      form:{
-        title:'',
-        href:''
-      }
+      form: {
+        title: "",
+        href: "",
+      },
     };
   },
 
@@ -103,18 +100,17 @@ export default {
   },
   methods: {
     //设置锚点内容
-    setTipData(){
+    setTipData() {
       this.entryObj[this.tipIndex].title = this.form.title;
       this.entryObj[this.tipIndex].href = this.form.href;
       this.dialogVisible = false;
     },
     //点击设置锚点内容弹窗唤起
     setTip(index) {
-      if(!this.clickFlag){
+      if (!this.clickFlag) {
         this.dialogVisible = true;
         this.tipIndex = index;
       }
-      
     },
     //按下按下
     mouseDown(e, index) {
@@ -141,7 +137,7 @@ export default {
     mouseUp(e, index) {
       this.lastTime = new Date().getTime();
       console.log(this.lastTime - this.firstTime);
-      if( (this.lastTime - this.firstTime) > 200){
+      if (this.lastTime - this.firstTime > 200) {
         this.clickFlag = true;
       }
       setTimeout(() => {
@@ -234,16 +230,16 @@ export default {
       border-radius: 10px;
       transform: translate(-50%, -50%);
       cursor: pointer;
-      span{
+      span {
         width: 0;
         height: 0;
         display: block;
         border: 10px solid white;
-        border-color:white transparent transparent  transparent;
+        border-color: white transparent transparent transparent;
         position: absolute;
         bottom: -20px;
         left: 50%;
-        transform: translate(-50%,0);
+        transform: translate(-50%, 0);
       }
       .close {
         position: absolute;
@@ -255,7 +251,7 @@ export default {
     }
     img {
       max-width: 1000px;
-      cursor:url(~@/assets/icon/addentry.png),auto;
+      cursor: url(~@/assets/icon/addentry.png), auto;
     }
   }
 }
