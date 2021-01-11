@@ -54,13 +54,13 @@ export default {
 .sidebarLogoFade-enter-active {
   transition: opacity 1.5s;
 }
-.logo-body{
-  display:flex;
+.logo-body {
+  display: flex;
   align-items: center;
-  img{
+  img {
     flex-shrink: 0;
   }
-  h1{
+  h1 {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

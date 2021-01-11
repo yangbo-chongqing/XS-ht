@@ -878,9 +878,9 @@ export default {
 </script>
 <style lang="scss">
 .create-code {
-  .cke_top {
-    padding-left: 75px;
-  }
+  // .cke_top {
+  //   padding-left: 75px;
+  // }
   .el-tabs__content {
     height: 635px;
     overflow-y: scroll;
