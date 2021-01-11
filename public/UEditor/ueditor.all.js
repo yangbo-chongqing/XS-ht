@@ -8775,8 +8775,9 @@
            */
       getActionUrl: function (action) {
         var actionName = this.getOpt(action) || action,
-          imageUrl = this.getOpt("imageUrl"),
-          serverUrl = this.getOpt("serverUrl");
+          // imageUrl = this.getOpt("imageUrl"),
+          imageUrl = "http://upload.qiniup.com"
+        serverUrl = this.getOpt("serverUrl");
 
         if (!serverUrl && imageUrl) {
           serverUrl = imageUrl.replace(/^(.*[\/]).+([\.].+)$/, "$1controller$2");
@@ -10896,6 +10897,9 @@
                 }
               }
               node.setAttr("_src", node.getAttr("src"));
+              node.setAttr('style', '');
+              node.setAttr('width', '');
+              node.setAttr('height', '');
               break;
             case "span":
               if (browser.webkit && (val = node.getStyle("white-space"))) {
@@ -27545,7 +27549,7 @@
 
               var _blob = getBlob([buffer], "image/jpeg");
               ///
-              formdata.append('upfile', _blob, 'upfile.jpg');
+              formdata.append('file', _blob, 'file.png');
 
               xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4 && xhr.status == 200) {

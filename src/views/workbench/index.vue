@@ -33,17 +33,15 @@ export default {
   },
   created() {
     this.getWorkbenchInfo();
-    if (!sessionStorage.getItem("qiToken")) {
-      //是否有qiToken
-      getQiToken({}).then((res) => {
-        let str = res.data.data;
-        str.token = JSON.parse(JSON.stringify(str.upToken));
-        str.key = JSON.parse(JSON.stringify(str.path));
-        delete str.path;
-        delete str.upToken;
-        sessionStorage.setItem("qiToken", JSON.stringify(str));
-      });
-    }
+    //更新七牛token
+    getQiToken({}).then((res) => {
+      let str = res.data.data;
+      str.token = JSON.parse(JSON.stringify(str.upToken));
+      str.key = JSON.parse(JSON.stringify(str.path));
+      delete str.path;
+      delete str.upToken;
+      sessionStorage.setItem("qiToken", JSON.stringify(str));
+    });
   },
   methods: {
     getWorkbenchInfo() {

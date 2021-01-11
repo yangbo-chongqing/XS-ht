@@ -420,15 +420,20 @@ export default {
     this.fetchData();
     this.GetMuse();
     this.typeList();
-    if (!sessionStorage.getItem("qiToken")) {
-      //是否有qiToken
+    //是否有更新七牛token
+    let newTime = new Date().getTime();
+    if (
+      !sessionStorage.qiToken ||
+      sessionStorage.qiToken.end_time * 1000 > newTime
+    )
       getQiToken({}).then((res) => {
         let str = res.data.data;
+        str.token = JSON.parse(JSON.stringify(str.upToken));
         str.key = JSON.parse(JSON.stringify(str.path));
         delete str.path;
+        delete str.upToken;
         sessionStorage.setItem("qiToken", JSON.stringify(str));
       });
-    }
   },
   // updated() {
   //   this.fetchData();
