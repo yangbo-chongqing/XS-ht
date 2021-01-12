@@ -12,8 +12,13 @@
       :on-change="uploadProgress"
     >
       <el-button size="small" type="primary">上传导图</el-button>
-      <span slot="tip" class="el-upload__tip">格式 png、jpg 750*222</span>
+      <!-- <span slot="tip" class="el-upload__tip">格式 png、jpg 750*222</span> -->
     </el-upload>
+    <div>
+      <el-button @click="saveMapping" size="small" type="primary"
+        >保存</el-button
+      >
+    </div>
     <div class="setmapping">
       <img
         @click="setEntryJump"
@@ -47,7 +52,23 @@
           <el-input v-model="form.title"></el-input>
         </el-form-item>
         <el-form-item label="链接">
-          <el-input v-model="form.href"></el-input>
+          <el-select
+            v-model="form.href"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="请输入关键词搜索"
+            :remote-method="remoteMethod"
+            :loading="loading"
+          >
+            <el-option
+              v-for="(item, index) of options"
+              :key="index"
+              :label="item.name"
+              :value="index"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -60,6 +81,8 @@
 <script>
 import { getToken } from "@/utils/auth";
 import { getQiToken } from "@/api/user";
+import { mapEdit,mapDetails } from "@/api/mapping";
+import { RelicsList } from "@/api/entrycode";
 export default {
   name: "EntryCode",
   components: {},
@@ -68,8 +91,7 @@ export default {
     return {
       headers: { Authorization: "Bearer " + getToken() },
       uploadLoading: "",
-      enterpriseImage:
-        "http://voice.xunsheng.org.cn/sydt/muse_12/1610344525946.png",
+      enterpriseImage:"",
       loadProgress: 0, // 动态显示进度条
       progressFlag: false, // 关闭进度条
       dialogVisible: false,
@@ -89,6 +111,9 @@ export default {
         title: "",
         href: "",
       },
+      loading: false,
+      options: [],
+      entrykey: "",
     };
   },
 
@@ -97,19 +122,68 @@ export default {
     let qiT = JSON.parse(sessionStorage.qiToken);
     this.qiToken.key = qiT.key;
     this.qiToken.token = qiT.token;
+    this.getMapDetails();
   },
   methods: {
+    //查看旅游导图详情
+    getMapDetails(){
+      mapDetails().then((res)=>{
+        this.enterpriseImage = res.data.info.map_img;
+        this.entryObj = res.data.info.map_coordinate;
+      })
+    },
+    //搜索词条
+    remoteMethod(query) {
+      if (query !== "") {
+        this.loading = true;
+        let parmas = {
+          keyword: query,
+        };
+        RelicsList(this.qs.stringify(parmas)).then((res) => {
+          this.loading = false;
+          this.options = res.data.relics_list.data;
+        });
+      } else {
+        this.options = [];
+      }
+    },
+    //保存设置
+    saveMapping() {
+      let params = {
+        map_img: this.enterpriseImage,
+        map_coordinate: JSON.stringify(this.entryObj),
+      };
+      mapEdit(this.qs.stringify(params)).then((res) => {});
+    },
     //设置锚点内容
     setTipData() {
+      console.log(this.form.title);
+      console.log(this.form.href);
+      if(this.form.title == '' || this.form.href === ''){
+        this.$message({
+          type:'error',
+          message:'请填写内容'
+        })
+        return false;
+      }
       this.entryObj[this.tipIndex].title = this.form.title;
-      this.entryObj[this.tipIndex].href = this.form.href;
+      this.entryObj[this.tipIndex].content = this.options[this.form.href];
+      this.entryObj[this.tipIndex].href = `http://xs_j1_${this.options[this.form.href].id}`;
       this.dialogVisible = false;
+      this.form.title = '';
+      this.form.href = '';
     },
     //点击设置锚点内容弹窗唤起
     setTip(index) {
       if (!this.clickFlag) {
         this.dialogVisible = true;
         this.tipIndex = index;
+        console.log(this.entryObj[index].href);
+        if(this.entryObj[index].href != ""){
+          this.form.title = this.entryObj[index].title;
+          this.options=[this.entryObj[index].content];
+          this.form.href = 0;
+        }
       }
     },
     //按下按下
@@ -160,6 +234,7 @@ export default {
       console.log(x, y);
       this.entryObj.push({
         title: "点击编辑",
+        content:'',
         href: "",
         x: x,
         y: y,

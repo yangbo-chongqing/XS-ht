@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div ref="ue">
     <vue-ueditor-wrap
       @ready="ready"
       v-model="ueData"
@@ -414,7 +414,27 @@ export default {
     VueUeditorWrap,
   },
   props: ["value"],
-  mounted: function () {},
+  mounted: function () {
+    this.$nextTick(() => {
+      let _this = this;
+      let scroll_box = document.querySelector(".create-code");
+      scroll_box.addEventListener(
+        "scroll",
+        function () {
+          let edui1_toolbarbox = document.querySelector("#edui1_toolbarbox");
+          let ue_box = _this.$refs.ue.getBoundingClientRect().top;
+          // let ue_left = _this.$refs.ue.getBoundingClientRect();
+          console.log(edui1_toolbarbox);
+          if (ue_box <= 0) {
+            edui1_toolbarbox.classList.add("setFixed");
+          } else {
+            edui1_toolbarbox.classList.remove("setFixed");
+          }
+        },
+        false
+      );
+    });
+  },
   data: function () {
     return {
       centerDialogVisible: false,
@@ -689,6 +709,14 @@ export default {
   beforeDestroy: function () {},
 };
 </script>
+<style lang="scss">
+.setFixed {
+  position: fixed !important;
+  top: 70px;
+  z-index: 1001;
+  width: 712px !important;
+}
+</style>
 <style lang="scss" scoped>
 .ck-popover {
   position: fixed;
