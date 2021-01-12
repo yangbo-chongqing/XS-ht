@@ -8,6 +8,20 @@
 
     <breadcrumb class="breadcrumb-container" />
     <div class="right-menu">
+      <el-select
+        style="width: 180px; margin-right: 10px"
+        v-model="id"
+        placeholder="请选择切换的公司"
+        @change="changeValue"
+      >
+        <el-option
+          v-for="(item, index) of userinfo.muse_list"
+          :key="index"
+          :label="item.muse_name"
+          :value="item.id"
+        >
+        </el-option>
+      </el-select>
       <router-link target="_blank" :to="{ name: 'help' }">
         <div class="avatar-hlpe"><i class="el-icon-question" />帮助</div>
       </router-link>
@@ -38,19 +52,40 @@
 import { mapGetters } from "vuex";
 import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
-
+import { museSwitch } from "@/api/user";
+import { getGetMuse } from "@/api/settings";
 export default {
+  inject: ["reload"],
   components: {
     Breadcrumb,
     Hamburger,
   },
+  data() {
+    return {
+      id: "",
+    };
+  },
   computed: {
-    ...mapGetters(["sidebar", "avatar", "name"]),
+    ...mapGetters(["sidebar", "avatar", "name", "userinfo"]),
   },
   mounted() {
     console.log(this.avatar);
   },
   methods: {
+    async changeValue(id) {
+      // 切换后 页面刷新
+      this.id = id;
+      await this.getId();
+      await this.$store.dispatch("user/getInfo");
+      await this.$router.go(0);
+      // await this.reload();
+    },
+    getId() {
+      // 切换公司ID
+      museSwitch(
+        this.qs.stringify({ id: JSON.stringify(this.id) })
+      ).then((res) => {});
+    },
     toggleSideBar() {
       this.$store.dispatch("app/toggleSideBar");
     },
@@ -62,6 +97,13 @@ export default {
       await this.$store.dispatch("user/logout");
       this.$router.push(`/login?redirect=${this.$route.fullPath}`);
     },
+  },
+  created() {
+    this.userinfo.muse_list.map((item) => {
+      if (item.select == 1) {
+        this.id = item.id;
+      }
+    });
   },
 };
 </script>

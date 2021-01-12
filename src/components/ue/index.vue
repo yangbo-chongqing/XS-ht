@@ -387,6 +387,21 @@
         </el-tab-pane>
       </el-tabs>
     </div>
+    <!-- 图片集 -->
+    <div>
+      <el-dialog title="提示" :visible.sync="centerDialogVisible" width="30%">
+        <el-tabs type="border-card">
+          <el-tab-pane label="用户管理">用户管理</el-tab-pane>
+          <el-tab-pane label="配置管理">配置管理</el-tab-pane>
+        </el-tabs>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="centerDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="centerDialogVisible = false"
+            >确 定</el-button
+          >
+        </span>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -402,6 +417,7 @@ export default {
   mounted: function () {},
   data: function () {
     return {
+      centerDialogVisible: false,
       id: parseInt(Math.random() * 10000).toString(),
       ueData: "",
       isShowDoc: false,
@@ -413,7 +429,7 @@ export default {
           [
             "undo", //撤销
             "redo", //重做
-            "autotypeset", //自动排版'
+            // "autotypeset", //自动排版'
             "removeformat", //清除格式
             "|",
             "fontsize", //字号
@@ -475,6 +491,7 @@ export default {
             // "paragraph", //段落格式
             "contact", //相关链接
             "update", //一键排版
+            "allimage", //图片集
           ],
         ],
         labelMap: {
@@ -483,6 +500,7 @@ export default {
           information: "添加联系方式",
           update: "快速排版",
           camera: "直播视频地址",
+          allimage: "图片集",
         },
         compressSide: 0,
         maxImageSideLength: 500,
@@ -516,6 +534,10 @@ export default {
     addUpdate() {
       //一键排版
       this.isShowDoc = !this.isShowDoc;
+    },
+    addImageAll() {
+      // 图片集操作
+      this.centerDialogVisible = true;
     },
     //添加联系方式到富文本
     addInformation() {
@@ -591,6 +613,7 @@ export default {
       let contact = document.querySelector(".edui-for-contact");
       let information = document.querySelector(".edui-for-information");
       let update = document.querySelector(".edui-for-update");
+      let allimage = document.querySelector(".edui-for-allimage");
       // let camera = document.querySelector(".edui-for-camera");
       entry.addEventListener("click", () => {
         this.entryFlag = true;
@@ -606,6 +629,9 @@ export default {
       });
       update.addEventListener("click", () => {
         this.addUpdate();
+      });
+      allimage.addEventListener("click", () => {
+        this.addImageAll();
       });
     },
     addEntry() {

@@ -54,6 +54,12 @@
     background-size: 19px;
     background-position: center;
 }
+.edui-default  .edui-for-allimage .edui-button-body .edui-icon {
+    background-repeat: no-repeat;
+    background-image: url(../images/update.png) !important;
+    background-size: 19px;
+    background-position: center;
+}
 .edui-default  .edui-for-camera .edui-button-body .edui-icon {
     background-repeat: no-repeat;
     background-image: url(../images/camera.png) !important;
