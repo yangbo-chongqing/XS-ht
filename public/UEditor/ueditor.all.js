@@ -29245,11 +29245,12 @@
       },
       getHtmlTpl: function () {
         return (
+          //点击按钮吧_onButtonClick更换为_onArrowClick
           '<div id="##" class="edui-box %%">' +
           "<div " +
           (this.title ? 'title="' + this.title + '"' : "") +
           ' id="##_state" stateful><div class="%%-body">' +
-          '<div id="##_button_body" class="edui-box edui-button-body" onclick="$$._onButtonClick(event, this);">' +
+          '<div id="##_button_body" class="edui-box edui-button-body" onclick="$$._onArrowClick(event, this);">' +
           '<div class="edui-box edui-icon"></div>' +
           "</div>" +
           '<div class="edui-box edui-splitborder"></div>' +
