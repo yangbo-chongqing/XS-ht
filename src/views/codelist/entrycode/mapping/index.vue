@@ -14,6 +14,7 @@
       <el-button size="small" type="primary">上传导图</el-button>
       <span slot="tip" class="el-upload__tip">格式 png、jpg 750*222</span>
     </el-upload>
+    <div><el-button @click="saveMapping" size="small" type="primary">保存</el-button></div>
     <div class="setmapping">
       <img
         @click="setEntryJump"
@@ -63,6 +64,8 @@
 <script>
 import { getToken } from "@/utils/auth";
 import { getQiToken } from "@/api/user";
+import { mapEdit } from "@/api/mapping";
+import { param } from 'public/UEditor/third-party/jquery-1.10.2';
 export default {
   name: "EntryCode",
   components: {},
@@ -102,6 +105,17 @@ export default {
     this.qiToken.token = qiT.token;
   },
   methods: {
+    //保存设置
+    saveMapping(){
+      // let params = {
+      //   map_img:this.enterpriseImage,
+      //   map_coordinate:JSON.stringify(this.entryObj)
+      // }
+      // console.log(params);
+      // mapEdit(this.qs.stringify(params)).then((res)=>{
+
+      // })
+    },
     //设置锚点内容
     setTipData(){
       this.entryObj[this.tipIndex].title = this.form.title;
