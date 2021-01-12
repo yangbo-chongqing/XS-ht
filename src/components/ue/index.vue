@@ -1,5 +1,5 @@
 <template>
-  <div ref="ue">
+  <div class="ue-box" ref="ue">
     <vue-ueditor-wrap
       @ready="ready"
       v-model="ueData"
@@ -678,13 +678,17 @@ export default {
 };
 </script>
 <style lang="scss">
+.ue-box{
+  position: relative;
   .setFixed{
-    position: fixed !important;
-    top: 70px;
+    position: sticky !important;
+    top: 0px;
     z-index: 1001;
-    width: 37.2% !important; 
-
+    width: 712px !important; 
+    left: 0;
   }
+}
+  
 </style>
 <style lang="scss" scoped>
 .ck-popover {
