@@ -7,3 +7,11 @@ export function mapEdit(data) {
     data
   })
 }
+//商家导图详情
+export function mapDetails(data) {
+  return request({
+    url: '/api/store/map/details',
+    method: 'post',
+    data
+  })
+}
