@@ -420,14 +420,29 @@ export default {
     this.fetchData();
     this.GetMuse();
     this.typeList();
-    if (!sessionStorage.getItem("qiToken")) {
-      //是否有qiToken
+    //是否有更新七牛token
+    if (sessionStorage.getItem("qiToken") == null) {
       getQiToken({}).then((res) => {
         let str = res.data.data;
+        str.token = JSON.parse(JSON.stringify(str.upToken));
         str.key = JSON.parse(JSON.stringify(str.path));
         delete str.path;
+        delete str.upToken;
         sessionStorage.setItem("qiToken", JSON.stringify(str));
       });
+    } else {
+      let newTime = new Date().getTime();
+      let qiToken = JSON.parse(sessionStorage.qiToken);
+      if (qiToken.end_time * 1000 <= newTime) {
+        getQiToken({}).then((res) => {
+          let str = res.data.data;
+          str.token = JSON.parse(JSON.stringify(str.upToken));
+          str.key = JSON.parse(JSON.stringify(str.path));
+          delete str.path;
+          delete str.upToken;
+          sessionStorage.setItem("qiToken", JSON.stringify(str));
+        });
+      }
     }
   },
   // updated() {

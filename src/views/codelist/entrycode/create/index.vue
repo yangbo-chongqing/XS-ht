@@ -141,13 +141,13 @@
             </el-form-item>
             <div class="cheditor-body" v-if="loadFlag">
               <div class="cheditor-title">词条内容</div>
-              <div
+              <!-- <div
                 :class="isShowDoc ? 'cheditor-mybtn active' : 'cheditor-mybtn'"
                 @click="isShowDoc = !isShowDoc"
               >
                 <i class="el-icon-document" />
                 <p>快速排版</p>
-              </div>
+              </div> -->
               <ue
                 :value="editorData"
                 @input="setEditorData"
@@ -1028,10 +1028,10 @@ export default {
 </script>
 <style lang="scss">
 .create-code {
-  .edui-editor-toolbarbox {
-    padding-left: 75px;
-    box-sizing: border-box;
-  }
+  // .edui-editor-toolbarbox {
+  //   // padding-left: 75px;
+  //   // box-sizing: border-box;
+  // }
   .create-tips {
     display: flex;
     justify-content: space-between;

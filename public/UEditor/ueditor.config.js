@@ -110,7 +110,7 @@
         //,emotionLocalization:false //是否开启表情本地化，默认关闭。若要开启请确保emotion文件夹下包含官网提供的images表情文件夹
 
         //粘贴只保留标签，去除标签所有属性
-        //,retainOnlyLabelPasted: false
+        , retainOnlyLabelPasted: true
 
         //,pasteplain:false  //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
         //纯文本粘贴模式下的过滤规则
@@ -287,11 +287,11 @@
 
         //autoFloatEnabled
         //是否保持toolbar的位置不动,默认true
-        , autoFloatEnabled: false
+        , autoFloatEnabled: true
         //浮动时工具栏距离浏览器顶部的高度，用于某些具有固定头部的页面
-        //,topOffset:30
+        , topOffset: 0
         //编辑器底部距离工具栏高度(如果参数大于等于编辑器高度，则设置无效)
-        //,toolbarTopOffset:400
+        , toolbarTopOffset: 400
 
         //设置远程图片是否抓取到本地保存
         // ,catchRemoteImageEnable: true //设置是否抓取远程图片

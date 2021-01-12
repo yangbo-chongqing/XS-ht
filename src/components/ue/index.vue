@@ -115,6 +115,278 @@
         <el-button type="primary" @click="addXurl">确 定</el-button>
       </div>
     </el-dialog>
+    <div v-if="isShowDoc" class="add-document-list">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="组合样式" name="first">
+          <div class="styleLibTplWrapper" @click="setCheditor($event)">
+            <div>
+              <section
+                style="
+                  font-size: 14px;
+                  line-height: 1.4;
+                  color: rgba(0, 0, 0, 0.87);
+                  font-weight: bold;
+                  text-align: center;
+                "
+              >
+                <p>产品名称</p>
+              </section>
+              <section
+                style="
+                  font-size: 20px;
+                  line-height: 1.4;
+                  color: rgba(0, 0, 0, 0.87);
+                  font-weight: bold;
+                  text-align: center;
+                "
+              >
+                <p>产品介绍</p>
+              </section>
+            </div>
+            <div>
+              <section
+                class="stylelib-wrapper"
+                contenteditable="false"
+                data-theme-color="#365f93"
+                data-is-vip="undefined"
+                data-change-color="on"
+                data-key="text-tpl72"
+              >
+                <section class="x-vipIcon">
+                  <section style="display: none" />
+                </section>
+                <section>
+                  <section
+                    data-stylelib-stylename="background-color"
+                    data-opacity-value="1/10"
+                    style="
+                      position: relative;
+                      padding: 16px;
+                      background-color: rgba(54, 95, 147, 0.1);
+                      color: rgba(0, 0, 0, 0.87);
+                      font-size: 14px;
+                      line-height: 1.5;
+                      overflow: hidden;
+                      border-radius: 8px;
+                    "
+                  >
+                    <section contenteditable="undefined">
+                      公司莎车西站铁路物流专用线项目新建信号综合楼框架主题混凝土浇筑顺利完成。
+                    </section>
+                  </section>
+                </section>
+              </section>
+            </div>
+            <div>
+              <section>
+                <br />
+              </section>
+              <section
+                style="
+                  font-size: 14px;
+                  line-height: 1.4;
+                  color: rgba(0, 0, 0, 0.87);
+                  font-weight: bold;
+                  text-align: center;
+                "
+              >
+                <p>产品名称</p>
+              </section>
+              <section
+                style="
+                  font-size: 20px;
+                  line-height: 1.4;
+                  color: rgba(0, 0, 0, 0.87);
+                  font-weight: bold;
+                  text-align: center;
+                "
+              >
+                <p>产品信息</p>
+              </section>
+            </div>
+            <div>
+              <section
+                class="stylelib-wrapper stylelib-list"
+                contenteditable="false"
+                data-theme-color="#365f93"
+                data-is-vip="undefined"
+                data-change-color="on"
+                data-key="text-tpl73"
+              >
+                <section class="x-vipIcon">
+                  <section style="display: none" />
+                </section>
+                <section>
+                  <section
+                    class="stylelib-list-item"
+                    style="margin-bottom: 8px"
+                  >
+                    <section
+                      data-stylelib-stylename="background-color"
+                      data-opacity-value="3/20"
+                      style="
+                        font-size: 14px;
+                        font-weight: bold;
+                        padding: 12px 16px;
+                        color: rgba(0, 0, 0, 0.87);
+                        background-color: rgba(54, 95, 147, 0.15);
+                        line-height: 1.25;
+                      "
+                      contenteditable="undefined"
+                    >
+                      产品名称
+                    </section>
+                    <section
+                      data-stylelib-stylename="background-color"
+                      data-opacity-value="1/20"
+                      style="
+                        font-size: 13px;
+                        padding: 12px 16px;
+                        color: rgba(0, 0, 0, 0.87);
+                        background-color: rgba(54, 95, 147, 0.05);
+                        line-height: 1.25;
+                      "
+                      contenteditable="undefined"
+                    >
+                      油漆喷枪
+                    </section>
+                  </section>
+                  <section
+                    class="stylelib-list-item"
+                    style="margin-bottom: 8px"
+                  >
+                    <section
+                      data-stylelib-stylename="background-color"
+                      data-opacity-value="3/20"
+                      style="
+                        font-size: 14px;
+                        font-weight: bold;
+                        padding: 12px 16px;
+                        color: rgba(0, 0, 0, 0.87);
+                        background-color: rgba(54, 95, 147, 0.15);
+                        line-height: 1.25;
+                      "
+                      contenteditable="undefined"
+                    >
+                      产品品牌
+                    </section>
+                    <section
+                      data-stylelib-stylename="background-color"
+                      data-opacity-value="1/20"
+                      style="
+                        font-size: 13px;
+                        padding: 12px 16px;
+                        color: rgba(0, 0, 0, 0.87);
+                        background-color: rgba(54, 95, 147, 0.05);
+                        line-height: 1.25;
+                      "
+                      contenteditable="undefined"
+                    >
+                      草料二维码
+                    </section>
+                  </section>
+                  <section
+                    class="stylelib-list-item"
+                    style="margin-bottom: 8px"
+                  >
+                    <section
+                      data-stylelib-stylename="background-color"
+                      data-opacity-value="3/20"
+                      style="
+                        font-size: 14px;
+                        font-weight: bold;
+                        padding: 12px 16px;
+                        color: rgba(0, 0, 0, 0.87);
+                        background-color: rgba(54, 95, 147, 0.15);
+                        line-height: 1.25;
+                      "
+                      contenteditable="undefined"
+                    >
+                      产品型号
+                    </section>
+                    <section
+                      data-stylelib-stylename="background-color"
+                      data-opacity-value="1/20"
+                      style="
+                        font-size: 13px;
+                        padding: 12px 16px;
+                        color: rgba(0, 0, 0, 0.87);
+                        background-color: rgba(54, 95, 147, 0.05);
+                        line-height: 1.25;
+                      "
+                      contenteditable="undefined"
+                    >
+                      LUX-101
+                    </section>
+                  </section>
+                </section>
+              </section>
+            </div>
+            <div>
+              <section>
+                <br />
+              </section>
+              <section
+                style="
+                  font-size: 14px;
+                  line-height: 1.4;
+                  color: rgba(0, 0, 0, 0.87);
+                  font-weight: bold;
+                  text-align: center;
+                "
+              >
+                <p>产品名称</p>
+              </section>
+              <section
+                style="
+                  font-size: 20px;
+                  line-height: 1.4;
+                  color: rgba(0, 0, 0, 0.87);
+                  font-weight: bold;
+                  text-align: center;
+                "
+              >
+                <p>产品展示</p>
+              </section>
+            </div>
+            <div>
+              <section
+                class="stylelib-wrapper"
+                contenteditable="false"
+                data-theme-color="#365f93"
+                data-is-vip="undefined"
+                data-change-color="on"
+                data-key="text-tpl72"
+              >
+                <section class="x-vipIcon">
+                  <section style="display: none" />
+                </section>
+                <section>
+                  <section
+                    data-stylelib-stylename="background-color"
+                    data-opacity-value="1/10"
+                    style="
+                      position: relative;
+                      padding: 16px;
+                      background-color: rgba(54, 95, 147, 0.1);
+                      color: rgba(0, 0, 0, 0.87);
+                      font-size: 14px;
+                      line-height: 1.5;
+                      overflow: hidden;
+                      border-radius: 8px;
+                    "
+                  >
+                    <section contenteditable="undefined">
+                      公司莎车西站铁路物流专用线项目新建信号综合楼框架主题混凝土浇筑顺利完成。
+                    </section>
+                  </section>
+                </section>
+              </section>
+            </div>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
   </div>
 </template>
 
@@ -126,12 +398,16 @@ export default {
   components: {
     VueUeditorWrap,
   },
-  props: ["value", "mobHtml"],
+  props: ["value"],
   mounted: function () {},
   data: function () {
     return {
       id: parseInt(Math.random() * 10000).toString(),
       ueData: "",
+      isShowDoc: false,
+      activeName: "first",
+      mobHtml: "",
+
       ueConfig: {
         toolbars: [
           [
@@ -198,14 +474,14 @@ export default {
             // "customstyle", //自定义标题
             // "paragraph", //段落格式
             "contact", //相关链接
-            // "update", //一键排版
+            "update", //一键排版
           ],
         ],
         labelMap: {
           entry: "添加词条链接",
           contact: "添加相关链接",
           information: "添加联系方式",
-          // update: "一键排版",
+          update: "快速排版",
           camera: "直播视频地址",
         },
         compressSide: 0,
@@ -237,61 +513,10 @@ export default {
     };
   },
   methods: {
-    //     addUpdate() {
-    //       //一键排版
-    //       console.log(this.editor.body.innerHTML);
-    //       let richtext = this.editor.body.innerHTML;
-    //       richtext.toString();
-    //       //修改P标签内样式
-    //       const regex = new RegExp(/[ t]*<p style[ t]*=[ t]*("[^"]+")|('[^']+')/gi);
-    //       richtext = richtext.replace(
-    //         regex,
-    //         `<p style="margin: 0;padding: 0; font-size: 100%;font-weight: 400;"`
-    //       );
-    //       //修改h1标签内样式
-    //       const regex1 = new RegExp(
-    //         /[ t]*<h1 style[ t]*=[ t]*("[^"]+")|('[^']+')/gi
-    //       );
-    //       richtext = richtext.replace(
-    //         regex1,
-    //         `<h1 style=" margin: 0; padding: 0; border: 0; font-weight: normal;
-    //  font-style: normal; font-size: 100%; line-height: 1; font-family: inherit;;"`
-    //       );
-    //       //修改h2标签内样式
-    //       const regex2 = new RegExp(
-    //         /[ t]*<h2 style[ t]*=[ t]*("[^"]+")|('[^']+')/gi
-    //       );
-    //       richtext = richtext.replace(
-    //         regex2,
-    //         `<h2 style=" margin: 0; padding: 0; border: 0; font-weight: normal;
-    //  font-style: normal; font-size: 100%; line-height: 1; font-family: inherit;;"`
-    //       );
-    //       //修改h3标签内样式
-    //       const regex3 = new RegExp(
-    //         /[ t]*<h3 style[ t]*=[ t]*("[^"]+")|('[^']+')/gi
-    //       );
-    //       richtext = richtext.replace(
-    //         regex3,
-    //         `<h3 style=" margin: 0; padding: 0; border: 0; font-weight: normal;
-    //  font-style: normal; font-size: 100%; line-height: 1; font-family: inherit;;"`
-    //       );
-    //       //修改h4标签内样式
-    //       const regex4 = new RegExp(
-    //         /[ t]*<h4 style[ t]*=[ t]*("[^"]+")|('[^']+')/gi
-    //       );
-    //       richtext = richtext.replace(
-    //         regex4,
-    //         `<h4 style=" margin: 0; padding: 0; border: 0; font-weight: normal;
-    //  font-style: normal; font-size: 100%; line-height: 1; font-family: inherit;;"`
-    //       );
-    //       // 修改图片样式
-    //       const regex5 = new RegExp("<img", "gi");
-    //       richtext = richtext.replace(
-    //         regex5,
-    //         `<img style="max-width:100%;height:auto;text-align:center"`
-    //       );
-    //       this.editor.body.innerHTML = richtext;
-    //     },
+    addUpdate() {
+      //一键排版
+      this.isShowDoc = !this.isShowDoc;
+    },
     //添加联系方式到富文本
     addInformation() {
       let aStr = `
@@ -353,13 +578,19 @@ export default {
         url: "",
       });
     },
+    setCheditor(e) {
+      this.mobHtml = e.target.innerHTML;
+    },
+    handleClick(tab, event) {
+      console.log(tab, event);
+    },
     ready(editorInstance) {
       this.ueData = this.value;
       this.editor = editorInstance;
       let entry = document.querySelector(".edui-for-entry");
       let contact = document.querySelector(".edui-for-contact");
       let information = document.querySelector(".edui-for-information");
-      // let update = document.querySelector(".edui-for-update");
+      let update = document.querySelector(".edui-for-update");
       // let camera = document.querySelector(".edui-for-camera");
       entry.addEventListener("click", () => {
         this.entryFlag = true;
@@ -373,9 +604,9 @@ export default {
       information.addEventListener("click", () => {
         this.addInformation();
       });
-      // update.addEventListener("click", () => {
-      //   this.addUpdate();
-      // });
+      update.addEventListener("click", () => {
+        this.addUpdate();
+      });
     },
     addEntry() {
       console.log(this.entrykey);
@@ -463,6 +694,208 @@ export default {
   .entry-btn {
     margin-top: 20px;
     text-align: center;
+  }
+}
+.create-code {
+  max-height: 90vh;
+  overflow-y: scroll;
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+  }
+  .back-box {
+    padding: 10px 0;
+    box-sizing: border-box;
+    color: #999;
+    cursor: pointer;
+  }
+  .entry-toggle {
+    .red {
+      color: #5387fd;
+    }
+    i {
+      font-size: 20px;
+      color: #999;
+    }
+  }
+  .multipleSelection-body {
+    width: 100%;
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    span {
+      flex-shrink: 0;
+      background: #ccc;
+      color: #ffffff;
+      padding: 2px 5px;
+      margin-right: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      i {
+        cursor: pointer;
+      }
+    }
+  }
+  .scope-body {
+    display: flex;
+    justify-content: space-between;
+    .code-name {
+      width: 100%;
+    }
+  }
+  .select-entry-body {
+    width: 500px;
+    height: 800px;
+    background: white;
+    border-radius: 10px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1021;
+    padding: 20px;
+    box-sizing: border-box;
+    .popover-table {
+      margin-top: 15px;
+    }
+    .entry-popover-btn-body {
+      text-align: center;
+      margin-top: 15px;
+    }
+  }
+  .select-entry-popover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1020;
+  }
+  .entry-entry-tip {
+    margin-top: 20px;
+    .entry-entry-item {
+      color: #5387fd;
+    }
+  }
+  .create-code-body-title {
+    margin-bottom: 20px;
+  }
+  .entry-entry-add-body {
+    .entry-tip-list {
+      margin-top: 15px;
+    }
+  }
+  .create-code-title {
+    background: white;
+    line-height: 40px;
+  }
+  .create-code-img {
+    position: fixed;
+    top: 120px;
+    width: 100%;
+    width: 200px;
+    text-align: center;
+    img {
+      width: 100%;
+    }
+    .create-btn {
+      margin-top: 10px;
+      .create-btn-yes {
+        margin-top: 10px;
+      }
+      span {
+        margin: 10px;
+      }
+    }
+  }
+  .cheditor-mybtn {
+    &.active {
+      background: white;
+    }
+    width: 60px;
+    height: 60px;
+    border: 1px solid #ccc;
+    text-align: center;
+    padding-top: 8px;
+    box-sizing: border-box;
+    position: absolute;
+    top: 61px;
+    left: 8px;
+    z-index: 1000;
+    cursor: pointer;
+    i {
+      font-size: 30px;
+    }
+    p {
+      font-size: 12px;
+    }
+  }
+  .cheditor-body {
+    position: relative;
+    .cheditor-title {
+      vertical-align: middle;
+      font-size: 14px;
+      color: #606266;
+      line-height: 40px;
+      padding: 0 0 10px;
+      box-sizing: border-box;
+      font-weight: 700;
+    }
+  }
+  .upload-info {
+    .upload-info-img {
+      width: 100%;
+      max-height: 250px;
+      overflow: hidden;
+    }
+    position: relative;
+  }
+  .create-code-body {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    background: white;
+    position: relative;
+    .add-document-list {
+      width: 320px;
+      position: fixed;
+      left: 230px;
+      top: 70px;
+      background: white;
+      padding: 20px;
+      box-sizing: border-box;
+      .styleLibTplWrapper {
+        div {
+          pointer-events: none;
+        }
+        cursor: pointer;
+        &:hover {
+          background: #f5f5f5;
+        }
+      }
+    }
+    .create-code-body-upload {
+      position: relative;
+      .code-img-tips {
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 100;
+      }
+      &:hover {
+        border-color: #114a78;
+      }
+      width: 100%;
+      padding: 10px 20px;
+      box-sizing: border-box;
+      border: 2px dotted #dcdfe6;
+      .upload-tips {
+        line-height: 40px;
+      }
+    }
   }
 }
 </style>

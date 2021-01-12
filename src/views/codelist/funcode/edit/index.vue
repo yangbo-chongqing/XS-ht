@@ -11,7 +11,7 @@
               <div class="code-img-tips">
                 <el-button type="warning" @click="delCodeImg">删除</el-button>
               </div>
-              <img :src="codeImage" width="100%" alt="">
+              <img :src="codeImage" width="100%" alt="" />
             </div>
             <div v-if="codeVideo" class="upload-info">
               <div class="code-img-tips">
@@ -36,10 +36,9 @@
                   :show-file-list="false"
                   :on-progress="uploadProgress"
                 >
-                  <el-button
-                    size="small"
-                    type="primary"
-                  >图片<i class="el-icon-upload el-icon--right" /></el-button>
+                  <el-button size="small" type="primary"
+                    >图片<i class="el-icon-upload el-icon--right"
+                  /></el-button>
                 </el-upload>
               </el-col>
               <el-col :span="4">
@@ -51,10 +50,9 @@
                   :on-success="audioUploadSuccess"
                   :on-progress="uploadProgress"
                 >
-                  <el-button
-                    size="small"
-                    type="primary"
-                  >音频<i class="el-icon-upload el-icon--right" /></el-button>
+                  <el-button size="small" type="primary"
+                    >音频<i class="el-icon-upload el-icon--right"
+                  /></el-button>
                 </el-upload>
               </el-col>
               <el-col :span="4">
@@ -66,22 +64,21 @@
                   :on-success="videoUploadSuccess"
                   :on-progress="uploadProgress"
                 >
-                  <el-button
-                    size="small"
-                    type="primary"
-                  >视频<i class="el-icon-upload el-icon--right" /></el-button>
+                  <el-button size="small" type="primary"
+                    >视频<i class="el-icon-upload el-icon--right"
+                  /></el-button>
                 </el-upload>
               </el-col>
             </el-row>
           </div>
           <div v-show="isCkeditorFlag" class="cheditor-body">
-            <div
+            <!-- <div
               :class="isShowDoc ? 'cheditor-mybtn active' : 'cheditor-mybtn'"
               @click="isShowDoc = !isShowDoc"
             >
               <i class="el-icon-document" />
               <p>快速排版</p>
-            </div>
+            </div> -->
             <ckeditor
               v-model="editorData"
               :config="editorConfig"
@@ -109,7 +106,14 @@
               </div>
               <div v-if="entryTipList" class="entry-tip-list">
                 <el-checkbox-group v-model="checkList" @change="checkChange">
-                  <div><el-checkbox v-for="(item,index) in entryTipList" :key="index" :label="item.id">{{ item.name }}</el-checkbox></div>
+                  <div>
+                    <el-checkbox
+                      v-for="(item, index) in entryTipList"
+                      :key="index"
+                      :label="item.id"
+                      >{{ item.name }}</el-checkbox
+                    >
+                  </div>
                 </el-checkbox-group>
               </div>
             </div>
@@ -117,13 +121,27 @@
         </el-col>
         <el-col :span="6">
           <div class="create-code-img">
-            <img :src="codeSendImg" alt="" srcset="">
+            <img :src="codeSendImg" alt="" srcset="" />
             <div class="create-btn">
-              <span><el-link type="primary" @click="togglePopover">预览</el-link></span>
-              <span><el-link type="primary" @click="downloadImg(codeSendImg, 'code')">下载</el-link></span>
+              <span
+                ><el-link type="primary" @click="togglePopover"
+                  >预览</el-link
+                ></span
+              >
+              <span
+                ><el-link
+                  type="primary"
+                  @click="downloadImg(codeSendImg, 'code')"
+                  >下载</el-link
+                ></span
+              >
               <div class="create-btn-yes">
-                <el-button v-if="!isEdit" type="primary" @click="entryEdit">保存</el-button>
-                <el-button v-else type="primary" @click="goback">完成</el-button>
+                <el-button v-if="!isEdit" type="primary" @click="entryEdit"
+                  >保存</el-button
+                >
+                <el-button v-else type="primary" @click="goback"
+                  >完成</el-button
+                >
               </div>
             </div>
           </div>
@@ -193,7 +211,7 @@
               </div>
               <div>
                 <section>
-                  <br>
+                  <br />
                 </section>
                 <section
                   style="
@@ -338,7 +356,7 @@
               </div>
               <div>
                 <section>
-                  <br>
+                  <br />
                 </section>
                 <section
                   style="
@@ -459,7 +477,7 @@
               </div>
               <div>
                 <section>
-                  <br>
+                  <br />
                 </section>
                 <section
                   style="
@@ -604,7 +622,7 @@
               </div>
               <div>
                 <section>
-                  <br>
+                  <br />
                 </section>
                 <section
                   style="
@@ -676,128 +694,128 @@
 </template>
 
 <script>
-import { downloadIamge } from '@/utils/utils'
-import { Loading } from 'element-ui'
-import { getToken } from '@/utils/auth'
-import { postEntryList, postGetRelics, postEdit } from '@/api/entrycode'
-import EntryQuery from '@/components/EntryQuery'
+import { downloadIamge } from "@/utils/utils";
+import { Loading } from "element-ui";
+import { getToken } from "@/utils/auth";
+import { postEntryList, postGetRelics, postEdit } from "@/api/entrycode";
+import EntryQuery from "@/components/EntryQuery";
 export default {
-  name: 'EntryEdit',
+  name: "EntryEdit",
   components: {
-    EntryQuery
+    EntryQuery,
   },
   data() {
     return {
-      headers: { Authorization: 'Bearer ' + getToken() },
+      headers: { Authorization: "Bearer " + getToken() },
       popoverFlag: false,
-      activeName: 'second',
+      activeName: "second",
       id: this.$route.query.id,
       entryTipList: [],
-      entryTipValue: '',
+      entryTipValue: "",
       checkList: [],
       loading: false,
-      codeTitle: '',
-      codeImage: '',
-      codeVideo: '',
-      codeAudio: '',
-      uploadLoading: '',
+      codeTitle: "",
+      codeImage: "",
+      codeVideo: "",
+      codeAudio: "",
+      uploadLoading: "",
       isCkeditorFlag: false,
       codeImageFlag: false,
-      fullscreenLoading: '',
-      codeSendImg: '',
+      fullscreenLoading: "",
+      codeSendImg: "",
       isShowDoc: false,
       editor: null, // 编辑器实例
-      editorData: '',
+      editorData: "",
       isEdit: false,
       editorConfig: {
-        image_previewText: '',
-        removeDialogTabs: 'image:advanced;image:Link',
-        filebrowserImageUploadUrl: '/api/UploadFile',
-        filebrowserBrowseUrl: '/api/UploadFile',
-        filebrowserUploadUrl: '/api/UploadFile',
-        extraPlugins: 'uploadimage',
-        uploadUrl: '/api/UploadFile',
+        image_previewText: "",
+        removeDialogTabs: "image:advanced;image:Link",
+        filebrowserImageUploadUrl: "/api/UploadFile",
+        filebrowserBrowseUrl: "/api/UploadFile",
+        filebrowserUploadUrl: "/api/UploadFile",
+        extraPlugins: "uploadimage",
+        uploadUrl: "/api/UploadFile",
         forcePasteAsPlainText: false,
         allowedContent: true,
-        removePlugins: 'elementspath',
+        removePlugins: "elementspath",
         toolbarGroups: [
-          { name: 'clipboard', groups: ['undo', 'clipboard'] },
+          { name: "clipboard", groups: ["undo", "clipboard"] },
           {
-            name: 'editing',
-            groups: ['find', 'selection', 'spellchecker', 'editing']
+            name: "editing",
+            groups: ["find", "selection", "spellchecker", "editing"],
           },
-          { name: 'links', groups: ['links'] },
-          { name: 'insert', groups: ['insert'] },
-          { name: 'forms', groups: ['forms'] },
-          { name: 'tools', groups: ['tools'] },
-          { name: 'document', groups: ['mode', 'document', 'doctools'] },
-          { name: 'others', groups: ['others'] },
-          '/',
-          { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+          { name: "links", groups: ["links"] },
+          { name: "insert", groups: ["insert"] },
+          { name: "forms", groups: ["forms"] },
+          { name: "tools", groups: ["tools"] },
+          { name: "document", groups: ["mode", "document", "doctools"] },
+          { name: "others", groups: ["others"] },
+          "/",
+          { name: "basicstyles", groups: ["basicstyles", "cleanup"] },
           {
-            name: 'paragraph',
-            groups: ['list', 'indent', 'blocks', 'align', 'bidi', 'paragraph']
+            name: "paragraph",
+            groups: ["list", "indent", "blocks", "align", "bidi", "paragraph"],
           },
-          { name: 'styles', groups: ['styles'] },
-          { name: 'colors', groups: ['colors'] }
+          { name: "styles", groups: ["styles"] },
+          { name: "colors", groups: ["colors"] },
         ],
-        removeButtons: 'Underline,Subscript,Superscript,Source'
-      }
-    }
+        removeButtons: "Underline,Subscript,Superscript,Source",
+      },
+    };
   },
   created() {
     this.fullscreenLoading = Loading.service({
-      target: document.querySelector('.create-code'),
-      text: '初始化中...'
-    })
-    this.GetRelics()
+      target: document.querySelector(".create-code"),
+      text: "初始化中...",
+    });
+    this.GetRelics();
   },
   methods: {
     togglePopover() {
-      this.popoverFlag = !this.popoverFlag
+      this.popoverFlag = !this.popoverFlag;
     },
     downloadImg(img, imgname) {
-      downloadIamge(img, imgname)
+      downloadIamge(img, imgname);
     },
     checkChange() {
-      console.log(this.checkList)
+      console.log(this.checkList);
     },
     // 词条详情信息查询
     GetRelics() {
       const params = {
-        id: this.id
-      }
+        id: this.id,
+      };
       postGetRelics(this.qs.stringify(params)).then((res) => {
-        this.codeTitle = res.data.relics_info.name
-        this.codeImage = res.data.relics_info.image
-        this.codeVideo = res.data.relics_info.video_url
-        this.codeAudio = res.data.relics_info.voice_url
-        this.editorData = res.data.relics_info.content
-        this.codeSendImg = res.data.relics_info.mini_code
-        this.entryTipList = res.data.relics_info.related_list
+        this.codeTitle = res.data.relics_info.name;
+        this.codeImage = res.data.relics_info.image;
+        this.codeVideo = res.data.relics_info.video_url;
+        this.codeAudio = res.data.relics_info.voice_url;
+        this.editorData = res.data.relics_info.content;
+        this.codeSendImg = res.data.relics_info.mini_code;
+        this.entryTipList = res.data.relics_info.related_list;
         res.data.relics_info.related_list.map((item, index) => {
-          this.checkList.push(item.id)
-        })
-      })
+          this.checkList.push(item.id);
+        });
+      });
     },
 
     // 查找相关
     remoteMethod() {
-      if (this.entryTipValue !== '') {
-        this.loading = true
+      if (this.entryTipValue !== "") {
+        this.loading = true;
         const params = {
           keyword: this.entryTipValue,
-          type: 1
-        }
+          type: 1,
+        };
         postEntryList(this.qs.stringify(params)).then((res) => {
-          this.entryTipList = res.data.list
-          this.loading = false
-        })
+          this.entryTipList = res.data.list;
+          this.loading = false;
+        });
       }
     },
     // 返回
     goback() {
-      this.$router.go(-1)
+      this.$router.go(-1);
     },
     // 编辑
     entryEdit() {
@@ -808,61 +826,61 @@ export default {
         voice_url: this.codeAudio,
         video_url: this.codeVideo,
         content: this.editorData,
-        related_ids: this.checkList.toString()
-      }
-      const loading = this.$loading()
+        related_ids: this.checkList.toString(),
+      };
+      const loading = this.$loading();
       postEdit(this.qs.stringify(parmas)).then((res) => {
         if (res.status == 200) {
-          this.isEdit = true
+          this.isEdit = true;
         }
-        loading.close()
-      })
+        loading.close();
+      });
     },
     delCodeImg() {
-      this.codeImage = ''
+      this.codeImage = "";
     },
     delCodeVideo() {
-      this.codeVideo = ''
+      this.codeVideo = "";
     },
     delCodeAudio() {
-      this.codeAudio = ''
+      this.codeAudio = "";
     },
     imageUploadSuccess(response, file, fileList) {
-      this.codeImage = response.data.file_path
-      this.uploadLoading.close()
+      this.codeImage = response.data.file_path;
+      this.uploadLoading.close();
     },
     audioUploadSuccess(response, file, fileList) {
-      this.codeAudio = response.data.file_path
-      this.uploadLoading.close()
+      this.codeAudio = response.data.file_path;
+      this.uploadLoading.close();
     },
     videoUploadSuccess(response, file, fileList) {
-      this.codeVideo = response.data.file_path
-      this.uploadLoading.close()
+      this.codeVideo = response.data.file_path;
+      this.uploadLoading.close();
     },
     setCheditor(e) {
-      this.editorData = e.target.innerHTML
+      this.editorData = e.target.innerHTML;
     },
     uploadProgress() {
       this.uploadLoading = Loading.service({
-        text: '上传中...'
-      })
+        text: "上传中...",
+      });
     },
     onNamespaceLoaded(CKEDITOR) {},
     ckeditorReady() {
-      this.isCkeditorFlag = true
-      this.fullscreenLoading.close()
+      this.isCkeditorFlag = true;
+      this.fullscreenLoading.close();
     },
     handleClick(tab, event) {
-      console.log(tab, event)
-    }
-  }
-}
+      console.log(tab, event);
+    },
+  },
+};
 </script>
 <style lang="scss">
 .create-code {
-  .cke_top {
-    padding-left: 75px;
-  }
+  // .cke_top {
+  //   padding-left: 75px;
+  // }
   .el-tabs__content {
     height: 635px;
     overflow-y: scroll;
@@ -884,10 +902,9 @@ export default {
     .entry-entry-item {
       color: #5387fd;
     }
-
   }
-  .entry-entry-add-body{
-    .entry-tip-list{
+  .entry-entry-add-body {
+    .entry-tip-list {
       margin-top: 15px;
     }
   }
@@ -903,10 +920,10 @@ export default {
     }
     .create-btn {
       margin-top: 10px;
-      .create-btn-yes{
+      .create-btn-yes {
         margin-top: 10px;
       }
-      span{
+      span {
         margin: 10px;
       }
     }
