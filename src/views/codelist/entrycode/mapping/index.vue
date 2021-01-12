@@ -14,7 +14,11 @@
       <el-button size="small" type="primary">上传导图</el-button>
       <span slot="tip" class="el-upload__tip">格式 png、jpg 750*222</span>
     </el-upload>
-    <div><el-button @click="saveMapping" size="small" type="primary">保存</el-button></div>
+    <div>
+      <el-button @click="saveMapping" size="small" type="primary"
+        >保存</el-button
+      >
+    </div>
     <div class="setmapping">
       <img
         @click="setEntryJump"
@@ -48,7 +52,23 @@
           <el-input v-model="form.title"></el-input>
         </el-form-item>
         <el-form-item label="链接">
-          <el-input v-model="form.href"></el-input>
+          <el-select
+            v-model="form.href"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="请输入关键词搜索"
+            :remote-method="remoteMethod"
+            :loading="loading"
+          >
+            <el-option
+              v-for="(item, index) of options"
+              :key="index"
+              :label="item.name"
+              :value="index"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -62,7 +82,7 @@
 import { getToken } from "@/utils/auth";
 import { getQiToken } from "@/api/user";
 import { mapEdit } from "@/api/mapping";
-import { param } from 'public/UEditor/third-party/jquery-1.10.2';
+import { RelicsList } from "@/api/entrycode";
 export default {
   name: "EntryCode",
   components: {},
@@ -92,6 +112,9 @@ export default {
         title: "",
         href: "",
       },
+      loading: false,
+      options: [],
+      entrykey: "",
     };
   },
 
@@ -102,21 +125,43 @@ export default {
     this.qiToken.token = qiT.token;
   },
   methods: {
+    //搜索词条
+    remoteMethod(query) {
+      if (query !== "") {
+        this.loading = true;
+        let parmas = {
+          keyword: query,
+        };
+        RelicsList(this.qs.stringify(parmas)).then((res) => {
+          this.loading = false;
+          this.options = res.data.relics_list.data;
+        });
+      } else {
+        this.options = [];
+      }
+    },
     //保存设置
-    saveMapping(){
-      // let params = {
-      //   map_img:this.enterpriseImage,
-      //   map_coordinate:JSON.stringify(this.entryObj)
-      // }
-      // console.log(params);
-      // mapEdit(this.qs.stringify(params)).then((res)=>{
-
-      // })
+    saveMapping() {
+      let params = {
+        map_img: this.enterpriseImage,
+        map_coordinate: JSON.stringify(this.entryObj),
+      };
+      mapEdit(this.qs.stringify(params)).then((res) => {});
     },
     //设置锚点内容
     setTipData() {
+      console.log(this.form.title);
+      console.log(this.form.href);
+      if(this.form.title == '' || this.form.href === ''){
+        this.$message({
+          type:'error',
+          message:'请填写内容'
+        })
+        return false;
+      }
+      
       this.entryObj[this.tipIndex].title = this.form.title;
-      this.entryObj[this.tipIndex].href = this.form.href;
+      this.entryObj[this.tipIndex].href = `http://xs_j1_${this.options[this.form.href].id}`;
       this.dialogVisible = false;
     },
     //点击设置锚点内容弹窗唤起
