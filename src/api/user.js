@@ -70,3 +70,12 @@ export function museSwitch(data) {
     data
   })
 }
+
+// 获取历史图片
+export function getPicList(data) {
+  return request({
+    url: '/api/store/ueditor/config',
+    method: 'post',
+    data: data
+  })
+}

@@ -10835,7 +10835,7 @@
   UE.plugins["defaultfilter"] = function () {
     var me = this;
     me.setOpt({
-      allowDivTransToP: true,
+      allowDivTransToP: false,
       disabledTableInTable: true,
       rgb2Hex: true
     });
@@ -10897,9 +10897,9 @@
                 }
               }
               node.setAttr("_src", node.getAttr("src"));
-              node.setAttr('style', '');
-              node.setAttr('width', '');
-              node.setAttr('height', '');
+              // node.setAttr('style', '');
+              // node.setAttr('width', '');
+              // node.setAttr('height', '');
               break;
             case "span":
               if (browser.webkit && (val = node.getStyle("white-space"))) {
@@ -18683,7 +18683,6 @@
   ///commandsName  FixImgClick
   ///commandsTitle  修复chrome下图片不能点击的问题，出现八个角可改变大小
   //修复chrome下图片不能点击的问题，出现八个角可改变大小
-
   UE.plugins["fiximgclick"] = (function () {
     var elementUpdated = false;
     function Scale() {
@@ -18694,7 +18693,6 @@
       this.prePos = { x: 0, y: 0 };
       this.startPos = { x: 0, y: 0 };
     }
-
     (function () {
       var rect = [
         //[left, top, width, height]
@@ -18707,14 +18705,13 @@
         [0, 0, 0, 1],
         [0, 0, 1, 1]
       ];
-
       Scale.prototype = {
         init: function (editor) {
+
           var me = this;
           me.editor = editor;
           me.startPos = this.prePos = { x: 0, y: 0 };
           me.dragId = -1;
-
           var hands = [],
             cover = (me.cover = document.createElement("div")),
             resizer = (me.resizer = document.createElement("div"));
@@ -18727,8 +18724,8 @@
           domUtils.on(cover, "mousedown click", function () {
             me.hide();
           });
-
           for (i = 0; i < 8; i++) {
+
             hands.push(
               '<span class="edui-editor-imagescale-hand' + i + '"></span>'
             );
@@ -19054,7 +19051,12 @@
 
       if (browser.webkit) {
         me.addListener("click", function (type, e) {
-          if (e.target.tagName == "IMG" && me.body.contentEditable != "false") {
+          // 判断是否是自定义模块，是就不允许拉伸缩放
+          if (e.target.dataset.id) {
+            console.log(e)
+          }
+
+          else if (e.target.tagName == "IMG" && me.body.contentEditable != "false") {
             var range = new dom.Range(me.document);
             range.selectNode(e.target).select();
           }
@@ -25311,6 +25313,9 @@
           (img.style.display || "inline");
 
         img = null;
+        // node.setAttr('style', '');
+        // node.setAttr('width', '');
+        // node.setAttr('height', '');
       } else {
         if (!img) {
           var collapsed = range.collapsed;
@@ -32538,6 +32543,7 @@
               editor.ui._dialogs.insertframeDialog &&
               /iframe/gi.test(el.tagName)
             ) {
+
               var html = popup.formatHtml(
                 "<nobr>" +
                 editor.getLang("property") +
@@ -32571,6 +32577,14 @@
               str = "",
               img = editor.selection.getRange().getClosedNode(),
               dialogs = editor.ui._dialogs;
+            // let imgStr = img.String()
+            // if (imgStr.indexOf('data-')) {
+            //   console.log(111)
+            // }
+            //屏蔽自定义的属性不予修改
+            if (img && img.className.indexOf("data") != -1) {
+              return
+            }
             if (img && img.tagName == "IMG") {
               var dialogName = "insertimageDialog";
               if (

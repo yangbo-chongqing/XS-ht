@@ -1,5 +1,5 @@
 <template>
-  <div ref="ue">
+  <div class="ue-box" ref="ue">
     <vue-ueditor-wrap
       @ready="ready"
       v-model="ueData"
@@ -389,16 +389,54 @@
     </div>
     <!-- 图片集 -->
     <div>
-      <el-dialog title="提示" :visible.sync="centerDialogVisible" width="30%">
-        <el-tabs type="border-card">
-          <el-tab-pane label="用户管理">用户管理</el-tab-pane>
-          <el-tab-pane label="配置管理">配置管理</el-tab-pane>
+      <el-dialog
+        class="picS"
+        title="图片集上传"
+        :visible.sync="centerDialogVisible"
+        width="720px"
+      >
+        <el-tabs v-model="activeNum" @tab-click="getPic" type="border-card">
+          <el-tab-pane name="one" label="本地上传">
+            <!-- <el-upload
+              class="upload-demo"
+              :before-upload="uploadPic"
+              :data="qiToken"
+              action="http://upload.qiniup.com"
+              :headers="headers"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              list-type="picture-card"
+            >
+              <i slot="default" class="el-icon-plus"></i>
+            </el-upload> -->
+            <drag :picList="imgList" play="1" @childFn="parentFn" />
+            <!-- {{ imgList }} -->
+          </el-tab-pane>
+          <el-tab-pane name="two" label="在线管理">
+            <div class="demo-image__lazy">
+              <drag :picList="picList" @chilX="parX" />
+            </div>
+            <div class="fontTil">在线图库</div>
+            <div class="demo-image__lazy">
+              <li
+                v-for="(item, index) of webPic"
+                :key="item + index"
+                class="draggable-item"
+                :style="{ width: width + 'px', height: height + 'px' }"
+                @click="selectPic(index)"
+              >
+                <el-image :src="item" lazy></el-image>
+                <!-- <div>{{ selectClass[index] }}</div> -->
+                <div v-if="selectClass[index] == 1" class="shadow">
+                  <img src="@/assets/icon/success.png" alt="" />
+                </div>
+              </li>
+            </div>
+          </el-tab-pane>
         </el-tabs>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="centerDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="centerDialogVisible = false"
-            >确 定</el-button
-          >
+          <el-button @click="closeAdd">取 消</el-button>
+          <el-button type="primary" @click="addYes()">确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -408,12 +446,20 @@
 <script>
 import { RelicsList } from "@/api/entrycode";
 import VueUeditorWrap from "vue-ueditor-wrap";
+import { getToken } from "@/utils/auth";
+import drag from "@/components/drag";
+import { getPicList } from "@/api/user";
+import { createPics } from "@/api/ue";
+import { mapGetters } from "vuex";
+
 export default {
   name: "UE",
   components: {
     VueUeditorWrap,
+    drag,
   },
   props: ["value"],
+
   mounted: function () {
     this.$nextTick(() => {
       let _this = this;
@@ -439,11 +485,23 @@ export default {
     return {
       centerDialogVisible: false,
       id: parseInt(Math.random() * 10000).toString(),
+      activeNum: "one", //默认tab
       ueData: "",
+      selectNum: [],
+      addPic: [],
+      picList: [], //在线选择的图片
+      webPic: [], //在线图片
       isShowDoc: false,
       activeName: "first",
+      addList: [],
+      headers: { Authorization: "Bearer " + getToken() },
+      qiToken: {},
+      ids: "",
       mobHtml: "",
-
+      width: 100,
+      height: 100,
+      imgList: [],
+      selectClass: [],
       ueConfig: {
         toolbars: [
           [
@@ -549,6 +607,9 @@ export default {
         },
       ],
     };
+  },
+  computed: {
+    ...mapGetters(["userinfo"]),
   },
   methods: {
     addUpdate() {
@@ -695,6 +756,133 @@ export default {
         this.options = [];
       }
     },
+
+    //图片集上传管理
+    selectPic(i) {
+      console.log(this.picList);
+      console.log(this.webPic[i]);
+      if (this.picList.indexOf(this.webPic[i]) == -1) {
+        this.picList.push(this.webPic[i]);
+      } else {
+        let index = this.picList.indexOf(this.webPic[i]);
+        this.picList.splice(index, 1);
+      }
+      console.log(this.selectClass);
+    },
+    uploadPic(file) {
+      let newTime = new Date().getTime();
+      this.qiToken.key = `${this.qiToken.key}${newTime}.png`;
+    },
+
+    addYes() {
+      if (this.activeNum == "one") {
+        let img = this.addList;
+        let newTime = new Date().getTime();
+        let userIn = this.userinfo.user_info.user_id;
+        console.log(this.addList);
+        let imgS = "";
+        for (var i = 0; i < img.length; i++) {
+          imgS = imgS + img[i] + ",";
+        }
+        let data = {
+          images: imgS,
+          album_name: userIn + "-" + newTime,
+        };
+        createPics(this.qs.stringify(data)).then((res) => {
+          this.ids = res.data.result;
+        });
+        console.log(this.ids);
+        this.centerDialogVisible = false;
+        let str = `<div data-id="${this.ids}"  style="display: flex;justify-content: center;"><div style="width:210px;display: table-cell;text-align: center;"><img data-id="${this.ids}"  class="data" style="width:100%;height: 160px;" src="${img[0]}"
+                alt=""></div><div style="display: flex;flex-direction: column;width:100px;height: 160px;">
+            <img data-id="${this.ids}"  class="data" style="width:100px;height: 80px;" src="${img[1]}"
+                alt=""><div style="    position: relative;width:100px;height:80px ">
+                <span style="position: absolute;
+                background: #2b323e;
+                opacity: 0.8;
+                width:100px;
+                height: 80px;
+                left: 0;
+                line-height: 80px;
+                color:#fff;
+                text-align: center;">共${img.length}张</span><img data-id="${this.ids}"  class="data" style="width:100px;height: 80px;"
+                   src="${img[2]}" alt=""></div></div></div><div><br></div>`;
+        this.editor.execCommand("inserthtml", str);
+        this.imgList = [];
+        this.activeNum = "one";
+        this.picList = [];
+      } else {
+        let img = this.addPic;
+        let newTime = new Date().getTime();
+        let userIn = this.userinfo.user_info.user_id;
+        let imgS = "";
+        for (var i = 0; i < img.length; i++) {
+          imgS = imgS + img[i] + ",";
+        }
+        let data = {
+          images: imgS,
+          album_name: userIn + "-" + newTime,
+        };
+        createPics(this.qs.stringify(data)).then((res) => {
+          this.ids = res.data.result;
+        });
+        console.log(this.ids);
+
+        this.centerDialogVisible = false;
+
+        let str = `<div data-id="${this.ids}"  style="display: flex;justify-content: center;"><div style="width:210px;display: table-cell;text-align: center;"><img data-id="${this.ids}"  class="data" style="width:100%;height: 160px;" src="${img[0]}"
+                alt=""></div><div style="display: flex;flex-direction: column;width:100px;height: 160px;">
+            <img data-id="${this.ids}"  class="data" style="width:100px;height: 80px;" src="${img[1]}"
+                alt=""><div style="    position: relative;width:100px;height:80px ">
+                <span style="position: absolute;
+                background: #2b323e;
+                opacity: 0.8;
+                width:100px;
+                height: 80px;
+                left: 0;
+                line-height: 80px;
+                color:#fff;
+                text-align: center;">共${img.length}张</span><img  class="data" data-id="${this.ids}" style="width:100px;height: 80px;"
+                   src="${img[2]}" alt=""></div></div></div><div><br></div>`;
+        this.editor.execCommand("inserthtml", str);
+        this.imgList = [];
+        this.activeNum = "one";
+        this.picList = [];
+        console.log(this.ids);
+      }
+    },
+    closeAdd() {
+      this.centerDialogVisible = false;
+      this.imgList = [];
+      this.picList = [];
+      this.activeNum = "one";
+    },
+    parentFn(payload) {
+      this.addList = payload.url;
+    },
+    parX(val) {
+      this.addPic = val;
+    },
+    getPic(tab, event) {
+      console.log(tab, event);
+      if (tab.name == "two") {
+        this.webPic = [];
+        let token = window.localStorage.getItem("userInfo") || "";
+        let data = {
+          action: "listimage",
+          start: 0,
+          size: 30,
+        };
+        getPicList(this.qs.stringify(data)).then((res) => {
+          for (let i = 0; i < res.list.length; i++) {
+            this.webPic.push(res.list[i].url);
+          }
+        });
+      }
+    },
+  },
+  created() {
+    this.qiToken = JSON.parse(sessionStorage.qiToken);
   },
   watch: {
     // 监听prop的变化，更新ckeditor中的值
@@ -710,11 +898,15 @@ export default {
 };
 </script>
 <style lang="scss">
-.setFixed {
-  position: fixed !important;
-  top: 70px;
-  z-index: 1001;
-  width: 712px !important;
+.ue-box {
+  position: relative;
+  .setFixed {
+    position: sticky !important;
+    top: 0px;
+    z-index: 1001;
+    width: 712px !important;
+    left: 0;
+  }
 }
 </style>
 <style lang="scss" scoped>
@@ -951,5 +1143,57 @@ export default {
       }
     }
   }
+}
+.demo-image__lazy {
+  height: 220px;
+  overflow-y: auto;
+  width: 100%;
+  display: inline-block;
+  border: 1px solid #777;
+  padding: 2px;
+}
+.draggable-item {
+  margin-right: 5px;
+  margin-bottom: 5px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+
+  .el-image {
+    width: 100%;
+    height: 100%;
+  }
+  .shadow {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0.7;
+    transition: opacity 0.3s;
+    color: #fff;
+    font-size: 20px;
+    line-height: 20px;
+    padding: 2px;
+    cursor: pointer;
+  }
+  &:hover {
+    // .shadow {
+    //   opacity: 1;
+    // }
+    -webkit-transform: translateY(-2px);
+    -ms-transform: translateY(-2px);
+    transform: translateY(-2px);
+    -webkit-box-shadow: 0 0 6px #999;
+    box-shadow: 0 0 6px #999;
+    -webkit-transition: all 0.5s ease-out;
+    transition: all 0.5s ease-out;
+  }
+}
+.fontTil {
+  font-weight: 500;
+  font-size: 18px;
+  margin: 10px 0;
 }
 </style>
