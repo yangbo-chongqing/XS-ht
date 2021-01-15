@@ -2,121 +2,146 @@
   <div class="AccountInfo-container">
     <div class="AccountInfo-text">账户信息</div>
     <el-row :gutter="20">
-      <el-col
-        :span="24"
-      ><div class="AccountInfo-item">
-        <label>昵称:</label>
-        <span v-if="!isShowUserName">{{ userinfo.user_info.nickname }}</span>
-        <el-input
-          v-else
-          v-model="userinfo.user_info.nickname"
-          size="small"
-          placeholder="请输入昵称"
-        />
-        <span>
-          <el-link
-            v-if="!isShowUserName"
-            type="primary"
-            @click="isShowUserName = true"
-          >修改昵称</el-link>
-          <el-link
+      <el-col :span="24"
+        ><div class="AccountInfo-item">
+          <label>昵称:</label>
+          <span v-if="!isShowUserName">{{ userinfo.user_info.nickname }}</span>
+          <el-input
             v-else
-            type="primary"
-            @click="
-              accountSettings({ nickname: userinfo.user_info.nickname })
-            "
-          >保存</el-link>
-        </span>
-      </div></el-col>
-      <el-col
-        :span="24"
-      ><div class="AccountInfo-item">
-        <label>用户账号:</label>
-        <span v-if="!isShowUserTel">{{ userinfo.user_info.mobile }}</span>
-        <el-input
-          v-else
-          v-model="userinfo.user_info.mobile"
-          size="small"
-          placeholder="请输入手机号"
-        />
-        <span>
-          <el-link
-            v-if="!isShowUserTel"
-            type="primary"
-            @click="isShowUserTel = true"
-          >更换手机号</el-link>
-          <el-link
+            v-model="userinfo.user_info.nickname"
+            size="small"
+            placeholder="请输入昵称"
+          />
+          <span>
+            <el-link
+              v-if="!isShowUserName"
+              type="primary"
+              @click="isShowUserName = true"
+              >修改昵称</el-link
+            >
+            <el-link
+              v-else
+              type="primary"
+              @click="
+                accountSettings({ nickname: userinfo.user_info.nickname })
+              "
+              >保存</el-link
+            >
+          </span>
+        </div></el-col
+      >
+      <el-col :span="24"
+        ><div class="AccountInfo-item">
+          <label>用户账号:</label>
+          <span v-if="!isShowUserTel">{{ userinfo.user_info.mobile }}</span>
+          <el-input
             v-else
-            type="primary"
-            @click="
-              accountSettings({ mobile: userinfo.user_info.mobile })
-            "
-          >保存</el-link>
-        </span>
-      </div></el-col>
-      <el-col
-        :span="24"
-      ><div class="AccountInfo-item">
-        <label>企业信息:</label> <span>{{ enterpriseInfo.muse_name }}</span>
-        <span><el-link
-          type="primary"
-          @click="golinkpage('/settings')"
-        >修改</el-link></span>
-        <!-- <span><el-link type="primary">企业认证</el-link></span> -->
-      </div></el-col>
+            v-model="userinfo.user_info.mobile"
+            size="small"
+            placeholder="请输入手机号"
+          />
+          <span>
+            <el-link
+              v-if="!isShowUserTel"
+              type="primary"
+              @click="isShowUserTel = true"
+              >更换手机号</el-link
+            >
+            <el-link
+              v-else
+              type="primary"
+              @click="accountSettings({ mobile: userinfo.user_info.mobile })"
+              >保存</el-link
+            >
+          </span>
+        </div></el-col
+      >
+      <el-col :span="24"
+        ><div class="AccountInfo-item">
+          <label>企业信息:</label> <span>{{ enterpriseInfo.muse_name }}</span>
+          <span
+            ><el-link type="primary" @click="golinkpage('/settings')"
+              >修改</el-link
+            ></span
+          >
+          <!-- <span><el-link type="primary">企业认证</el-link></span> -->
+        </div></el-col
+      >
+      <el-col :span="24"
+        ><div class="AccountInfo-item">
+          <label>店铺上架:</label>
+          <span
+            ><el-switch
+              @change="chaangeUP"
+              :active-value="2"
+              :inactive-value="3"
+              v-model="upOrDown"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+            >
+            </el-switch
+          ></span></div
+      ></el-col>
     </el-row>
   </div>
 </template>
 
 <script>
-import { postAccountSettings } from '@/api/user'
-import { getGetMuse } from '@/api/settings'
-import { mapGetters } from 'vuex'
+import { postAccountSettings } from "@/api/user";
+import { getGetMuse, changeAdmin } from "@/api/settings";
+import { mapGetters } from "vuex";
 export default {
-  name: 'AccountInfo',
+  name: "AccountInfo",
   data() {
     return {
-      enterpriseInfo: '',
+      enterpriseInfo: "",
       isShowUserTel: false,
-      isShowUserName: false
-    }
+      isShowUserName: false,
+      upOrDown: "",
+    };
   },
   computed: {
-    ...mapGetters(['userinfo'])
+    ...mapGetters(["userinfo"]),
   },
   created() {
-    this.GetMuse()
+    this.GetMuse();
   },
   methods: {
+    chaangeUP(val) {
+      changeAdmin(this.qs.stringify({ state: val })).then((res) => {
+        console.log(res);
+      });
+    },
     GetMuse() {
       getGetMuse().then((res) => {
-        this.enterpriseInfo = res.data.muse_info
-      })
+        this.enterpriseInfo = res.data.muse_info;
+        this.upOrDown = res.data.muse_info.state;
+      });
     },
     // 修改用户信息
     accountSettings(obj) {
       const params = {
-        ...obj
-      }
+        ...obj,
+      };
       const loading = this.$loading({
-        text: '修改中'
-      })
+        text: "修改中",
+      });
       postAccountSettings(this.qs.stringify(params)).then((res) => {
-        loading.close()
-        this.isShowUserName = false
-        this.isShowUserName = false
-      })
+        loading.close();
+        this.isShowUserName = false;
+        this.isShowUserName = false;
+      });
     },
     golinkpage(page, obj) {
       this.$router.push({
         path: page,
         query: {
-          ...obj
-        }
-      })
-    }
-  }
-}
+          ...obj,
+        },
+      });
+    },
+  },
+};
 </script>
 <style lang="scss">
 .AccountInfo-container {
@@ -128,7 +153,7 @@ export default {
 <style lang="scss" scoped>
 .AccountInfo-container {
   padding: 20px;
-  height: 200px;
+  height: 220px;
   box-sizing: border-box;
   border: 1px solid #f5f5f5;
   box-shadow: 0px 0px 10px #f5f5f5;

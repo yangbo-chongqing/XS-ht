@@ -47,3 +47,13 @@ export function getSubAdmin(data) {
     data
   })
 }
+
+// 商户上下架
+export function changeAdmin(data) {
+  return request({
+    url: '/api/store/status/change',
+    method: 'post',
+    data
+  })
+}
+

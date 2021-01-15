@@ -363,6 +363,7 @@
         // xss过滤白名单 名单来源: https://raw.githubusercontent.com/leizongmin/js-xss/master/lib/default.js
         , whiteList: {
             a: ['target', 'href', 'title', 'class', 'style'],
+            button: ['style'],
             abbr: ['title', 'class', 'style'],
             address: ['class', 'style'],
             area: ['shape', 'coords', 'href', 'alt'],
@@ -423,6 +424,7 @@
             tr: ['rowspan', 'align', 'valign', 'class', 'style'],
             tt: [],
             u: [],
+            input: ['type', 'style', 'value',],
             ul: ['class', 'style'],
             video: ['autoplay', 'controls', 'loop', 'preload', 'src', 'height', 'width', 'class', 'style'],
             embed: ['type', 'class', 'pluginspage', 'src', 'width', 'height', 'align', 'style', 'wmode', 'play', 'autoplay', 'loop', 'menu', 'allowscriptaccess', 'allowfullscreen', 'controls', 'preload']

@@ -4,6 +4,7 @@
       @ready="ready"
       v-model="ueData"
       :config="ueConfig"
+      @click.native="updateOrDelete($event)"
     ></vue-ueditor-wrap>
     <div class="ck-popover" v-if="entryFlag" @click="entryFlag = false"></div>
     <div class="ck-popover-entry" v-if="entryFlag">
@@ -616,7 +617,7 @@ export default {
       //一键排版
       this.isShowDoc = !this.isShowDoc;
     },
-    addImageAll() {
+    addImageAll(type, data) {
       // 图片集操作
       this.centerDialogVisible = true;
     },
@@ -681,6 +682,10 @@ export default {
         url: "",
       });
     },
+    updateOrDelete(e) {
+      console.log(e);
+      console.log(111);
+    },
     setCheditor(e) {
       this.mobHtml = e.target.innerHTML;
     },
@@ -693,9 +698,13 @@ export default {
       let entry = document.querySelector(".edui-for-entry");
       let contact = document.querySelector(".edui-for-contact");
       let information = document.querySelector(".edui-for-information");
+      // let updateBtn = document.querySelectorAll(".updateBtn");
       let update = document.querySelector(".edui-for-update");
       let allimage = document.querySelector(".edui-for-allimage");
       // let camera = document.querySelector(".edui-for-camera");
+      // updateBtn.addEventListener("click", () => {
+      //   console.log(updateBtn);
+      // });
       entry.addEventListener("click", () => {
         this.entryFlag = true;
       });
@@ -774,7 +783,7 @@ export default {
       this.qiToken.key = `${this.qiToken.key}${newTime}.png`;
     },
 
-    addYes() {
+    async addYes() {
       if (this.activeNum == "one") {
         let img = this.addList;
         let newTime = new Date().getTime();
@@ -788,12 +797,12 @@ export default {
           images: imgS,
           album_name: userIn + "-" + newTime,
         };
-        createPics(this.qs.stringify(data)).then((res) => {
+        await createPics(this.qs.stringify(data)).then((res) => {
           this.ids = res.data.result;
         });
         console.log(this.ids);
         this.centerDialogVisible = false;
-        let str = `<div data-id="${this.ids}"  style="display: flex;justify-content: center;"><div style="width:210px;display: table-cell;text-align: center;"><img data-id="${this.ids}"  class="data" style="width:100%;height: 160px;" src="${img[0]}"
+        let str = `<div data-let="${this.ids}"  style="display: flex;justify-content: center;"><div style="width:210px;display: table-cell;text-align: center;"><img data-id="${this.ids}"  class="data" style="width:100%;height: 160px;" src="${img[0]}"
                 alt=""></div><div style="display: flex;flex-direction: column;width:100px;height: 160px;">
             <img data-id="${this.ids}"  class="data" style="width:100px;height: 80px;" src="${img[1]}"
                 alt=""><div style="    position: relative;width:100px;height:80px ">
@@ -806,7 +815,8 @@ export default {
                 line-height: 80px;
                 color:#fff;
                 text-align: center;">共${img.length}张</span><img data-id="${this.ids}"  class="data" style="width:100px;height: 80px;"
-                   src="${img[2]}" alt=""></div></div></div><div><br></div>`;
+                   src="${img[2]}" alt=""></div> <div id="showIcon" style="text-align: center;"><button class='updateBtn' data-id='${this.ids}' id="update">修 改</button><button class='deleteBtn' data-id='${this.ids}' id="deleteMy">删 除</button></div></div></div>
+                   <br/>`;
         this.editor.execCommand("inserthtml", str);
         this.imgList = [];
         this.activeNum = "one";
@@ -823,18 +833,18 @@ export default {
           images: imgS,
           album_name: userIn + "-" + newTime,
         };
-        createPics(this.qs.stringify(data)).then((res) => {
+        await createPics(this.qs.stringify(data)).then((res) => {
           this.ids = res.data.result;
         });
         console.log(this.ids);
 
         this.centerDialogVisible = false;
 
-        let str = `<div data-id="${this.ids}"  style="display: flex;justify-content: center;"><div style="width:210px;display: table-cell;text-align: center;"><img data-id="${this.ids}"  class="data" style="width:100%;height: 160px;" src="${img[0]}"
+        let str = `<div data-id="${this.ids}"  style="display: flex;justify-content: center;"><div style="width:210px;display: table-cell;text-align: center;"><img data-id="${this.ids}"  class="dataL" style="width:100%;height: 160px;" src="${img[0]}"
                 alt=""></div><div style="display: flex;flex-direction: column;width:100px;height: 160px;">
-            <img data-id="${this.ids}"  class="data" style="width:100px;height: 80px;" src="${img[1]}"
+            <img data-id="${this.ids}"  class="dataRT" style="width:100px;height: 80px;" src="${img[1]}"
                 alt=""><div style="    position: relative;width:100px;height:80px ">
-                <span style="position: absolute;
+                <span data-id="${this.ids}"  class="data" style="position: absolute;
                 background: #2b323e;
                 opacity: 0.8;
                 width:100px;
@@ -842,8 +852,8 @@ export default {
                 left: 0;
                 line-height: 80px;
                 color:#fff;
-                text-align: center;">共${img.length}张</span><img  class="data" data-id="${this.ids}" style="width:100px;height: 80px;"
-                   src="${img[2]}" alt=""></div></div></div><div><br></div>`;
+                text-align: center;">共${img.length}张</span><img  data-id="${this.ids}" style="width:100px;height: 80px;"
+                   src="${img[2]}" alt=""></div><div  class="showIcon${this.ids} delete" style="text-align: center;"><button class="update${this.ids}" >修 改</button><button class="detele${this.ids}" data-ids="${this.ids}" >删 除</button></div></div></div><div><br></div>`;
         this.editor.execCommand("inserthtml", str);
         this.imgList = [];
         this.activeNum = "one";

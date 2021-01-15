@@ -5,7 +5,6 @@
  */
 
 (function () {
-
   // editor.js
   UEDITOR_CONFIG = window.UEDITOR_CONFIG || {};
 
@@ -18962,6 +18961,23 @@
       var me = this,
         imageScale;
       me.setOpt("imageScaleEnabled", true);
+      me.addListener("click", function (type, e) {
+        // 判断是否是自定义模块，是就不允许拉伸缩放 杨波
+        // alert('1122aa')
+        // console.log(e.target.dataset.id);
+        if (e.target.dataset.id) {
+          console.log(e.target.dataset.id)
+          let display = me.document.getElementsByClassName(`showIcon${e.target.dataset.id}`)
+          display[0].style.display = 'block'
+          let addBtn = me.document.getElementsByClassName(`update${e.target.dataset.id}`)
+          console.log(addBtn)
+        } else {
+          let display = me.document.getElementsByClassName(`delete`)
+          for (let i = 0; i < display.length; i++) {
+            display[i].style.display = "none"
+          }
+        }
+      })
       if (!browser.ie && me.options.imageScaleEnabled) {
         me.addListener("click", function (type, e) {
           var range = me.selection.getRange(),
@@ -19051,9 +19067,10 @@
 
       if (browser.webkit) {
         me.addListener("click", function (type, e) {
-          // 判断是否是自定义模块，是就不允许拉伸缩放
+          // 判断是否是自定义模块，是就不允许拉伸缩放 杨波
           if (e.target.dataset.id) {
-            console.log(e)
+            // alert('1122aa')
+            // console.log(e.target)
           }
 
           else if (e.target.tagName == "IMG" && me.body.contentEditable != "false") {
@@ -26516,6 +26533,7 @@
    * @author Jinqn
    * @date 2013-10-14
    */
+
   UE.plugin.register("autoupload", function () {
     function sendAndInsertFile(file, editor) {
       var me = editor;
@@ -32581,7 +32599,7 @@
             // if (imgStr.indexOf('data-')) {
             //   console.log(111)
             // }
-            //屏蔽自定义的属性不予修改
+            //屏蔽自定义的属性不予修改  杨波
             if (img && img.className.indexOf("data") != -1) {
               return
             }
@@ -33273,7 +33291,6 @@
       }
       return editor;
     };
-
     UE.delEditor = function (id) {
       var editor;
       if ((editor = instances[id])) {
