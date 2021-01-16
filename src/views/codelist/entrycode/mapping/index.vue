@@ -14,11 +14,6 @@
       <el-button size="small" type="primary">上传导图</el-button>
       <!-- <span slot="tip" class="el-upload__tip">格式 png、jpg 750*222</span> -->
     </el-upload>
-    <div>
-      <el-button @click="saveMapping" size="small" type="primary"
-        >保存</el-button
-      >
-    </div>
     <div class="setmapping">
       <img
         @click="setEntryJump"
@@ -40,6 +35,7 @@
           <div @click.stop="setTip(index)">{{ item.title }}</div>
           <span></span>
           <i
+            @mouseup.stop="false"
             @click.stop="closeTip(index)"
             class="close el-icon-circle-close"
           ></i>
@@ -172,6 +168,7 @@ export default {
       this.dialogVisible = false;
       this.form.title = '';
       this.form.href = '';
+      this.saveMapping();
     },
     //点击设置锚点内容弹窗唤起
     setTip(index) {
@@ -218,6 +215,7 @@ export default {
         this.clickFlag = false;
       }, 200);
       this.downFlag = false;
+      this.saveMapping();
     },
     //鼠标离开被拖动元素
     mouseLeave(e, index) {
@@ -226,6 +224,8 @@ export default {
     //删除锚点
     closeTip(index) {
       this.entryObj.splice(index, 1);
+      this.saveMapping();
+      return false
     },
     //点击提示用户添加锚点
     setEntryJump(e) {
@@ -239,6 +239,7 @@ export default {
         x: x,
         y: y,
       });
+      this.saveMapping();
     },
     beforeUpload(file) {
       let newTime = new Date().getTime();
@@ -262,6 +263,7 @@ export default {
     imageUploadSuccess(response, file, fileList) {
       let path = `http://voice.xunsheng.org.cn/${response.key}`;
       this.enterpriseImage = path;
+      this.saveMapping();
     },
     uploadProgress(file, fileList) {
       if (file.status === "ready") {
