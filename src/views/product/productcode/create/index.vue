@@ -116,7 +116,7 @@
               </el-select>
             </div>
             <div style="text-align: right; margin: 0">
-              <el-button size="mini" type="text" @click="visible = false"
+              <el-button size="mini" type="text" @click="closeEle"
                 >取消</el-button
               >
               <el-button type="primary" size="mini" @click="addEle"
@@ -193,13 +193,25 @@ export default {
       //   }
       // });
     },
+    closeEle() {
+      this.visible = false;
+      this.form1 = {
+        name: "",
+        type: 1,
+      };
+    },
     addEle() {
+      if (!this.form1.name) {
+        this.$message.error("请先完善数据");
+        return;
+      }
       this.addList.push(this.form1);
       console.log(this.addList);
       this.form1 = {
         name: "",
         type: 1,
       };
+      this.visible = false;
     },
     handleRemove(file) {},
     handlePictureCardPreview(file) {

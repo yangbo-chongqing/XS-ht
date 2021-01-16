@@ -14,6 +14,9 @@
       <el-button size="small" type="primary">上传导图</el-button>
       <!-- <span slot="tip" class="el-upload__tip">格式 png、jpg 750*222</span> -->
     </el-upload>
+    <div>
+      <el-progress v-if="progressFlag" :percentage="loadProgress"></el-progress>
+    </div>
     <div class="setmapping">
       <img
         @click="setEntryJump"
@@ -35,7 +38,10 @@
           <div @click.stop="setTip(index)">{{ item.title }}</div>
           <span></span>
           <i
-            @mouseup.stop="false"
+            @mouseup.stop="
+              'false';
+
+            "
             @click.stop="closeTip(index)"
             class="close el-icon-circle-close"
           ></i>
@@ -153,8 +159,6 @@ export default {
     },
     //设置锚点内容
     setTipData() {
-      console.log(this.form.title);
-      console.log(this.form.href);
       if (this.form.title == "" || this.form.href === "") {
         this.$message({
           type: "error",
@@ -177,7 +181,6 @@ export default {
       if (!this.clickFlag) {
         this.dialogVisible = true;
         this.tipIndex = index;
-        console.log(this.entryObj[index].href);
         if (this.entryObj[index].href != "") {
           this.form.title = this.entryObj[index].title;
           this.options = [this.entryObj[index].content];
@@ -209,7 +212,6 @@ export default {
     //鼠标松开
     mouseUp(e, index) {
       this.lastTime = new Date().getTime();
-      console.log(this.lastTime - this.firstTime);
       if (this.lastTime - this.firstTime > 200) {
         this.clickFlag = true;
       }
@@ -217,7 +219,9 @@ export default {
         this.clickFlag = false;
       }, 200);
       this.downFlag = false;
-      this.saveMapping();
+      if (this.clickFlag) {
+        this.saveMapping();
+      }
     },
     //鼠标离开被拖动元素
     mouseLeave(e, index) {
@@ -233,7 +237,6 @@ export default {
     setEntryJump(e) {
       let x = e.offsetX,
         y = e.offsetY;
-      console.log(x, y);
       this.entryObj.push({
         title: "点击编辑",
         content: "",
@@ -282,9 +285,11 @@ export default {
   box-sizing: border-box;
   min-width: 1000px;
   position: relative;
-  display: flex;
+
   .setmapping {
     position: relative;
+    width: 1000px;
+    margin: auto;
     .mapptip {
       position: absolute;
       z-index: 100;
