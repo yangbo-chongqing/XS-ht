@@ -38,10 +38,7 @@
           <div @click.stop="setTip(index)">{{ item.title }}</div>
           <span></span>
           <i
-            @mouseup.stop="
-              'false';
-
-            "
+            @mouseup.stop="'false'"
             @click.stop="closeTip(index)"
             class="close el-icon-circle-close"
           ></i>
@@ -219,7 +216,10 @@ export default {
         this.clickFlag = false;
       }, 200);
       this.downFlag = false;
-      this.saveMapping();
+      if(this.clickFlag){
+        this.saveMapping();
+      }
+      
     },
     //鼠标离开被拖动元素
     mouseLeave(e, index) {
