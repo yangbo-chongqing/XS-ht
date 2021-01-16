@@ -42,8 +42,89 @@
             ></span>
           </div>
         </el-form-item>
+        <template v-for="(item, index) of addList">
+          <el-form-item :label="item.name" :key="index">
+            <el-upload
+              v-if="item.type == 3"
+              class="upload-demo"
+              :before-upload="uploadPic"
+              :data="qiToken"
+              action="http://upload.qiniup.com"
+              :headers="headers"
+              :on-success="imageUploadSuccess"
+              accept=".jpg,.png"
+              :show-file-list="false"
+              :on-change="uploadProgress"
+            >
+              <el-button size="small" type="primary"
+                >图片<i class="el-icon-upload el-icon--right"
+              /></el-button>
+            </el-upload>
+            <el-input
+              v-if="item.type == 1"
+              v-model="inputVal[index]"
+            ></el-input>
+            <el-upload
+              v-if="item.type == 2"
+              class="upload-demo"
+              action="http://upload.qiniup.com"
+              :data="qiToken"
+              :before-upload="uploadVideo"
+              :headers="headers"
+              accept=".MPEG,.baiAVI,.nAVI,.ASF,.MOV,.3GP,.mp4"
+              :show-file-list="false"
+              :on-success="videoUploadSuccess"
+              :on-change="uploadProgress"
+            >
+              <el-button size="small" type="primary"
+                >视频<i class="el-icon-upload el-icon--right"
+              /></el-button>
+            </el-upload>
+          </el-form-item>
+        </template>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">立即创建</el-button>
+          <el-popover
+            style="margin-left: 20px"
+            placement="bottom"
+            width="220"
+            v-model="visible"
+          >
+            <div>
+              名称:
+              <el-input
+                class="block"
+                size="mini"
+                v-model="form1.name"
+              ></el-input>
+            </div>
+            <div>
+              类型:
+              <el-select
+                v-model="form1.type"
+                size="mini"
+                class="block"
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="(item, index) of options"
+                  :key="index"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </div>
+            <div style="text-align: right; margin: 0">
+              <el-button size="mini" type="text" @click="visible = false"
+                >取消</el-button
+              >
+              <el-button type="primary" size="mini" @click="addEle"
+                >确定</el-button
+              >
+            </div>
+            <el-button slot="reference">增加自定义</el-button>
+          </el-popover>
         </el-form-item>
       </el-form>
     </div>
@@ -69,6 +150,18 @@ export default {
       dialogVisible: false,
       disabled: false,
       uploadLoading: "",
+      visible: false,
+      inputVal: [],
+      addList: [],
+      form1: {
+        name: "",
+        type: 1,
+      },
+      options: [
+        { label: "文本", value: 1 },
+        { label: "视频", value: 2 },
+        { label: "图片", value: 3 },
+      ],
     };
   },
   created() {},
@@ -99,6 +192,14 @@ export default {
         }
       });
     },
+    addEle() {
+      this.addList.push(this.form1);
+      console.log(this.addList);
+      this.form1 = {
+        name: "",
+        type: 1,
+      };
+    },
     handleRemove(file) {},
     handlePictureCardPreview(file) {
       this.dialogVisible = true;
@@ -113,6 +214,7 @@ export default {
         text: "上传中...",
       });
     },
+    addTit() {},
     back() {
       this.$router.go(-1);
     },
@@ -174,5 +276,10 @@ export default {
     padding: 0 20px;
     box-sizing: border-box;
   }
+}
+.block {
+  display: inline-block;
+  width: 150px;
+  margin-bottom: 10px;
 }
 </style>

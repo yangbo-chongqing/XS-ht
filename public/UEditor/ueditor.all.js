@@ -18972,9 +18972,14 @@
           let addBtn = me.document.getElementsByClassName(`update${e.target.dataset.id}`)
           console.log(addBtn)
         } else {
-          let display = me.document.getElementsByClassName(`delete`)
-          for (let i = 0; i < display.length; i++) {
-            display[i].style.display = "none"
+          if (e.target.dataset.updateid || e.target.dataset.deleteid) {
+
+          } else {
+            let display = me.document.getElementsByClassName(`delete`)
+            for (let i = 0; i < display.length; i++) {
+              display[i].style.display = "none"
+            }
+
           }
         }
       })
@@ -27519,7 +27524,7 @@
             var img = new Image();
             img.src = blob;
             var obj = w.files[0];
-
+            // 单图上传
             img.onload = function () {
               var _this = img;
 
@@ -27572,7 +27577,7 @@
 
               var _blob = getBlob([buffer], "image/jpeg");
               ///
-              formdata.append('file', _blob, 'file.png');
+              formdata.append('upfile', _blob, 'file.png');
 
               xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4 && xhr.status == 200) {

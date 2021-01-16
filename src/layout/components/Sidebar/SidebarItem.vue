@@ -1,10 +1,10 @@
 <template>
-  <div v-if="!item.hidden">
+  <div v-if="!item.hidden && dataList.indexOf(item.path) != -1">
     <template
       v-if="
         hasOneShowingChild(item.children, item) &&
-          (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
-          !item.alwaysShow
+        (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
+        !item.alwaysShow
       "
     >
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
@@ -46,93 +46,122 @@
 </template>
 
 <script>
-import path from 'path'
-import store from '@/store'
-import { isExternal } from '@/utils/validate'
-import Item from './Item'
-import AppLink from './Link'
-import FixiOSBug from './FixiOSBug'
-
+import path from "path";
+import store from "@/store";
+import { isExternal } from "@/utils/validate";
+import Item from "./Item";
+import AppLink from "./Link";
+import FixiOSBug from "./FixiOSBug";
+import { getMenu } from "@/api/user";
 export default {
-  name: 'SidebarItem',
+  name: "SidebarItem",
   components: { Item, AppLink },
   mixins: [FixiOSBug],
   props: {
     // route object
     item: {
       type: Object,
-      required: true
+      required: true,
     },
     isNest: {
       type: Boolean,
-      default: false
+      default: false,
     },
     basePath: {
       type: String,
-      default: ''
-    }
+      default: "",
+    },
   },
   data() {
     // To fix https://github.com/PanJiaChen/vue-admin-template/issues/237
     // TODO: refactor with render function
-    this.onlyOneChild = null
+    this.onlyOneChild = null;
     return {
-      roles: store.getters.userinfo.user_info.roles
-    }
+      roles: store.getters.userinfo.user_info.roles,
+      dataList: [],
+    };
   },
   created() {
+    if (!sessionStorage.getItem("router")) {
+      this.getMenuList();
+    } else {
+      this.dataList = sessionStorage.getItem("router");
+    }
     if (this.roles == 1) {
       if (this.item.children) {
         this.item.children.map((item, index) => {
-          if (item.path == 'administrator') {
-            item.hidden = true
+          if (item.path == "administrator") {
+            item.hidden = true;
           }
-        })
+        });
       }
     } else {
       if (this.item.children) {
         this.item.children.map((item, index) => {
-          if (item.path == 'administrator') {
-            item.hidden = false
+          if (item.path == "administrator") {
+            item.hidden = false;
           }
-        })
+        });
       }
     }
+    // console.log(
+    //   this.item.path +
+    //     "----------" +
+    //     this.dataList +
+    //     "--------" +
+    //     this.dataList.indexOf(this.item.path)
+    // );
+    // console.log(this.dataList.indexOf(this.item.path) != -1);
+    // console.log(this.item);
   },
   methods: {
     hasOneShowingChild(children = [], parent) {
       const showingChildren = children.filter((item) => {
         if (item.hidden) {
-          return false
+          return false;
         } else {
           // Temp set(will be used if only has one showing child)
-          this.onlyOneChild = item
-          return true
+          this.onlyOneChild = item;
+          return true;
         }
-      })
+      });
 
       // When there is only one child router, the child router is displayed by default
       if (showingChildren.length === 1) {
-        return true
+        return true;
       }
 
       // Show parent if there are no child router to display
       if (showingChildren.length === 0) {
-        this.onlyOneChild = { ...parent, path: '', noShowingChildren: true }
-        return true
+        this.onlyOneChild = { ...parent, path: "", noShowingChildren: true };
+        return true;
       }
 
-      return false
+      return false;
+    },
+    async getMenuList() {
+      await getMenu().then((res) => {
+        let list = res.data.menu;
+        for (let i = 0; i < list.length; i++) {
+          this.dataList.push(list[i].path);
+          for (let n = 0; n < list[i].children.length; n++) {
+            this.dataList.push(list[i].children[n].path);
+          }
+        }
+        console.log(this.dataList);
+        sessionStorage.setItem("router", JSON.stringify(this.dataList));
+        console.log(sessionStorage.getItem("router"));
+      });
     },
     resolvePath(routePath) {
       if (isExternal(routePath)) {
-        return routePath
+        return routePath;
       }
       if (isExternal(this.basePath)) {
-        return this.basePath
+        return this.basePath;
       }
-      return path.resolve(this.basePath, routePath)
-    }
-  }
-}
+      return path.resolve(this.basePath, routePath);
+    },
+  },
+};
 </script>

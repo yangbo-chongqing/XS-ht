@@ -4,7 +4,6 @@
       @ready="ready"
       v-model="ueData"
       :config="ueConfig"
-      @click.native="updateOrDelete($event)"
     ></vue-ueditor-wrap>
     <div class="ck-popover" v-if="entryFlag" @click="entryFlag = false"></div>
     <div class="ck-popover-entry" v-if="entryFlag">
@@ -415,10 +414,6 @@
           </el-tab-pane>
           <el-tab-pane name="two" label="在线管理">
             <div class="demo-image__lazy">
-              <drag :picList="picList" @chilX="parX" />
-            </div>
-            <div class="fontTil">在线图库</div>
-            <div class="demo-image__lazy">
               <li
                 v-for="(item, index) of webPic"
                 :key="item + index"
@@ -432,6 +427,10 @@
                   <img src="@/assets/icon/success.png" alt="" />
                 </div>
               </li>
+            </div>
+            <div class="fontTil">图集排列</div>
+            <div class="demo-image__lazy">
+              <drag :picList="picList" @chilX="parX" />
             </div>
           </el-tab-pane>
         </el-tabs>
@@ -450,7 +449,7 @@ import VueUeditorWrap from "vue-ueditor-wrap";
 import { getToken } from "@/utils/auth";
 import drag from "@/components/drag";
 import { getPicList } from "@/api/user";
-import { createPics } from "@/api/ue";
+import { createPics, delPic, details } from "@/api/ue";
 import { mapGetters } from "vuex";
 
 export default {
@@ -488,8 +487,11 @@ export default {
       id: parseInt(Math.random() * 10000).toString(),
       activeNum: "one", //默认tab
       ueData: "",
+      status: 1,
       selectNum: [],
       addPic: [],
+      pData: "",
+      fram: {}, //指向
       picList: [], //在线选择的图片
       webPic: [], //在线图片
       isShowDoc: false,
@@ -617,10 +619,6 @@ export default {
       //一键排版
       this.isShowDoc = !this.isShowDoc;
     },
-    addImageAll(type, data) {
-      // 图片集操作
-      this.centerDialogVisible = true;
-    },
     //添加联系方式到富文本
     addInformation() {
       let aStr = `
@@ -682,10 +680,6 @@ export default {
         url: "",
       });
     },
-    updateOrDelete(e) {
-      console.log(e);
-      console.log(111);
-    },
     setCheditor(e) {
       this.mobHtml = e.target.innerHTML;
     },
@@ -721,7 +715,7 @@ export default {
         this.addUpdate();
       });
       allimage.addEventListener("click", () => {
-        this.addImageAll();
+        this.addImageAll(1);
       });
     },
     addEntry() {
@@ -767,6 +761,26 @@ export default {
     },
 
     //图片集上传管理
+    // 图片集打开按钮
+    addImageAll(type, data) {
+      console.log(data);
+      // 图片集操作
+      if (type == 1) {
+        // console.log(data);
+        if (data) {
+          details(this.qs.stringify({ id: data })).then((res) => {
+            this.imgList = res.data.info.images;
+            this.picList = res.data.info.images;
+          });
+        }
+        this.centerDialogVisible = true;
+        this.pData = data;
+      } else {
+        let box = this.fram.document.querySelector(`#pic${data}`);
+        // console.log(box);
+        box.parentNode.removeChild(box);
+      }
+    },
     selectPic(i) {
       console.log(this.picList);
       console.log(this.webPic[i]);
@@ -784,6 +798,10 @@ export default {
     },
 
     async addYes() {
+      if (this.status == 1 && this.pData) {
+        let box = this.fram.document.querySelector(`#pic${this.pData}`);
+        box.parentNode.removeChild(box);
+      }
       if (this.activeNum == "one") {
         let img = this.addList;
         let newTime = new Date().getTime();
@@ -802,11 +820,11 @@ export default {
         });
         console.log(this.ids);
         this.centerDialogVisible = false;
-        let str = `<div data-let="${this.ids}"  style="display: flex;justify-content: center;"><div style="width:210px;display: table-cell;text-align: center;"><img data-id="${this.ids}"  class="data" style="width:100%;height: 160px;" src="${img[0]}"
+        let str = `<div id="pic${this.ids}" data-id="${this.ids}"  style="display: flex;justify-content: center;"><div style="width:210px;display: table-cell;text-align: center;"><img data-id="${this.ids}"  class="dataL" style="width:100%;height: 160px;" src="${img[0]}"
                 alt=""></div><div style="display: flex;flex-direction: column;width:100px;height: 160px;">
-            <img data-id="${this.ids}"  class="data" style="width:100px;height: 80px;" src="${img[1]}"
+            <img data-id="${this.ids}"  class="dataRT" style="width:100px;height: 80px;" src="${img[1]}"
                 alt=""><div style="    position: relative;width:100px;height:80px ">
-                <span style="position: absolute;
+                <span data-id="${this.ids}"  class="data" style="position: absolute;
                 background: #2b323e;
                 opacity: 0.8;
                 width:100px;
@@ -814,9 +832,8 @@ export default {
                 left: 0;
                 line-height: 80px;
                 color:#fff;
-                text-align: center;">共${img.length}张</span><img data-id="${this.ids}"  class="data" style="width:100px;height: 80px;"
-                   src="${img[2]}" alt=""></div> <div id="showIcon" style="text-align: center;"><button class='updateBtn' data-id='${this.ids}' id="update">修 改</button><button class='deleteBtn' data-id='${this.ids}' id="deleteMy">删 除</button></div></div></div>
-                   <br/>`;
+                text-align: center;">共${img.length}张</span><img  data-id="${this.ids}" style="width:100px;height: 80px;"
+                   src="${img[2]}" alt=""></div><div  class="showIcon${this.ids} delete" style="text-align: center; display='none'"><button  data-updateId="${this.ids}" class='updateBtn'>修 改</button><button class='deleteBtn' data-deleteId="${this.ids}" >删 除</button></div></div></div><div><br></div>`;
         this.editor.execCommand("inserthtml", str);
         this.imgList = [];
         this.activeNum = "one";
@@ -840,7 +857,7 @@ export default {
 
         this.centerDialogVisible = false;
 
-        let str = `<div data-id="${this.ids}"  style="display: flex;justify-content: center;"><div style="width:210px;display: table-cell;text-align: center;"><img data-id="${this.ids}"  class="dataL" style="width:100%;height: 160px;" src="${img[0]}"
+        let str = `<div id="pic${this.ids}" data-id="${this.ids}"  style="display: flex;justify-content: center;"><div style="width:210px;display: table-cell;text-align: center;"><img data-id="${this.ids}"  class="dataL" style="width:100%;height: 160px;" src="${img[0]}"
                 alt=""></div><div style="display: flex;flex-direction: column;width:100px;height: 160px;">
             <img data-id="${this.ids}"  class="dataRT" style="width:100px;height: 80px;" src="${img[1]}"
                 alt=""><div style="    position: relative;width:100px;height:80px ">
@@ -853,13 +870,14 @@ export default {
                 line-height: 80px;
                 color:#fff;
                 text-align: center;">共${img.length}张</span><img  data-id="${this.ids}" style="width:100px;height: 80px;"
-                   src="${img[2]}" alt=""></div><div  class="showIcon${this.ids} delete" style="text-align: center;"><button class="update${this.ids}" >修 改</button><button class="detele${this.ids}" data-ids="${this.ids}" >删 除</button></div></div></div><div><br></div>`;
+                   src="${img[2]}" alt=""></div><div  class="showIcon${this.ids} delete" style="text-align: center; display='none'"><button  data-updateId="${this.ids}" class='updateBtn'>修 改</button><button class='deleteBtn' data-deleteId="${this.ids}" >删 除</button></div></div></div><div><br></div>`;
         this.editor.execCommand("inserthtml", str);
         this.imgList = [];
         this.activeNum = "one";
         this.picList = [];
         console.log(this.ids);
       }
+      this.pData = "";
     },
     closeAdd() {
       this.centerDialogVisible = false;
@@ -874,6 +892,7 @@ export default {
       this.addPic = val;
     },
     getPic(tab, event) {
+      // 获取线上图片
       console.log(tab, event);
       if (tab.name == "two") {
         this.webPic = [];
@@ -890,6 +909,20 @@ export default {
         });
       }
     },
+    // 修改或者删除按钮
+    updateOrDelete(e) {
+      // console.log(e.target);
+      // console.log(e.target);
+      if (e.target.dataset.deleteid) {
+        // console.log(
+        //   this.fram.document.querySelector(`#pic${e.target.dataset.deleteid}`)
+        // );
+
+        this.addImageAll(2, e.target.dataset.deleteid);
+      } else if (e.target.dataset.updateid) {
+        this.addImageAll(1, e.target.dataset.updateid);
+      }
+    },
   },
   created() {
     this.qiToken = JSON.parse(sessionStorage.qiToken);
@@ -897,6 +930,15 @@ export default {
   watch: {
     // 监听prop的变化，更新ckeditor中的值
     ueData: function () {
+      let ueEl = this.$refs.ue;
+      this.fram = ueEl
+        .querySelector(".edui-editor-iframeholder")
+        .querySelector("iframe").contentWindow;
+      // 获取编辑器dom元素;
+      let ifm = ueEl
+        .querySelector(".edui-editor-iframeholder")
+        .querySelector("iframe").contentWindow.document.body;
+      ifm.addEventListener("click", this.updateOrDelete);
       this.$emit("input", this.ueData);
     },
     mobHtml: function (val) {

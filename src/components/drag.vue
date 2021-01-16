@@ -161,6 +161,7 @@ export default {
         }
       }
       this.$emit("chilX", this.imgList);
+      this.$emit("childFn", { url: this.imgList, play: this.play });
     },
   },
 
@@ -205,7 +206,6 @@ export default {
       }
       this.isUploading = false;
       this.qiToken = JSON.parse(sessionStorage.qiToken);
-      this.$emit("childFn", { url: this.imgList, play: this.play });
     },
     // 移除单张图片
     onRemoveHandler(index) {

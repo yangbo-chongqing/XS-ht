@@ -63,6 +63,7 @@ export default {
   data() {
     return {
       id: "",
+      dataList: [],
     };
   },
   computed: {
@@ -78,7 +79,20 @@ export default {
       await this.getId();
       await this.$store.dispatch("user/getInfo");
       await this.$router.go(0);
+      await this.getMenuList();
       // await this.reload();
+    },
+    async getMenuList() {
+      await getMenu().then((res) => {
+        let list = res.data.menu;
+        for (let i = 0; i < list.length; i++) {
+          this.dataList.push(list[i].path);
+          for (let n = 0; n < list[i].children.length; n++) {
+            this.dataList.push(list[i].children[n].path);
+          }
+        }
+        sessionStorage.setItem("router", JSON.stringify(this.dataList));
+      });
     },
     getId() {
       // 切换公司ID
@@ -99,6 +113,7 @@ export default {
     },
   },
   created() {
+    console.log("bbbbbbbbb");
     this.userinfo.muse_list.map((item) => {
       if (item.select == 1) {
         this.id = item.id;

@@ -79,3 +79,12 @@ export function getPicList(data) {
     data: data
   })
 }
+
+// 商家菜单
+export function getMenu(data) {
+  return request({
+    url: '/api/store/menu',
+    method: 'post',
+    data: data
+  })
+}
