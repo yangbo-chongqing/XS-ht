@@ -77,7 +77,7 @@
 <script>
 import { getToken } from "@/utils/auth";
 import { getQiToken } from "@/api/user";
-import { mapEdit,mapDetails } from "@/api/mapping";
+import { mapEdit, mapDetails } from "@/api/mapping";
 import { RelicsList } from "@/api/entrycode";
 export default {
   name: "EntryCode",
@@ -87,7 +87,7 @@ export default {
     return {
       headers: { Authorization: "Bearer " + getToken() },
       uploadLoading: "",
-      enterpriseImage:"",
+      enterpriseImage: "",
       loadProgress: 0, // 动态显示进度条
       progressFlag: false, // 关闭进度条
       dialogVisible: false,
@@ -122,11 +122,11 @@ export default {
   },
   methods: {
     //查看旅游导图详情
-    getMapDetails(){
-      mapDetails().then((res)=>{
+    getMapDetails() {
+      mapDetails().then((res) => {
         this.enterpriseImage = res.data.info.map_img;
         this.entryObj = res.data.info.map_coordinate;
-      })
+      });
     },
     //搜索词条
     remoteMethod(query) {
@@ -155,19 +155,21 @@ export default {
     setTipData() {
       console.log(this.form.title);
       console.log(this.form.href);
-      if(this.form.title == '' || this.form.href === ''){
+      if (this.form.title == "" || this.form.href === "") {
         this.$message({
-          type:'error',
-          message:'请填写内容'
-        })
+          type: "error",
+          message: "请填写内容",
+        });
         return false;
       }
       this.entryObj[this.tipIndex].title = this.form.title;
       this.entryObj[this.tipIndex].content = this.options[this.form.href];
-      this.entryObj[this.tipIndex].href = `http://xs_j1_${this.options[this.form.href].id}`;
+      this.entryObj[this.tipIndex].href = `http://xs_j1_${
+        this.options[this.form.href].id
+      }`;
       this.dialogVisible = false;
-      this.form.title = '';
-      this.form.href = '';
+      this.form.title = "";
+      this.form.href = "";
       this.saveMapping();
     },
     //点击设置锚点内容弹窗唤起
@@ -176,9 +178,9 @@ export default {
         this.dialogVisible = true;
         this.tipIndex = index;
         console.log(this.entryObj[index].href);
-        if(this.entryObj[index].href != ""){
+        if (this.entryObj[index].href != "") {
           this.form.title = this.entryObj[index].title;
-          this.options=[this.entryObj[index].content];
+          this.options = [this.entryObj[index].content];
           this.form.href = 0;
         }
       }
@@ -225,7 +227,7 @@ export default {
     closeTip(index) {
       this.entryObj.splice(index, 1);
       this.saveMapping();
-      return false
+      return false;
     },
     //点击提示用户添加锚点
     setEntryJump(e) {
@@ -234,7 +236,7 @@ export default {
       console.log(x, y);
       this.entryObj.push({
         title: "点击编辑",
-        content:'',
+        content: "",
         href: "",
         x: x,
         y: y,
@@ -244,21 +246,6 @@ export default {
     beforeUpload(file) {
       let newTime = new Date().getTime();
       this.qiToken.key = `${this.qiToken.key}${newTime}.png`;
-      return new Promise((resolve, reject) => {
-        // 压缩图片;
-        let isLt2M = file.size / 1024 / 1024 < 1; // 判定图片大小是否小于4MB
-        if (isLt2M) {
-          resolve(file);
-          console.log(file); // 压缩到400KB,这里的400就是要压缩的大小,可自定义
-        } else {
-          console.log(file); // 压缩到400KB,这里的400就是要压缩的大小,可自定义
-          console.log(imageConversion);
-          imageConversion.compressAccurately(file, 300).then((res) => {
-            console.log(res);
-            resolve(res);
-          });
-        }
-      });
     },
     imageUploadSuccess(response, file, fileList) {
       let path = `http://voice.xunsheng.org.cn/${response.key}`;

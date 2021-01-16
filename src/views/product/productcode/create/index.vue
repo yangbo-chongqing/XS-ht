@@ -167,6 +167,7 @@ export default {
   created() {},
   methods: {
     onSubmit() {
+      console.log(this.inputVal);
       let loading = this.$loading({
         text: "保存中",
       });
@@ -177,20 +178,20 @@ export default {
         factory: this.form.factory,
         listed: this.form.listed,
       };
-      productCreate(this.qs.stringify(params)).then((res) => {
-        loading.close();
-        if (res.status == 200) {
-          this.$message({
-            message: res.message,
-            type: "success",
-          });
-          this.form.unique = "";
-          this.form.name = "";
-          this.form.dialogImageUrl = "";
-          this.form.factory = "";
-          this.form.listed = "";
-        }
-      });
+      // productCreate(this.qs.stringify(params)).then((res) => {
+      //   loading.close();
+      //   if (res.status == 200) {
+      //     this.$message({
+      //       message: res.message,
+      //       type: "success",
+      //     });
+      //     this.form.unique = "";
+      //     this.form.name = "";
+      //     this.form.dialogImageUrl = "";
+      //     this.form.factory = "";
+      //     this.form.listed = "";
+      //   }
+      // });
     },
     addEle() {
       this.addList.push(this.form1);

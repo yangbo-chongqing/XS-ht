@@ -52,18 +52,18 @@ export const constantRoutes = [
         component: () => import('@/views/settings/homepage/index'),
         meta: { title: '企业主页', icon: 'table', noCache: true }
       },
-      // {
-      //   path: 'mapping',
-      //   name: 'Mapping',
-      //   component: () => import('@/views/codelist/entrycode/mapping/index'),
-      //   meta: { title: '旅游导图', icon: 'table', noCache: true }
-      // },
       {
-        path: '/entrytype',
-        component: () => import('@/views/codelist/entrytype/index'),
-        name: 'entrytype',
-        meta: { title: '分馆管理', icon: 'el-icon-menu', noCache: true }
+        path: 'mapping',
+        name: 'Mapping',
+        component: () => import('@/views/codelist/entrycode/mapping/index'),
+        meta: { title: '旅游导图', icon: 'table', noCache: true }
       },
+      // {
+      //   path: '/entrytype',
+      //   component: () => import('@/views/codelist/entrytype/index'),
+      //   name: 'entrytype',
+      //   meta: { title: '分馆管理', icon: 'el-icon-menu', noCache: true }
+      // },
       {
         path: '/codelist/entrytypeedit',
         component: () => import('@/views/codelist/entrytype/edit/index'),
