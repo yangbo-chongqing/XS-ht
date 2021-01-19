@@ -1,5 +1,5 @@
 <template>
-  <div class="create-code">
+  <div class="create-code editor-scroll">
     <div class="create-code-body">
       <div class="back-box" @click="goback">
         <i class="el-icon-arrow-left"></i> 返回列表
@@ -1156,9 +1156,9 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
+
 .create-code {
-  max-height: 90vh;
-  overflow-y: scroll;
+  
   .table-header {
     display: flex;
     justify-content: space-between;

@@ -1,5 +1,5 @@
 <template>
-  <div class="create-code">
+  <div class="fun-code editor-scroll">
     <div class="back-box" @click="back">
       <i class="el-icon-arrow-left"></i> 返回列表
     </div>
@@ -305,7 +305,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.create-code {
+.fun-code {
   background: white;
   .back-box {
     padding: 10px;
@@ -352,7 +352,7 @@ export default {
     padding: 20px;
     box-sizing: border-box;
   }
-  .create-code-head {
+  .fun-code-head {
     border-bottom: 1px solid #f5f5f5;
     height: 60px;
     line-height: 60px;

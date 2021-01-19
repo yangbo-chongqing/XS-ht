@@ -43,4 +43,8 @@ export default {
 body {
   min-width: 1600px;
 }
+.editor-scroll{
+  max-height: 90vh;
+  overflow-y: scroll;
+}
 </style>

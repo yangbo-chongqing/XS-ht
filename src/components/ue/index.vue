@@ -462,11 +462,11 @@ export default {
   mounted: function () {
     this.$nextTick(() => {
       let _this = this;
-      let scroll_box = document.querySelector(".create-code");
+      let scroll_box = document.querySelector(".editor-scroll");
       scroll_box.addEventListener(
         "scroll",
         function () {
-          let edui1_toolbarbox = document.querySelector("#edui1_toolbarbox");
+          let edui1_toolbarbox = document.querySelector(".edui-editor-toolbarbox");
           let ue_box = _this.$refs.ue.getBoundingClientRect().top;
           // let ue_left = _this.$refs.ue.getBoundingClientRect();
           // console.log(edui1_toolbarbox);
