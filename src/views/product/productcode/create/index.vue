@@ -1,5 +1,5 @@
 <template>
-  <div class="fun-code">
+  <div class="fun-code editor-scroll">
     <div class="back-box" @click="back">
       <i class="el-icon-arrow-left"></i> 返回列表
     </div>
@@ -83,6 +83,14 @@
           </el-form-item>
         </template>
         <el-form-item>
+          <ue
+                :value="editorData"
+                :ueConfig="ueConfig"
+                @input="setEditorData"
+                :mobHtml="mobHtml"
+              ></ue>
+        </el-form-item>
+        <el-form-item>
           <el-button type="primary" @click="onSubmit">立即创建</el-button>
           <el-popover
             style="margin-left: 20px"
@@ -135,8 +143,12 @@
 import { productCreate } from "@/api/product";
 import { getToken } from "@/utils/auth";
 import { Loading } from "element-ui";
+import ue from "@/components/ue";
 export default {
   name: "ProductCreate",
+  components: {
+    ue,
+  },
   data() {
     return {
       headers: { Authorization: "Bearer " + getToken() },
@@ -146,6 +158,61 @@ export default {
         dialogImageUrl: "",
         factory: "",
         listed: "",
+      },
+      editorData: "",
+      mobHtml:"",
+      ueConfig: {
+        toolbars: [
+          [
+            "undo", //撤销
+            "redo", //重做
+            "removeformat", //清除格式
+            "|",
+            "fontsize", //字号
+            "fontfamily", //字体
+            "|",
+            "forecolor", //字体颜色
+            "backcolor", //背景色
+            "bold", //加粗
+            "italic", //斜体
+            "underline", //下划线
+            "strikethrough", //删除线
+            "link", //超链接
+            "|",
+            "blockquote", //引用
+            "horizontal", //分隔线
+            "|",
+            "indent", //首行缩进
+            "justifyleft", //居左对齐
+            "justifyright", //居右对齐
+            "justifycenter", //居中对齐
+            "justifyjustify", //两端对齐
+            "|",
+            "rowspacingtop", //段前距
+            "rowspacingbottom", //段后距
+            "lineheight", //行间距
+            "letterspacing", //字间距
+            "insertorderedlist", //有序列表
+            "|",
+            "simpleupload", //单图上传
+            "insertimage", //图上传
+            "attachment", //附件上传
+            "music",
+            "insertvideo",
+          ],
+        ],
+        compressSide: 0,
+        maxImageSideLength: 500,
+        catchRemoteImageEnable: true,
+        // 初始容器高度
+        initialFrameHeight: 500,
+        // 初始容器宽度
+        initialFrameWidth: "100%",
+        enableAutoSave: false,
+        elementPathEnable: false,
+        wordCount: false,
+        serverUrl: "/api/store/ueditor/config",
+        UEDITOR_HOME_URL: "/UEditor/",
       },
       dialogVisible: false,
       disabled: false,
@@ -166,6 +233,9 @@ export default {
   },
   created() {},
   methods: {
+    setEditorData(data) {
+      this.editorData = data;
+    },
     onSubmit() {
       console.log(this.inputVal);
       let loading = this.$loading({
