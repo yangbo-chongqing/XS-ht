@@ -5,7 +5,7 @@
         <el-col :span="14"><div class="entry-title">产品码</div></el-col>
         <el-col :span="10">
           <el-row :gutter="20">
-            <el-col :span="12">
+            <el-col :span="18">
               <div class="entry-search">
                 <el-input
                   v-model="keyword"
@@ -17,13 +17,13 @@
                 </el-input>
               </div>
             </el-col>
-            <el-col :span="7">
+            <!-- <el-col :span="7">
               <div class="entry-search">
                 <el-button type="primary" @click="golinkpage('customCode')"
                   >新增自定义属性</el-button
                 >
               </div>
-            </el-col>
+            </el-col> -->
             <el-col :span="4">
               <div class="entry-search">
                 <el-button
@@ -48,28 +48,34 @@
         fit
         highlight-current-row
       >
-        <el-table-column label="产品编号" width="150">
+        <el-table-column label="产品编号" width="150" align="center">
           <template slot-scope="scope">
             {{ scope.row.unique }}
           </template>
         </el-table-column>
-        <el-table-column label="产品名称">
+        <el-table-column label="产品名称" align="center">
           <template slot-scope="scope">
-            <el-image
-              style="width: 30px; height: 30px; object-fit: cover"
-              :src="scope.row.image"
-              :preview-src-list="[scope.row.image]"
-            >
-            </el-image>
             <span class="code-name">{{ scope.row.name }}</span>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="厂家">
+        <el-table-column label="产品封面图片" align="center">
           <template slot-scope="scope">
-            {{ scope.row.factory }}
+            <div style="text-align: center; wdith: 100%">
+              <el-image
+                style="
+                  width: 60px;
+                  height: 60px;
+                  object-fit: cover;
+                  margin-left: 30px;
+                "
+                :src="scope.row.image"
+                :preview-src-list="[scope.row.image]"
+              >
+              </el-image>
+            </div>
           </template>
-        </el-table-column> -->
-        <el-table-column label="装潢视频" align="center">
+        </el-table-column>
+        <!-- <el-table-column label="装潢视频" align="center">
           <template slot-scope="scope">
             <el-button type="text" size="mini" v-if="scope.row.video"
               >点击查看</el-button
@@ -98,8 +104,8 @@
               >添加质检报告</el-button
             >
           </template>
-        </el-table-column>
-        <el-table-column label="说明书" width="220" align="center">
+        </el-table-column> -->
+        <!-- <el-table-column label="说明书" width="220" align="center">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.manual">{{
               scope.row.manual.manual_name
@@ -113,7 +119,7 @@
               >关联说明书</el-button
             >
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="上市时间">
           <template slot-scope="scope">
             {{ scope.row.listed }}
@@ -627,7 +633,7 @@ export default {
     float: left;
   }
   .code-name {
-    float: left;
+    // float: left;
     line-height: 30px;
     margin-left: 5px;
   }
