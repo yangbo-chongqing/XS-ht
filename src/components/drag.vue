@@ -28,7 +28,7 @@
       <el-upload
         slot="footer"
         ref="uploadRef"
-        class="uploadBox"
+        :class="{ uploadBox: play == 1 }"
         :style="{ width: width + 'px', height: height + 'px' }"
         :data="qiToken"
         action="http://upload.qiniup.com"
@@ -38,6 +38,7 @@
         :multiple="!isSingle"
         :limit="limit"
         :before-upload="beforeUpload"
+        :on-change="uploadProgress"
         :on-success="onSuccessUpload"
         :on-exceed="onExceed"
       >
@@ -51,6 +52,7 @@
         </i>
       </el-upload>
     </vuedraggable>
+    <el-progress v-if="progressFlag" :percentage="loadProgress"></el-progress>
   </div>
 </template>
 
@@ -118,6 +120,8 @@ export default {
       isUploading: false, // 正在上传状态
       isFirstMount: true, // 控制防止重复回显
       qiToken: {},
+      loadProgress: 0, // 动态显示进度条
+      progressFlag: false, // 关闭进度条
     };
   },
 
@@ -160,6 +164,7 @@ export default {
           this.imgList.push(val[i]);
         }
       }
+      console.log(val);
       this.$emit("chilX", this.imgList);
       this.$emit("childFn", { url: this.imgList, play: this.play });
     },
@@ -206,6 +211,7 @@ export default {
       }
       this.isUploading = false;
       this.qiToken = JSON.parse(sessionStorage.qiToken);
+      this.$emit("childFn", { url: this.imgList, play: this.play });
     },
     // 移除单张图片
     onRemoveHandler(index) {
@@ -215,7 +221,11 @@ export default {
         type: "warning",
       })
         .then(() => {
+          this.$emit("deleOne", this.imgList[index]);
           this.imgList.splice(index, 1);
+          // this.$emit("chilX", this.imgList);
+          // this.$emit("childFn", { url: this.imgList, play: this.play });
+          console.log(this.imgList);
         })
         .catch(() => {});
     },
@@ -231,12 +241,32 @@ export default {
     onDragStart(e) {
       e.target.classList.add("hideShadow");
     },
+    uploadProgress(file, fileList) {
+      if (file.status === "ready") {
+        this.loadProgress = 0;
+        this.progressFlag = true; // 显示进度条
+        let intval = setInterval(() => {
+          if (this.loadProgress >= 90) {
+            clearInterval(intval);
+          }
+          if (this.loadProgress < 100) {
+            this.loadProgress += 1;
+          }
+        }, 20);
+      }
+      if (file.status === "success") {
+        this.loadProgress = 100;
+        setTimeout(() => {
+          this.progressFlag = false;
+        }, 1000); // 一秒后关闭进度条
+      }
+    },
     onDragEnd(e) {
-      console.log(`从 ${e.oldIndex}  到${e.newIndex}`);
       e.target.classList.remove("hideShadow");
       let old = this.imgList[e.oldIndex];
       this.imgList.splice(e.oldIndex, 1, this.imgList[e.newIndex]);
       this.imgList.splice(e.newIndex, 1, old);
+      this.$emit("chilX", this.imgList);
     },
   },
   created() {
@@ -255,8 +285,8 @@ export default {
 
 // 上传按钮
 .uploadIcon {
-  width: 100%;
-  height: 100%;
+  width: 100px;
+  height: 100px;
   position: relative;
   display: flex;
   align-items: center;
@@ -332,7 +362,10 @@ export default {
   }
   &.maxHidden {
     .uploadBox {
-      display: none;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      text-align: center;
+      width: 100%;
     }
   }
 }
@@ -345,4 +378,13 @@ export default {
     color: #fff;
   }
 }
+// .uploadBox {
+//   border: 1px solid #ddd;
+//   border-radius: 6px;
+//   text-align: center;
+//   width: 100%;
+//   cursor: pointer;
+//   line-height: 100px;
+//   vertical-align: top;
+// }
 </style>

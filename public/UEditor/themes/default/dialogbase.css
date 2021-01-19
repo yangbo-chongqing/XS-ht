@@ -94,7 +94,6 @@ a.button {
     color: #838383;
     background: url(../../themes/default/images/icons-all.gif) no-repeat;
 }
-
 a.button:hover {
     background-position: 0 -30px;
 }

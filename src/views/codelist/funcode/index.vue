@@ -12,7 +12,7 @@
                   type="search"
                   clearable
                   placeholder="搜索表单名称或编号"
-                ><i slot="prefix" class="el-input__icon el-icon-search" />
+                  ><i slot="prefix" class="el-input__icon el-icon-search" />
                   <el-button slot="append" @click="onSearch">搜索</el-button>
                 </el-input>
               </div>
@@ -22,7 +22,8 @@
                 <el-button
                   type="primary"
                   @click="golinkpage('/codelist/funcreate')"
-                >新增功能码</el-button>
+                  >新增功能码</el-button
+                >
               </div>
             </el-col>
           </el-row>
@@ -37,7 +38,9 @@
               <div class="fun-table-info-title">设备巡检</div>
               <div class="fun-table-info-id">表单编号：D1</div>
               <div class="fun-table-info-tips">
-                包含字段：<span>检查结果</span>、<span>巡检情况记录</span>、<span>现场照片</span>、<span>姓名</span>、<span>手机</span>、<span>定位</span>、<span>签名</span>
+                包含字段：<span>检查结果</span>、<span>巡检情况记录</span>、<span>现场照片</span>、<span>姓名</span>、<span>手机</span>、<span>定位</span>、<span
+                  >签名</span
+                >
               </div>
             </div>
           </el-col>
@@ -75,7 +78,9 @@
               <div class="fun-table-info-title">设备巡检</div>
               <div class="fun-table-info-id">表单编号：D1</div>
               <div class="fun-table-info-tips">
-                包含字段：<span>检查结果</span>、<span>巡检情况记录</span>、<span>现场照片</span>、<span>姓名</span>、<span>手机</span>、<span>定位</span>、<span>签名</span>
+                包含字段：<span>检查结果</span>、<span>巡检情况记录</span>、<span>现场照片</span>、<span>姓名</span>、<span>手机</span>、<span>定位</span>、<span
+                  >签名</span
+                >
               </div>
             </div>
           </el-col>
@@ -112,176 +117,175 @@
 
 <script>
 export default {
-  name: 'FunCode',
+  name: "FunCode",
   data() {
     return {
       list: null,
       listLoading: true,
       multipleSelection: [],
       downloadLoading: false,
-      filename: '',
-      keyword: '',
+      filename: "",
+      keyword: "",
       page: 1,
-      page_size: 10
-    }
+      page_size: 10,
+    };
   },
   created() {
-    this.fetchData()
+    this.fetchData();
   },
   methods: {
     onSearch() {
-      this.page = 1
-      this.fetchData()
+      this.page = 1;
+      this.fetchData();
     },
     golinkpage(page, obj) {
       this.$router.push({
         path: page,
         query: {
-          ...obj
-        }
-      })
+          ...obj,
+        },
+      });
     },
     fetchData() {
-      this.listLoading = true
+      this.listLoading = true;
       this.list = [
         {
           id: 1,
           codeimg:
-            'https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png',
-          codename: '某某二维码',
-          code_type: '分类',
-          create_time: '2006-11-22 02:57:31'
+            "https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png",
+          codename: "某某二维码",
+          code_type: "分类",
+          create_time: "2006-11-22 02:57:31",
         },
         {
           id: 1,
           codeimg:
-            'https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png',
-          codename: '某某二维码',
-          code_type: '分类',
-          create_time: '2006-11-22 02:57:31'
+            "https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png",
+          codename: "某某二维码",
+          code_type: "分类",
+          create_time: "2006-11-22 02:57:31",
         },
         {
           id: 1,
           codeimg:
-            'https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png',
-          codename: '某某二维码',
-          code_type: '分类',
-          create_time: '2006-11-22 02:57:31'
+            "https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png",
+          codename: "某某二维码",
+          code_type: "分类",
+          create_time: "2006-11-22 02:57:31",
         },
         {
           id: 1,
           codeimg:
-            'https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png',
-          codename: '某某二维码',
-          code_type: '分类',
-          create_time: '2006-11-22 02:57:31'
+            "https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png",
+          codename: "某某二维码",
+          code_type: "分类",
+          create_time: "2006-11-22 02:57:31",
         },
         {
           id: 1,
           codeimg:
-            'https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png',
-          codename: '某某二维码',
-          code_type: '分类',
-          create_time: '2006-11-22 02:57:31'
+            "https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png",
+          codename: "某某二维码",
+          code_type: "分类",
+          create_time: "2006-11-22 02:57:31",
         },
         {
           id: 1,
           codeimg:
-            'https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png',
-          codename: '某某二维码',
-          code_type: '分类',
-          create_time: '2006-11-22 02:57:31'
-        }
-      ]
-      this.listLoading = false
+            "https://voice.xunsheng.org.cn/sydt_mini/0dba4ee49138234a7c3265c74b2c490f.png",
+          codename: "某某二维码",
+          code_type: "分类",
+          create_time: "2006-11-22 02:57:31",
+        },
+      ];
+      this.listLoading = false;
     },
     handleSelectionChange(val) {
-      this.multipleSelection = val
+      this.multipleSelection = val;
     },
     handleDownload() {
       if (this.multipleSelection.length) {
-        this.downloadLoading = true
-        import('@/vendor/Export2Excel').then((excel) => {
-          const tHeader = ['二维码', '二维码名称', '分类', '创建时间']
-          const filterVal = ['codeimg', 'codename', 'code_type', 'create_time']
-          const list = this.multipleSelection
-          const data = this.formatJson(filterVal, list)
+        this.downloadLoading = true;
+        import("@/vendor/Export2Excel").then((excel) => {
+          const tHeader = ["二维码", "二维码名称", "分类", "创建时间"];
+          const filterVal = ["codeimg", "codename", "code_type", "create_time"];
+          const list = this.multipleSelection;
+          const data = this.formatJson(filterVal, list);
           excel.export_json_to_excel({
             header: tHeader,
             data,
-            filename: this.filename
-          })
-          this.$refs.multipleTable.clearSelection()
-          this.downloadLoading = false
-        })
+            filename: this.filename,
+          });
+          this.$refs.multipleTable.clearSelection();
+          this.downloadLoading = false;
+        });
       } else {
         this.$message({
-          message: '请选择导出的数据',
-          type: 'warning'
-        })
+          message: "请选择导出的数据",
+          type: "warning",
+        });
       }
     },
     formatJson(filterVal, jsonData) {
-      return jsonData.map((v) => filterVal.map((j) => v[j]))
-    }
-  }
-}
+      return jsonData.map((v) => filterVal.map((j) => v[j]));
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 .fun-code {
   background: white;
-  .fun-code-head{
+  .fun-code-head {
     border-bottom: 1px solid #f5f5f5;
     height: 60px;
     line-height: 60px;
     padding: 0 20px;
     box-sizing: border-box;
   }
-  .fun-table{
+  .fun-table {
     margin-top: 15px;
-    .fun-table-body{
+    .fun-table-body {
       width: 100%;
       height: 100px;
       padding: 10px 20px;
       box-sizing: border-box;
       border-bottom: 1px solid #f5f5f5;
-      .fun-table-info-num-title{
+      .fun-table-info-num-title {
         font-size: 13px;
         color: #999;
         margin: 10px 0;
       }
-      .fun-table-info-cz-tips{
+      .fun-table-info-cz-tips {
         padding-top: 20px;
         box-sizing: border-box;
         text-align: right;
-        span{
-          margin:0 10px;
+        span {
+          margin: 0 10px;
         }
       }
-      .fun-table-info-num-number{
+      .fun-table-info-num-number {
         font-size: 13px;
-        color: #409EFF;
+        color: #409eff;
       }
-      &:hover{
+      &:hover {
         background: #d7ebff;
       }
-      .fun-table-info-title{
+      .fun-table-info-title {
         font-size: 16px;
         font-weight: 600;
         color: #333;
         margin-bottom: 10px;
       }
-      .fun-table-info-id{
+      .fun-table-info-id {
         font-size: 13px;
         color: #999;
         margin-bottom: 10px;
       }
-      .fun-table-info-tips{
+      .fun-table-info-tips {
         font-size: 13px;
         color: #999;
       }
-
     }
   }
   .fun-title {

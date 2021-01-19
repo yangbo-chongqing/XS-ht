@@ -5,7 +5,7 @@
         <el-col :span="14"><div class="entry-title">产品码</div></el-col>
         <el-col :span="10">
           <el-row :gutter="20">
-            <el-col :span="20">
+            <el-col :span="12">
               <div class="entry-search">
                 <el-input
                   v-model="keyword"
@@ -15,6 +15,13 @@
                   ><i slot="prefix" class="el-input__icon el-icon-search" />
                   <el-button slot="append" @click="onSearch">搜索</el-button>
                 </el-input>
+              </div>
+            </el-col>
+            <el-col :span="7">
+              <div class="entry-search">
+                <el-button type="primary" @click="golinkpage('customCode')"
+                  >新增自定义属性</el-button
+                >
               </div>
             </el-col>
             <el-col :span="4">

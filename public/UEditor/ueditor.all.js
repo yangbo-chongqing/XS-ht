@@ -27576,7 +27576,7 @@
               }
 
               var _blob = getBlob([buffer], "image/jpeg");
-              ///
+              //
               formdata.append('upfile', _blob, 'file.png');
 
               xhr.onreadystatechange = function () {

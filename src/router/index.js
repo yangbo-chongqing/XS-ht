@@ -126,6 +126,12 @@ export const constantRoutes = [
         meta: { title: '产品码', icon: 'table', noCache: true },
       },
       {
+        path: 'customCode',
+        name: 'customCode',
+        component: () => import('@/views/product/custom/custom'),
+        meta: { title: '扩展属性', noCache: true },
+      },
+      {
         path: 'productcreate',
         component: () => import('@/views/product/productcode/create'),
         name: 'ProductCreate',

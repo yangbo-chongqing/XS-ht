@@ -422,15 +422,14 @@
                 @click="selectPic(index)"
               >
                 <el-image :src="item" lazy></el-image>
-                <!-- <div>{{ selectClass[index] }}</div> -->
                 <div v-if="selectClass[index] == 1" class="shadow">
-                  <img src="@/assets/icon/success.png" alt="" />
+                  <img src="../../assets/icon/success.png" alt="" />
                 </div>
               </li>
             </div>
             <div class="fontTil">图集排列</div>
             <div class="demo-image__lazy">
-              <drag :picList="picList" @chilX="parX" />
+              <drag :picList="picList" @chilX="parX" @deleOne="deleDetail" />
             </div>
           </el-tab-pane>
         </el-tabs>
@@ -470,7 +469,7 @@ export default {
           let edui1_toolbarbox = document.querySelector("#edui1_toolbarbox");
           let ue_box = _this.$refs.ue.getBoundingClientRect().top;
           // let ue_left = _this.$refs.ue.getBoundingClientRect();
-          console.log(edui1_toolbarbox);
+          // console.log(edui1_toolbarbox);
           if (ue_box <= 0) {
             edui1_toolbarbox.classList.add("setFixed");
           } else {
@@ -487,6 +486,7 @@ export default {
       id: parseInt(Math.random() * 10000).toString(),
       activeNum: "one", //默认tab
       ueData: "",
+      deteThis: "",
       status: 1,
       selectNum: [],
       addPic: [],
@@ -742,6 +742,7 @@ export default {
           this.options[this.entrykey].name
         }</a>`;
       }
+      unSelectable;
       this.editor.execCommand("inserthtml", aStr);
       this.entryFlag = false;
     },
@@ -771,10 +772,11 @@ export default {
           details(this.qs.stringify({ id: data })).then((res) => {
             this.imgList = res.data.info.images;
             this.picList = res.data.info.images;
+            this.pData = data;
           });
         }
         this.centerDialogVisible = true;
-        this.pData = data;
+        this.selectClass = [];
       } else {
         let box = this.fram.document.querySelector(`#pic${data}`);
         // console.log(box);
@@ -782,15 +784,15 @@ export default {
       }
     },
     selectPic(i) {
-      console.log(this.picList);
-      console.log(this.webPic[i]);
+      this.picList = JSON.parse(JSON.stringify(this.addPic));
       if (this.picList.indexOf(this.webPic[i]) == -1) {
         this.picList.push(this.webPic[i]);
+        this.selectClass[i] = 1;
       } else {
         let index = this.picList.indexOf(this.webPic[i]);
         this.picList.splice(index, 1);
+        this.selectClass[i] = -1;
       }
-      console.log(this.selectClass);
     },
     uploadPic(file) {
       let newTime = new Date().getTime();
@@ -800,16 +802,32 @@ export default {
     async addYes() {
       if (this.status == 1 && this.pData) {
         let box = this.fram.document.querySelector(`#pic${this.pData}`);
+        console.log(this.pData);
         box.parentNode.removeChild(box);
+        this.pData = "";
       }
       if (this.activeNum == "one") {
         let img = this.addList;
+        let imgThis = JSON.parse(JSON.stringify(this.addPic));
         let newTime = new Date().getTime();
         let userIn = this.userinfo.user_info.user_id;
         console.log(this.addList);
         let imgS = "";
-        for (var i = 0; i < img.length; i++) {
-          imgS = imgS + img[i] + ",";
+        if (img.length < 2) {
+          img.push(
+            "http://voice.xunsheng.org.cn/sydt/muse_12/1610949315696.png"
+          );
+          img.push(
+            "http://voice.xunsheng.org.cn/sydt/muse_12/1610949315696.png"
+          );
+        } else if (img.length < 3) {
+          img.push(
+            "http://voice.xunsheng.org.cn/sydt/muse_12/1610949315696.png"
+          );
+        }
+        console.log(imgThis);
+        for (var i = 0; i < imgThis.length; i++) {
+          imgS = imgS + imgThis[i] + ",";
         }
         let data = {
           images: imgS,
@@ -820,31 +838,60 @@ export default {
         });
         console.log(this.ids);
         this.centerDialogVisible = false;
-        let str = `<div id="pic${this.ids}" data-id="${this.ids}"  style="display: flex;justify-content: center;"><div style="width:210px;display: table-cell;text-align: center;"><img data-id="${this.ids}"  class="dataL" style="width:100%;height: 160px;" src="${img[0]}"
-                alt=""></div><div style="display: flex;flex-direction: column;width:100px;height: 160px;">
-            <img data-id="${this.ids}"  class="dataRT" style="width:100px;height: 80px;" src="${img[1]}"
-                alt=""><div style="    position: relative;width:100px;height:80px ">
-                <span data-id="${this.ids}"  class="data" style="position: absolute;
+        let str = `  <div id="pic${this.ids}"   contenteditable="false" class="borderMy"  data-id="${this.ids}" style="-khtml-user-select: none;
+   user-select: none;display: flex;justify-content: center;">
+        <div style="width:170px;height:200px; cursor: pointer;display: table-cell;text-align: center;"><img
+                data-id="${this.ids}" class="dataL" style="width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center;" src="${img[0]}" alt=""></div><div style="display: flex;flex-direction: column;width:170px;height:200px;cursor: pointer;position:relative;">
+            <img data-id="${this.ids}" class="dataRT" style="width: 100%;
+            height: 50%;
+            object-fit: cover;
+            object-position: center;" src="${img[1]}" alt=""><img data-id="${this.ids}" style="width: 100%;
+                height: 50%;
+                object-fit: cover;
+                object-position: center;" src="${img[2]}" alt=""><span data-id="${this.ids}" class="data" style="position: absolute;cursor: pointer;
                 background: #2b323e;
                 opacity: 0.8;
-                width:100px;
-                height: 80px;
+                width:170px;
+                height: 100px;
                 left: 0;
-                line-height: 80px;
+                bottom: 0;
+                font-weight: 500;
+                letter-spacing:2px;
+                font-size:22px;
+                line-height:100px;
                 color:#fff;
-                text-align: center;">共${img.length}张</span><img  data-id="${this.ids}" style="width:100px;height: 80px;"
-                   src="${img[2]}" alt=""></div><div  class="showIcon${this.ids} delete" style="text-align: center; display='none'"><button  data-updateId="${this.ids}" class='updateBtn'>修 改</button><button class='deleteBtn' data-deleteId="${this.ids}" >删 除</button></div></div></div><div><br></div>`;
+                text-align: center; ">共${imgThis.length}张</span><div class="showIcon${this.ids} delete"
+                style="text-align: center; position: absolute; top:-5px;display:none;right:-35px;width:120px"><button
+                    data-updateId="${this.ids}" class='updateBtn ckEditorToolbarBtn'>修 改</button><button
+                    class='deleteBtn ckEditorToolbarBtn' data-deleteId="${this.ids}">删 除</button></div></div></div><div><br></div>`;
         this.editor.execCommand("inserthtml", str);
         this.imgList = [];
         this.activeNum = "one";
         this.picList = [];
       } else {
         let img = this.addPic;
+        let imgThis = JSON.parse(JSON.stringify(this.addPic));
         let newTime = new Date().getTime();
         let userIn = this.userinfo.user_info.user_id;
         let imgS = "";
-        for (var i = 0; i < img.length; i++) {
-          imgS = imgS + img[i] + ",";
+        if (img.length < 2) {
+          img.push(
+            "http://voice.xunsheng.org.cn/sydt/muse_12/1610949315696.png"
+          );
+          img.push(
+            "http://voice.xunsheng.org.cn/sydt/muse_12/1610949315696.png"
+          );
+        } else if (img.length < 3) {
+          img.push(
+            "http://voice.xunsheng.org.cn/sydt/muse_12/1610949315696.png"
+          );
+        }
+        console.log(imgThis);
+        for (var i = 0; i < imgThis.length; i++) {
+          imgS = imgS + imgThis[i] + ",";
         }
         let data = {
           images: imgS,
@@ -857,20 +904,35 @@ export default {
 
         this.centerDialogVisible = false;
 
-        let str = `<div id="pic${this.ids}" data-id="${this.ids}"  style="display: flex;justify-content: center;"><div style="width:210px;display: table-cell;text-align: center;"><img data-id="${this.ids}"  class="dataL" style="width:100%;height: 160px;" src="${img[0]}"
-                alt=""></div><div style="display: flex;flex-direction: column;width:100px;height: 160px;">
-            <img data-id="${this.ids}"  class="dataRT" style="width:100px;height: 80px;" src="${img[1]}"
-                alt=""><div style="    position: relative;width:100px;height:80px ">
-                <span data-id="${this.ids}"  class="data" style="position: absolute;
+        let str = `  <div id="pic${this.ids}"   contenteditable="false" class="borderMy"  data-id="${this.ids}" style="-khtml-user-select: none;
+   user-select: none;display: flex;justify-content: center;">
+        <div style="width:170px;height:200px; cursor: pointer;display: table-cell;text-align: center;"><img
+                data-id="${this.ids}" class="dataL" style="width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center;" src="${img[0]}" alt=""></div><div style="display: flex;flex-direction: column;width:170px;height:200px;cursor: pointer;position:relative;">
+            <img data-id="${this.ids}" class="dataRT" style="width: 100%;
+            height: 50%;
+            object-fit: cover;
+            object-position: center;" src="${img[1]}" alt=""><img data-id="${this.ids}" style="width: 100%;
+                height: 50%;
+                object-fit: cover;
+                object-position: center;" src="${img[2]}" alt=""><span data-id="${this.ids}" class="data" style="position: absolute;cursor: pointer;
                 background: #2b323e;
                 opacity: 0.8;
-                width:100px;
-                height: 80px;
+                width:170px;
+                height: 100px;
                 left: 0;
-                line-height: 80px;
+                bottom: 0;
+                font-weight: 500;
+                letter-spacing:2px;
+                font-size:22px;
+                line-height:100px;
                 color:#fff;
-                text-align: center;">共${img.length}张</span><img  data-id="${this.ids}" style="width:100px;height: 80px;"
-                   src="${img[2]}" alt=""></div><div  class="showIcon${this.ids} delete" style="text-align: center; display='none'"><button  data-updateId="${this.ids}" class='updateBtn'>修 改</button><button class='deleteBtn' data-deleteId="${this.ids}" >删 除</button></div></div></div><div><br></div>`;
+                text-align: center; ">共${imgThis.length}张</span><div class="showIcon${this.ids} delete"
+                style="text-align: center; position: absolute; top:-5px;display:none;right:-35px;width:120px"><button
+                    data-updateId="${this.ids}" class='updateBtn ckEditorToolbarBtn'>修 改</button><button
+                    class='deleteBtn ckEditorToolbarBtn' data-deleteId="${this.ids}">删 除</button></div></div></div><div><br></div>`;
         this.editor.execCommand("inserthtml", str);
         this.imgList = [];
         this.activeNum = "one";
@@ -884,12 +946,24 @@ export default {
       this.imgList = [];
       this.picList = [];
       this.activeNum = "one";
+      this.pData = "";
     },
     parentFn(payload) {
       this.addList = payload.url;
+      console.log(payload);
+      console.log(this.addList);
     },
     parX(val) {
       this.addPic = val;
+    },
+    deleDetail(val) {
+      this.picList = JSON.parse(JSON.stringify(this.addPic));
+      if (this.webPic.indexOf(val) != -1) {
+        this.selectClass[this.webPic.indexOf(val)] = -1;
+      }
+      if (this.picList.indexOf(val) != -1) {
+        this.picList.splice(this.picList.indexOf(val), 1);
+      }
     },
     getPic(tab, event) {
       // 获取线上图片
@@ -905,6 +979,9 @@ export default {
         getPicList(this.qs.stringify(data)).then((res) => {
           for (let i = 0; i < res.list.length; i++) {
             this.webPic.push(res.list[i].url);
+            if (this.picList.indexOf(res.list[i].url) != -1) {
+              this.selectClass[i] = 1;
+            }
           }
         });
       }
@@ -1219,10 +1296,8 @@ export default {
   }
   .shadow {
     position: absolute;
-    top: 0;
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    opacity: 0.7;
+    bottom: -4px;
+    right: -2px;
     transition: opacity 0.3s;
     color: #fff;
     font-size: 20px;
