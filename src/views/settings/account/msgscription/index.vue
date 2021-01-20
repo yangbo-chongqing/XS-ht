@@ -2,99 +2,99 @@
   <div class="msgscription-container">
     <div class="msgscription-text">消息通知及订阅</div>
     <p class="msgscription-smal">
-      关注寻声地图公众号，可以在微信中接收推送消息及订阅内容<span><el-link type="primary">点击扫码关注</el-link></span>
+      关注寻声地图公众号，可以在微信中接收推送消息及订阅内容<span
+        ><el-link type="primary">点击扫码关注</el-link></span
+      >
     </p>
     <el-row :gutter="20">
-      <el-col
-        :span="24"
-      ><div class="msgscription-item">
-        <label>订阅消息通知:</label>
-        <el-row :gutter="20">
-          <el-col
-            :span="10"
-          ><div>
-            <p class="msgscript-dy-info">
-              每周扫码量统计（关注后在微信中接收消息）
-            </p>
-            <div>
-              <p class="msgscript-dy-text">
-                每周一推送上周二维码扫码量情况
-              </p>
-            </div>
-          </div></el-col>
-          <el-col :span="6">
-            <el-switch
-              v-model="dyValue"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              @change="toggleSwitch"
-            />
-          </el-col>
-        </el-row></div></el-col>
+      <el-col :span="24"
+        ><div class="msgscription-item">
+          <label>订阅消息通知:</label>
+          <el-row :gutter="20">
+            <el-col :span="10"
+              ><div>
+                <p class="msgscript-dy-info">
+                  每周扫码量统计（关注后在微信中接收消息）
+                </p>
+                <div>
+                  <p class="msgscript-dy-text">
+                    每周一推送上周二维码扫码量情况
+                  </p>
+                </div>
+              </div></el-col
+            >
+            <el-col :span="6">
+              <el-switch
+                v-model="dyValue"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+                @change="toggleSwitch"
+              />
+            </el-col>
+          </el-row></div
+      ></el-col>
     </el-row>
   </div>
 </template>
 
 <script>
-import { getGetMuse, getWarrant } from '@/api/settings'
-import { postAccountSettings } from '@/api/user'
-import { mapGetters } from 'vuex'
-import store from '@/store'
+import { getGetMuse, getWarrant } from "@/api/settings";
+import { postAccountSettings } from "@/api/user";
+import { mapGetters } from "vuex";
+import store from "@/store";
 export default {
-  name: 'Msgscription',
+  name: "Msgscription",
   computed: {
-    ...mapGetters(['userinfo'])
+    ...mapGetters(["userinfo"]),
   },
   data() {
     return {
-      dyValue: false
-    }
+      dyValue: false,
+    };
   },
   created() {
-    this.dyValue = this.userinfo.user_info.notice == 1
+    this.dyValue = this.userinfo.user_info.notice == 1;
   },
   methods: {
     toggleSwitch() {
-      console.log(this.dyValue)
+      console.log(this.dyValue);
       if (this.userinfo.user_info.wx_openid) {
         const params = {
-          notice: this.dyValue ? 1 : 2
-        }
+          notice: this.dyValue ? 1 : 2,
+        };
         postAccountSettings(this.qs.stringify(params)).then((res) => {
           if (this.dyValue) {
             this.$message({
-              message: '订阅成功',
-              type: 'success'
-            })
+              message: "订阅成功",
+              type: "success",
+            });
           } else {
             this.$message({
-              message: '取消订阅',
-              type: 'success'
-            })
+              message: "取消订阅",
+              type: "success",
+            });
           }
-        })
+        });
       } else {
-        this.dyValue = false
+        this.dyValue = false;
         getWarrant().then((res) => {
           this.$alert(
             `<div style='text-align:center;'><img src='${res.data.img}' width='200px' /></div>`,
-            '订阅提醒',
+            "订阅提醒",
             {
               dangerouslyUseHTMLString: true,
               center: true,
-              beforeClose: async(action, instance, done) => {
-                await store.dispatch('user/getInfo')
-                done()
-              }
+              beforeClose: async (action, instance, done) => {
+                await store.dispatch("user/getInfo");
+                done();
+              },
             }
-          ).catch(() => {
-
-          })
-        })
+          ).catch(() => {});
+        });
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

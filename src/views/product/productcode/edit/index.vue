@@ -25,9 +25,11 @@
         <el-form-item label="产品图标">
           <el-upload
             class="upload-demo"
-            action="/api/store/upload"
+            :data="qiToken"
+            action="http://upload.qiniup.com"
             :headers="headers"
             accept=".jpg,.png"
+            :before-upload="uploadPic"
             v-if="!form.dialogImageUrl"
             :on-success="imageUploadSuccess"
             :on-progress="uploadProgress"
@@ -44,7 +46,7 @@
         </el-form-item>
         <el-form-item label="相关视频" style="width: 800px">
           <template v-for="(item, index) of picList">
-            <div :key="index" class="itemPic">
+            <div v-if="item.is_del != 1" :key="index" class="itemPic">
               <video height="150px" controls :src="item.url" />
               <span>{{ item.name }}</span>
               <el-button class="detelePic" type="warning" @click="deleTP(index)"
@@ -66,6 +68,7 @@
             class="ueClass"
             :value="productState"
             :ueConfig="ueConfig"
+            v-if="getproductState"
             @input="setProductState"
             :mobHtml="mobHtml"
           ></ue>
@@ -75,6 +78,7 @@
           <div class="font">产品详情</div>
           <ue
             class="ueClass"
+            v-if="getproductDetail"
             :value="productDetail"
             :ueConfig="ueConfig"
             @input="setProductDetail"
@@ -82,7 +86,7 @@
           ></ue>
         </div>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">立即修改</el-button>
+          <el-button type="primary" @click="onSubmit">保存</el-button>
           <el-button @click="back">取消</el-button>
         </el-form-item>
       </el-form>
@@ -152,6 +156,8 @@ export default {
         listed: "",
       },
       dialogVisible: false,
+      getproductDetail: "",
+      getproductState: "",
       disabled: false,
       uploadLoading: "",
       qiToken: {},
@@ -163,6 +169,7 @@ export default {
         //创建单个视频的记录
         name: "",
         url: "",
+        id: 0,
       },
       editorData: "",
       mobHtml: "",
@@ -250,12 +257,12 @@ export default {
           this.picList[i].name = JSON.parse(
             JSON.stringify(this.picList[i].video_name)
           );
+          this.picList[i].is_del = 0;
         }
-        this.productState = res.data.data.expand.manual;
-        this.productDetail = res.data.data.expand.details;
-        console.log(
-          this.productState + "-------------------" + this.productDetail
-        );
+        this.getproductState = res.data.data.expand.manual;
+        this.getproductDetail = res.data.data.expand.details;
+        this.productState = JSON.parse(JSON.stringify(this.getproductState));
+        this.productDetail = JSON.parse(JSON.stringify(this.getproductDetail));
       });
     },
     onSubmit() {
@@ -268,7 +275,11 @@ export default {
         image: this.form.dialogImageUrl,
         factory: this.form.factory,
         listed: this.form.listed,
+        details: this.productDetail,
+        manual: this.productState,
+        videos: JSON.stringify(this.picList),
       };
+      setTimeout(() => {}, 5000);
       productEdit(this.qs.stringify(params)).then((res) => {
         loading.close();
         if (res.status == 200) {
@@ -279,6 +290,9 @@ export default {
           this.back();
         }
       });
+      setTimeout(() => {
+        loading.close();
+      }, 5000);
     },
 
     handleRemove(file) {},
@@ -309,6 +323,7 @@ export default {
       this.form2 = {
         name: "",
         url: "",
+        id: 0,
       };
       this.VisiblePic = false;
     },
@@ -316,6 +331,7 @@ export default {
       this.form2 = {
         name: "",
         url: "",
+        id: 0,
       };
       this.VisiblePic = false;
     },
@@ -337,7 +353,9 @@ export default {
       this.form2.url = "";
     },
     deleTP(n) {
-      this.picList.splice(n, 1);
+      let img = this.picList[n];
+      img.is_del = 1;
+      this.picList.splice(n, 1, img);
     },
   },
 };
@@ -352,8 +370,8 @@ export default {
     cursor: pointer;
   }
   .upload-box {
-    width: 70px;
-    height: 70px;
+    width: 170px;
+    height: 170px;
     display: flex;
     border: 1px solid #ccc;
     position: relative;
@@ -386,7 +404,7 @@ export default {
   }
   .fun-table-body {
     width: 500px;
-    margin: auto;
+    margin-left: 20px;
     padding: 20px;
     box-sizing: border-box;
   }
@@ -432,7 +450,7 @@ export default {
   display: inline-block;
   line-height: 20px;
   position: relative;
-  margin-left: 10px;
+  margin-right: 10px;
   span {
     display: block;
     height: 20px;

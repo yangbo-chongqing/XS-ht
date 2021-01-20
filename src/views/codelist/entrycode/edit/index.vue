@@ -1036,14 +1036,17 @@ export default {
     imageUploadSuccess(response, file, fileList) {
       let path = `http://voice.xunsheng.org.cn/${response.key}`;
       this.codeImage = path;
+      this.qiToken = JSON.parse(sessionStorage.qiToken);
     },
     audioUploadSuccess(response, file, fileList) {
       let path = `http://voice.xunsheng.org.cn/${response.key}`;
       this.codeAudio = path;
+      this.qiToken = JSON.parse(sessionStorage.qiToken);
     },
     videoUploadSuccess(response, file, fileList) {
       let path = `http://voice.xunsheng.org.cn/${response.key}`;
       this.codeVideo = path;
+      this.qiToken = JSON.parse(sessionStorage.qiToken);
     },
     setCheditor(e) {
       this.mobHtml = e.target.innerHTML;

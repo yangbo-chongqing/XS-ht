@@ -143,21 +143,21 @@ export const constantRoutes = [
         component: () => import('@/views/product/flowcode/index'),
         name: 'FlowCode',
         hidden: true,
-        meta: { title: '流程码', noCache: true }
+        meta: { title: '流水码', noCache: true }
       },
       {
         path: 'flowcodecreate',
         component: () => import('@/views/product/flowcode/create'),
         name: 'FlowcodeCreate',
         hidden: true,
-        meta: { title: '新增流程码', noCache: true }
+        meta: { title: '新增流水码', noCache: true }
       },
       {
         path: 'flowcodeedit',
         component: () => import('@/views/product/flowcode/edit'),
         name: 'flowcodeEdit',
         hidden: true,
-        meta: { title: '修改流程码', noCache: true }
+        meta: { title: '修改流水码', noCache: true }
       },
       {
         path: 'productedit',

@@ -5,21 +5,21 @@
     </div>
     <div class="fun-table-body">
       <el-form ref="form" :model="form" label-width="90px">
-        <el-form-item label="唯一编号">
+        <el-form-item label="流水号">
           <el-input v-model="form.pkid" disabled></el-input>
         </el-form-item>
-        <el-form-item label="颜色">
+        <!-- <el-form-item label="颜色">
           <el-input v-model="form.colour"></el-input>
         </el-form-item>
         <el-form-item label="发动机号">
           <el-input v-model="form.engine"></el-input>
-        </el-form-item>
-        <el-form-item label="合格证编号">
+        </el-form-item> -->
+        <el-form-item label="合格编号">
           <el-input v-model="form.certificate_id"></el-input>
         </el-form-item>
-        <el-form-item label="合格证证芯">
+        <!-- <el-form-item label="合格证证芯">
           <el-input v-model="form.certificate_core"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" @click="onSubmit">立即修改</el-button>
           <el-button @click="back">取消</el-button>
@@ -30,18 +30,18 @@
 </template>
 
 <script>
-import { floWingEdit,floWingDetails } from "@/api/product";
+import { floWingEdit, floWingDetails } from "@/api/product";
 export default {
   name: "ProductCreate",
   data() {
     return {
-      id:this.$route.query.id,
+      id: this.$route.query.id,
       form: {
         pkid: "",
         colour: "",
         engine: "",
-        certificate_id:"",
-        certificate_core:""
+        certificate_id: "",
+        certificate_core: "",
       },
     };
   },
@@ -49,23 +49,22 @@ export default {
     this.getDtails();
   },
   methods: {
-    
     //详情
-    getDtails(){
-      floWingDetails(this.qs.stringify({id:this.id})).then((res)=>{
-        this.form.pkid=res.data.data.pkid;
-        this.form.colour=res.data.data.colour;
-        this.form.engine=res.data.data.engine;
-        this.form.certificate_id=res.data.data.certificate_id;
-        this.form.certificate_core=res.data.data.certificate_core;
-      })
+    getDtails() {
+      floWingDetails(this.qs.stringify({ id: this.id })).then((res) => {
+        this.form.pkid = res.data.data.pkid;
+        this.form.colour = res.data.data.colour;
+        this.form.engine = res.data.data.engine;
+        this.form.certificate_id = res.data.data.certificate_id;
+        this.form.certificate_core = res.data.data.certificate_core;
+      });
     },
     onSubmit() {
       let loading = this.$loading({
         text: "保存中",
       });
       let params = {
-        id:this.id,
+        id: this.id,
         colour: this.form.colour,
         engine: this.form.engine,
         certificate_id: this.form.certificate_id,
@@ -78,7 +77,7 @@ export default {
             message: res.message,
             type: "success",
           });
-          this.back()
+          this.back();
         }
       });
     },

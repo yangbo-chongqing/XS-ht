@@ -15,7 +15,7 @@
                   v-model="keyword"
                   type="search"
                   @keyup.enter.native="onSearch"
-                  placeholder="请输入唯一码"
+                  placeholder="请输入流水号"
                   clearable
                   ><i slot="prefix" class="el-input__icon el-icon-search" />
                   <el-button slot="append" @click="onSearch">搜索</el-button>
@@ -27,7 +27,7 @@
                 <el-button
                   type="primary"
                   @click="golinkpage('/product/flowcodecreate', { id: id })"
-                  >新增流程码</el-button
+                  >新增流水码</el-button
                 >
               </div>
             </el-col>
@@ -53,7 +53,7 @@
         </el-table-column>
         <el-table-column label="合格编号">
           <template slot-scope="scope">
-            <span class="code-name">{{ scope.row.colour }}</span>
+            <span class="code-name">{{ scope.row.certificate_id }}</span>
           </template>
         </el-table-column>
         <!-- <el-table-column label="发动机号">
@@ -178,6 +178,7 @@ export default {
                 type: "success",
                 message: "删除成功!",
               });
+              this.fetchData();
             }
           });
         })
@@ -220,6 +221,11 @@ export default {
         this.list = res.data.data.data;
         this.listLoading = false;
         this.showPage = res.data.data.last_page > 1 ? true : false;
+        let pageNo = this.page - 1;
+        if (pageNo * 10 >= res.data.data.total) {
+          this.page -= 1;
+          this.fetchData();
+        }
       });
     },
     back() {

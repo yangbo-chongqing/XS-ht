@@ -143,7 +143,7 @@
               ><el-link
                 type="primary"
                 @click="golinkpage('/product/flowcode', { id: scope.row.id })"
-                >查看流程码</el-link
+                >查看流水码</el-link
               ></span
             >
             <!-- <span class="el-link-btn"
@@ -307,6 +307,8 @@ import {
 import { downloadIamge } from "@/utils/utils";
 import { getToken } from "@/utils/auth";
 import { mapGetters } from "vuex";
+import { getQiToken } from "@/api/user";
+
 import codedown from "@/components/codeDown/index";
 export default {
   name: "ProductCode",
@@ -344,6 +346,15 @@ export default {
   },
   created() {
     this.fetchData();
+    // 获取七牛token
+    getQiToken({}).then((res) => {
+      let str = res.data.data;
+      str.token = JSON.parse(JSON.stringify(str.upToken));
+      str.key = JSON.parse(JSON.stringify(str.path));
+      delete str.path;
+      delete str.upToken;
+      sessionStorage.setItem("qiToken", JSON.stringify(str));
+    });
   },
   methods: {
     toggle() {

@@ -112,3 +112,19 @@ export function preview(data) {
     data
   })
 }
+//扩展字段列表
+export function expandList(data) {
+  return request({
+    url: '/api/store/expand/list',
+    method: 'post',
+    data
+  })
+}
+// 添加扩展字段
+export function expandCreate(data) {
+  return request({
+    url: '/api/store/expand/create',
+    method: 'post',
+    data
+  })
+}

@@ -5,13 +5,13 @@
     </div>
     <div class="fun-table-body">
       <el-form ref="form" :model="form" label-width="80px">
-        <div v-if="addList.length < 1">
+        <!-- <div v-if="addList.length < 1">
           <img
             src="http://voice.xunsheng.org.cn/sydt/muse_12/1611020991059.png"
             alt=""
           />
           <span>暂无数据</span>
-        </div>
+        </div> -->
         <template v-for="(item, index) of addList">
           <el-form-item :label="item.name" :key="index">
             <el-upload
@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import { productCreate } from "@/api/product";
+import { productCreate, expandList, expandCreate } from "@/api/product";
 import { getToken } from "@/utils/auth";
 import { Loading } from "element-ui";
 export default {
@@ -134,7 +134,9 @@ export default {
       ],
     };
   },
-  created() {},
+  created() {
+    this.geList();
+  },
   methods: {
     onSubmit() {},
     closeEle() {
@@ -144,11 +146,22 @@ export default {
         type: 1,
       };
     },
+    geList() {
+      // 获取扩展字段列表
+      expandList().then((res) => {});
+    },
     addEle() {
       if (!this.form1.name) {
         this.$message.error("请先完善数据");
         return;
       }
+      let params = {
+        field_name: this.form1.name,
+        field_type: this.form1.type,
+      };
+      expandCreate(this.qs.stringify(params)).then((res) => {
+        this.geList();
+      });
       this.addList.push(this.form1);
       console.log(this.addList);
       this.form1 = {
@@ -157,7 +170,6 @@ export default {
       };
       this.visible = false;
     },
-    addTit() {},
     back() {
       this.$router.go(-1);
     },

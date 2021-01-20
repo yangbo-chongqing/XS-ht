@@ -5,21 +5,21 @@
     </div>
     <div class="fun-table-body">
       <el-form ref="form" :model="form" label-width="90px">
-        <el-form-item label="唯一编号">
+        <el-form-item label="流水号">
           <el-input v-model="form.pkid"></el-input>
         </el-form-item>
-        <el-form-item label="颜色">
+        <!-- <el-form-item label="颜色">
           <el-input v-model="form.colour"></el-input>
         </el-form-item>
         <el-form-item label="发动机号">
           <el-input v-model="form.engine"></el-input>
-        </el-form-item>
-        <el-form-item label="合格证编号">
+        </el-form-item> -->
+        <el-form-item label="合格编号">
           <el-input v-model="form.certificate_id"></el-input>
         </el-form-item>
-        <el-form-item label="合格证证芯">
+        <!-- <el-form-item label="合格证证芯">
           <el-input v-model="form.certificate_core"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" @click="onSubmit">立即创建</el-button>
         </el-form-item>
@@ -34,13 +34,13 @@ export default {
   name: "ProductCreate",
   data() {
     return {
-      id:this.$route.query.id,
+      id: this.$route.query.id,
       form: {
         pkid: "",
         colour: "",
         engine: "",
-        certificate_id:"",
-        certificate_core:""
+        certificate_id: "",
+        certificate_core: "",
       },
     };
   },
@@ -51,7 +51,7 @@ export default {
         text: "保存中",
       });
       let params = {
-        product_id:this.id,
+        product_id: this.id,
         pkid: this.form.pkid,
         colour: this.form.colour,
         engine: this.form.engine,
@@ -65,11 +65,11 @@ export default {
             message: res.message,
             type: "success",
           });
-          this.form.pkid = ''
-          this.form.colour = ''
-          this.form.engine = ''
-          this.form.certificate_id = ''
-          this.form.certificate_core = ''
+          this.form.pkid = "";
+          this.form.colour = "";
+          this.form.engine = "";
+          this.form.certificate_id = "";
+          this.form.certificate_core = "";
         }
       });
     },

@@ -374,6 +374,7 @@ export default {
           this.form.listed = "";
           this.productDetail = "";
           this.productState = "";
+          this.$router.go(-1);
         }
       });
     },
@@ -443,8 +444,8 @@ export default {
     cursor: pointer;
   }
   .upload-box {
-    width: 70px;
-    height: 70px;
+    width: 170px;
+    height: 170px;
     display: flex;
     border: 1px solid #ccc;
     position: relative;
@@ -477,7 +478,7 @@ export default {
   }
   .fun-table-body {
     width: 770px;
-    margin: auto;
+    margin-left: 10px;
     padding: 20px;
     box-sizing: border-box;
   }
@@ -528,7 +529,7 @@ export default {
   display: inline-block;
   line-height: 20px;
   position: relative;
-  margin-left: 10px;
+  margin-right: 10px;
   span {
     display: block;
     height: 20px;
