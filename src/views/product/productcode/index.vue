@@ -60,14 +60,15 @@
         </el-table-column>
         <el-table-column label="产品封面图片" align="center">
           <template slot-scope="scope">
-            <div style="text-align: center; wdith: 100%">
+            <div
+              style="
+                text-align: center;
+                overflow: hidden;
+                display: inline-block;
+              "
+            >
               <el-image
-                style="
-                  width: 60px;
-                  height: 60px;
-                  object-fit: cover;
-                  margin-left: 30px;
-                "
+                style="width: 60px; height: 60px"
                 :src="scope.row.image"
                 :preview-src-list="[scope.row.image]"
               >
@@ -75,7 +76,7 @@
             </div>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="装潢视频" align="center">
+        <!--       <el-table-column label="装潢视频" align="center">
           <template slot-scope="scope">
             <el-button type="text" size="mini" v-if="scope.row.video"
               >点击查看</el-button
@@ -90,7 +91,7 @@
             >
           </template>
         </el-table-column>
-        <el-table-column label="质检报告" align="center">
+            <el-table-column label="质检报告" align="center">
           <template slot-scope="scope">
             <el-button type="text" size="mini" v-if="scope.row.inspection"
               >点击查看</el-button
@@ -120,7 +121,7 @@
             >
           </template>
         </el-table-column> -->
-        <el-table-column label="上市时间">
+        <el-table-column label="上市时间" align="center">
           <template slot-scope="scope">
             {{ scope.row.listed }}
           </template>

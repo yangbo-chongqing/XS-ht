@@ -166,12 +166,12 @@ export const constantRoutes = [
         hidden: true,
         meta: { title: '修改产品码', noCache: true }
       },
-      {
-        path: 'instructions',
-        name: 'Instructions',
-        component: () => import('@/views/product/instructions/index'),
-        meta: { title: '说明书', icon: 'el-icon-bank-card', noCache: true }
-      },
+      // {
+      //   path: 'instructions',
+      //   name: 'Instructions',
+      //   component: () => import('@/views/product/instructions/index'),
+      //   meta: { title: '说明书', icon: 'el-icon-bank-card', noCache: true }
+      // },
       {
         path: 'instructionscreate',
         component: () => import('@/views/product/instructions/create'),

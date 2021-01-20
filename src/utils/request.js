@@ -15,7 +15,14 @@ axios.interceptors.request.use(
 
       }
       if (config.method === 'post') {
-        axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
+        // JSON数据格式时传参
+        if (config.meta == 1) {
+          axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8'
+
+        } else {
+          axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
+
+        }
         const params = config.data ? decodeURIComponent(config.data) : ''
         const cs = md5(params + '&ts=' + ts)
         if (params) {

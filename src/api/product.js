@@ -40,11 +40,12 @@ export function floWingCreate(data) {
   })
 }
 // 产品码添加
-export function productCreate(data) {
+export function productCreate(data, meta) {
   return request({
     url: '/api/store/product/create',
     method: 'post',
-    data
+    data,
+    meta
   })
 }
 //产品列表

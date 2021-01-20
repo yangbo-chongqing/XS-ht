@@ -4,7 +4,7 @@ export function getWarrant(data) {
   return request({
     url: '/api/store/warrant',
     method: 'post',
-    data
+    data,
   })
 }
 // 获取商户信息

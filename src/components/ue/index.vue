@@ -394,6 +394,7 @@
         title="图片集上传"
         :visible.sync="centerDialogVisible"
         width="720px"
+        @close="closeDialog"
       >
         <el-tabs v-model="activeNum" @tab-click="getPic" type="border-card">
           <el-tab-pane name="one" label="本地上传">
@@ -450,7 +451,6 @@ import drag from "@/components/drag";
 import { getPicList } from "@/api/user";
 import { createPics, delPic, details } from "@/api/ue";
 import { mapGetters } from "vuex";
-
 export default {
   name: "UE",
   components: {
@@ -463,21 +463,25 @@ export default {
     this.$nextTick(() => {
       let _this = this;
       let scroll_box = document.querySelector(".editor-scroll");
-      scroll_box.addEventListener(
-        "scroll",
-        function () {
-          let edui1_toolbarbox = document.querySelector(".edui-editor-toolbarbox");
-          let ue_box = _this.$refs.ue.getBoundingClientRect().top;
-          // let ue_left = _this.$refs.ue.getBoundingClientRect();
-          // console.log(edui1_toolbarbox);
-          if (ue_box <= 0) {
-            edui1_toolbarbox.classList.add("setFixed");
-          } else {
-            edui1_toolbarbox.classList.remove("setFixed");
-          }
-        },
-        false
-      );
+      if (scroll_box) {
+        scroll_box.addEventListener(
+          "scroll",
+          function () {
+            let edui1_toolbarbox = document.querySelector(
+              ".edui-editor-toolbarbox"
+            );
+            let ue_box = _this.$refs.ue.getBoundingClientRect().top;
+            // let ue_left = _this.$refs.ue.getBoundingClientRect();
+            // console.log(edui1_toolbarbox);
+            if (ue_box <= 0) {
+              edui1_toolbarbox.classList.add("setFixed");
+            } else {
+              edui1_toolbarbox.classList.remove("setFixed");
+            }
+          },
+          false
+        );
+      }
     });
   },
   data: function () {
@@ -490,6 +494,7 @@ export default {
       status: 1,
       selectNum: [],
       addPic: [],
+      stopClickLogin: false,
       pData: "",
       fram: {}, //指向
       picList: [], //在线选择的图片
@@ -719,6 +724,16 @@ export default {
     },
 
     async addYes() {
+      // 防抖多点
+      let that = this;
+      if (this.stopClickLogin) {
+        return false;
+      }
+      this.stopClickLogin = true;
+      setTimeout(() => {
+        that.stopClickLogin = false;
+      }, 1000);
+      // 正常执行
       if (this.status == 1 && this.pData) {
         let box = this.fram.document.querySelector(`#pic${this.pData}`);
         console.log(this.pData);
@@ -727,10 +742,11 @@ export default {
       }
       if (this.activeNum == "one") {
         let img = this.addList;
-        let imgThis = JSON.parse(JSON.stringify(this.addPic));
+        let imgThis = JSON.parse(JSON.stringify(this.addList));
         let newTime = new Date().getTime();
         let userIn = this.userinfo.user_info.user_id;
         console.log(this.addList);
+        console.log(imgThis);
         let imgS = "";
         if (img.length < 2) {
           img.push(
@@ -858,6 +874,12 @@ export default {
         this.picList = [];
         console.log(this.ids);
       }
+      this.pData = "";
+    },
+    closeDialog() {
+      this.imgList = [];
+      this.picList = [];
+      this.activeNum = "one";
       this.pData = "";
     },
     closeAdd() {

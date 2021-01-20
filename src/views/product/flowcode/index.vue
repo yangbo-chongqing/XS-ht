@@ -9,7 +9,7 @@
         >
         <el-col :span="10">
           <el-row :gutter="20">
-            <el-col :span="20">
+            <el-col :span="18">
               <div class="entry-search">
                 <el-input
                   v-model="keyword"
@@ -46,17 +46,17 @@
         fit
         highlight-current-row
       >
-        <el-table-column label="唯一编号">
+        <el-table-column label="流水号">
           <template slot-scope="scope">
             <span class="code-name">{{ scope.row.pkid }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="颜色">
+        <el-table-column label="合格编号">
           <template slot-scope="scope">
             <span class="code-name">{{ scope.row.colour }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="发动机号">
+        <!-- <el-table-column label="发动机号">
           <template slot-scope="scope">
             <span class="code-name">{{ scope.row.engine }}</span>
           </template>
@@ -70,7 +70,7 @@
           <template slot-scope="scope">
             <span class="code-name">{{ scope.row.certificate_core }}</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column align="center" label="操作" width="220">
           <template slot-scope="scope">
             <span class="el-link-btn"
