@@ -3,6 +3,39 @@
     <div class="back-box" @click="back">
       <i class="el-icon-arrow-left"></i> 返回列表
     </div>
+    <el-button
+      style="margin-left: 20px; margin-top: 10px"
+      type="primary"
+      slot="reference"
+      @click="addMe"
+      >增加自定义</el-button
+    >
+    <el-dialog title="添加自定义字段" :visible.sync="visible" width="300px">
+      <div class="fontClass">
+        名称：
+        <el-input style="width: 180px" v-model="form1.field_name"></el-input>
+      </div>
+      <div class="fontClass">
+        类型：
+        <el-select
+          style="width: 180px"
+          v-model="form1.field_type"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="(item, index) of options"
+            :key="index"
+            :label="item.label"
+            :value="item.label"
+          >
+          </el-option>
+        </el-select>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="text" @click="closeEle">取消</el-button>
+        <el-button type="primary" @click="addEle">确定</el-button>
+      </span>
+    </el-dialog>
     <div class="fun-table-body">
       <el-form ref="form" :model="form" label-width="80px">
         <!-- <div v-if="addList.length < 1">
@@ -13,88 +46,59 @@
           <span>暂无数据</span>
         </div> -->
         <template v-for="(item, index) of addList">
-          <el-form-item :label="item.name" :key="index">
-            <el-upload
-              v-if="item.type == 3"
-              class="upload-demo"
-              :before-upload="uploadPic"
-              :data="qiToken"
-              action="http://upload.qiniup.com"
-              :headers="headers"
-              :on-success="imageUploadSuccess"
-              accept=".jpg,.png"
-              :show-file-list="false"
-              :on-change="uploadProgress"
-            >
-              <el-button size="small" type="primary"
-                >图片<i class="el-icon-upload el-icon--right"
-              /></el-button>
-            </el-upload>
+          <el-form-item class="addItem" :key="index">
+            <!-- <el-input
+              style="width: 220px"
+              v-if="isEditFlag == 1"
+              v-model="item.field_name"
+              @blur="saveEditEditMuse(item)"
+            /> -->
             <el-input
-              v-if="item.type == 1"
-              v-model="inputVal[index]"
+              v-model="item.field_name"
+              v-if="showId == index"
+              style="width: 160px"
+              @blur="save(item)"
             ></el-input>
-            <el-upload
-              v-if="item.type == 2"
-              class="upload-demo"
-              action="http://upload.qiniup.com"
-              :data="qiToken"
-              :before-upload="uploadVideo"
-              :headers="headers"
-              accept=".MPEG,.baiAVI,.nAVI,.ASF,.MOV,.3GP,.mp4"
-              :show-file-list="false"
-              :on-success="videoUploadSuccess"
-              :on-change="uploadProgress"
+            <p
+              v-else
+              class="pDis"
+              style="text-align: right; margin-right: 10px"
             >
-              <el-button size="small" type="primary"
-                >视频<i class="el-icon-upload el-icon--right"
-              /></el-button>
-            </el-upload>
+              {{ item.field_name }}
+            </p>
+            <i
+              class="el-icon-edit disBlock"
+              @click="updateTit(index, 'left')"
+            ></i>
+            ：
+
+            <el-select
+              style="width: 180px"
+              v-if="showValue == index"
+              v-model="item.field_type"
+              @change="save(item)"
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="(item, index) of options"
+                :key="index"
+                :label="item.label"
+                :value="item.label"
+              >
+              </el-option>
+            </el-select>
+            <span class="pDis" v-else> {{ item.field_type }}类型 </span>
+            <i
+              class="el-icon-edit disBlock"
+              style="margin-right: 10px"
+              @click="updateTit(index, 'right')"
+            ></i>
+
+            <i @click="delet(item)" class="el-icon-delete disBlock"></i>
           </el-form-item>
         </template>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">立即创建</el-button>
-          <el-popover
-            style="margin-left: 20px"
-            placement="bottom"
-            width="220"
-            v-model="visible"
-          >
-            <div>
-              名称:
-              <el-input
-                class="block"
-                size="mini"
-                v-model="form1.name"
-              ></el-input>
-            </div>
-            <div>
-              类型:
-              <el-select
-                v-model="form1.type"
-                size="mini"
-                class="block"
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="(item, index) of options"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
-            </div>
-            <div style="text-align: right; margin: 0">
-              <el-button size="mini" type="text" @click="closeEle"
-                >取消</el-button
-              >
-              <el-button type="primary" size="mini" @click="addEle"
-                >确定</el-button
-              >
-            </div>
-            <el-button slot="reference">增加自定义</el-button>
-          </el-popover>
+          <!-- <el-button type="primary" @click="onSubmit">确认修改</el-button> -->
         </el-form-item>
       </el-form>
     </div>
@@ -102,7 +106,13 @@
 </template>
 
 <script>
-import { productCreate, expandList, expandCreate } from "@/api/product";
+import {
+  productCreate,
+  expandList,
+  expandCreate,
+  expandDel,
+  expandEdit,
+} from "@/api/product";
 import { getToken } from "@/utils/auth";
 import { Loading } from "element-ui";
 export default {
@@ -121,43 +131,91 @@ export default {
       disabled: false,
       uploadLoading: "",
       visible: false,
+      showId: "d3232",
+      showValue: "dsadasd",
       inputVal: [],
       addList: [],
       form1: {
-        name: "",
-        type: 1,
+        field_name: "",
+        field_type: "文本",
       },
       options: [
-        { label: "文本", value: 1 },
-        { label: "视频", value: 2 },
-        { label: "图片", value: 3 },
+        { label: "文本" },
+        { label: "视频" },
+        { label: "图片" },
+        { label: "富文本" },
       ],
     };
   },
   created() {
     this.geList();
   },
+
   methods: {
     onSubmit() {},
     closeEle() {
       this.visible = false;
       this.form1 = {
-        name: "",
-        type: 1,
+        field_name: "",
+        field_type: "文本",
       };
+    },
+    save(a) {
+      let params = {
+        field_name: a.field_name,
+        field_type: a.field_type,
+        id: a.id,
+      };
+      expandEdit(this.qs.stringify(params)).then((res) => {
+        this.geList();
+        // 重定义，只要非空就行
+        this.showId = "d3232";
+        this.showValue = "dsadasd";
+      });
+    },
+    addMe() {
+      this.visible = true;
+    },
+    updateTit(index, Tit) {
+      // 修改字段名或值
+      if (Tit == "left") {
+        this.showId = index;
+      } else {
+        this.showValue = index;
+      }
     },
     geList() {
       // 获取扩展字段列表
-      expandList().then((res) => {});
+      expandList().then((res) => {
+        this.addList = res.data.list.data;
+        console.log(this.addList);
+      });
+    },
+    delet(n) {
+      // 删除该条数据
+      expandDel(this.qs.stringify({ id: n.id })).then((res) => {
+        if (res) {
+          if (res.status == 200) {
+            this.$message({
+              message: res.message,
+              type: "success",
+            });
+            this.geList();
+          }
+        }
+        // 重定义，只要非空就行
+        this.showId = "d3232";
+        this.showValue = "dsadasd";
+      });
     },
     addEle() {
-      if (!this.form1.name) {
+      if (!this.form1.field_name) {
         this.$message.error("请先完善数据");
         return;
       }
       let params = {
-        field_name: this.form1.name,
-        field_type: this.form1.type,
+        field_name: this.form1.field_name,
+        field_type: this.form1.field_type,
       };
       expandCreate(this.qs.stringify(params)).then((res) => {
         this.geList();
@@ -165,8 +223,8 @@ export default {
       this.addList.push(this.form1);
       console.log(this.addList);
       this.form1 = {
-        name: "",
-        type: 1,
+        field_name: "",
+        field_type: "文本",
       };
       this.visible = false;
     },
@@ -219,7 +277,7 @@ export default {
     }
   }
   .fun-table-body {
-    width: 500px;
+    width: 600px;
     margin: auto;
     padding: 20px;
     box-sizing: border-box;
@@ -232,9 +290,23 @@ export default {
     box-sizing: border-box;
   }
 }
-.block {
-  display: inline-block;
-  width: 150px;
+.fontClass {
+  font-size: 16px;
   margin-bottom: 10px;
+}
+.pDis {
+  display: inline-block;
+  font-size: 17px;
+  font-weight: 500;
+  width: 120px;
+}
+.disBlock {
+  display: none;
+}
+.addItem {
+  cursor: pointer;
+}
+.addItem :hover .disBlock {
+  display: inline-block;
 }
 </style>

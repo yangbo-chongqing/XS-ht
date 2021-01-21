@@ -31,7 +31,7 @@
             accept=".jpg,.png"
             :before-upload="uploadPic"
             v-if="!form.dialogImageUrl"
-            :on-success="imageUploadSuccess"
+            :on-success="imageUploadSuccess.bind(null, {})"
             :on-progress="uploadProgress"
             :show-file-list="false"
           >
@@ -85,13 +85,88 @@
             :mobHtml="mobHtml1"
           ></ue>
         </div>
+        <!-- 动态生成扩展字段 -->
+        <template v-for="(item, index) of addList">
+          <div v-if="item.field_type == '文本'" :key="index" class="itemRich">
+            <div class="font">{{ item.field_name }}</div>
+            <el-input v-model="form1[index]" style="width: 360px"></el-input>
+          </div>
+          <div v-if="item.field_type == '视频'" :key="index" class="itemRich">
+            <div class="font">{{ item.field_name }}</div>
+            <div style="display: inline-block">
+              <div v-if="form1[index]" class="upload-info" style="width: 320px">
+                <div class="code-img-tips">
+                  <el-button type="warning" @click="delCodeVideo(index)"
+                    >删除</el-button
+                  >
+                </div>
+                <video width="100%" controls :src="form1[index]" />
+              </div>
+              <el-upload
+                v-else
+                class="upload-demo"
+                action="http://upload.qiniup.com"
+                :data="qiToken"
+                :before-upload="uploadVideo"
+                :headers="headers"
+                accept=".MPEG,.baiAVI,.nAVI,.ASF,.MOV,.3GP,.mp4"
+                :show-file-list="false"
+                :on-success="
+                  videoUploadSuccess.bind(null, { item, index: index })
+                "
+                :on-progress="uploadProgress"
+              >
+                <el-button
+                  size="small"
+                  type="primary"
+                  style="margin-left: 18px; margin-bottom: 20px"
+                  >视频上传<i class="el-icon-upload el-icon--right"
+                /></el-button>
+              </el-upload>
+            </div>
+          </div>
+          <div v-if="item.field_type == '图片'" :key="index" class="itemRich">
+            <div class="font">{{ item.field_name }}</div>
+            <div class="ueClass">
+              <el-upload
+                class="upload-demo"
+                :data="qiToken"
+                action="http://upload.qiniup.com"
+                :headers="headers"
+                accept=".jpg,.png"
+                :before-upload="uploadPic"
+                v-if="!form1[index]"
+                :on-success="imageUploadSuccess.bind(null, { index })"
+                :on-progress="uploadProgress"
+                :show-file-list="false"
+              >
+                <div class="upload-box"><i class="el-icon-plus"></i></div>
+              </el-upload>
+              <div class="upload-box" v-else>
+                <img :src="form1[index]" alt="" /><span
+                  @click="delCodeVideo(index)"
+                  ><i class="el-icon-close"></i
+                ></span>
+              </div>
+            </div>
+          </div>
+          <div v-if="item.field_type == '富文本'" :key="index" class="itemRich">
+            <div class="font">{{ item.field_name }}</div>
+            <ue
+              class="ueClass"
+              :value="form1[index]"
+              :ueConfig="ueConfig"
+              @input="setProductDetail($event, index)"
+            ></ue>
+          </div>
+        </template>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">保存</el-button>
           <el-button @click="back">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <el-dialog title="上传" :visible.sync="VisiblePic" width="30%">
+    <el-dialog title="上传" :visible.sync="VisiblePic" width="400px">
       <div style="display: inline-block">
         <div v-if="form2.url" class="upload-info">
           <div class="code-img-tips">
@@ -134,9 +209,8 @@
 </template>
 
 <script>
-import { productEdit, productDetails } from "@/api/product";
+import { productEdit, productDetails, expandList } from "@/api/product";
 import ue from "@/components/ue";
-
 import { getToken } from "@/utils/auth";
 import { Loading } from "element-ui";
 export default {
@@ -148,6 +222,7 @@ export default {
     return {
       headers: { Authorization: "Bearer " + getToken() },
       id: this.$route.query.id,
+      addList: [], //扩展字段列表
       form: {
         name: "",
         unique: "",
@@ -157,6 +232,7 @@ export default {
       },
       dialogVisible: false,
       getproductDetail: "",
+      form1: [],
       getproductState: "",
       disabled: false,
       uploadLoading: "",
@@ -232,6 +308,8 @@ export default {
   created() {
     this.queryDetails();
     this.qiToken = JSON.parse(sessionStorage.qiToken);
+    // 显示扩展字段
+    // this.geList();
   },
   methods: {
     //查询产品码
@@ -263,9 +341,22 @@ export default {
         this.getproductDetail = res.data.data.expand.details;
         this.productState = JSON.parse(JSON.stringify(this.getproductState));
         this.productDetail = JSON.parse(JSON.stringify(this.getproductDetail));
+        this.addList = res.data.data.muse_expand;
+        for (let i = 0; i < this.addList.length; i++) {
+          this.form1.push(this.addList[i].value);
+        }
       });
     },
     onSubmit() {
+      // 提交保存
+      let expand = [];
+      for (let i = 0; i < this.addList.length; i++) {
+        // expand[this.addList[i].id] = this.form1[i];
+        let a = { id: this.addList[i].id };
+        let b = { value: this.form1[i] };
+        let c = Object.assign(a, b);
+        expand.push(c);
+      }
       let loading = this.$loading({
         text: "保存中",
       });
@@ -278,6 +369,7 @@ export default {
         details: this.productDetail,
         manual: this.productState,
         videos: JSON.stringify(this.picList),
+        expand: expand,
       };
       setTimeout(() => {}, 5000);
       productEdit(this.qs.stringify(params)).then((res) => {
@@ -315,8 +407,18 @@ export default {
     setProductState(data) {
       this.productState = data;
     },
-    setProductDetail(data) {
-      this.productDetail = data;
+    setProductDetail(data, n) {
+      if (n) {
+        this.form1[n] = data;
+      } else {
+        this.productDetail = data;
+      }
+    },
+    geList() {
+      // 获取扩展字段列表
+      expandList().then((res) => {
+        this.addList = res.data.list.data;
+      });
     },
     addPic() {
       this.picList = this.picList.concat(this.form2);
@@ -339,18 +441,38 @@ export default {
       let newTime = new Date().getTime();
       this.qiToken.key = `${this.qiToken.key}${newTime}.mp4`;
     },
-    imageUploadSuccess(response, file, fileList) {
-      this.form.dialogImageUrl = `http://voice.xunsheng.org.cn/${response.key}`;
+    imageUploadSuccess(obj, res, file) {
+      // 图片上传成功
+      console.log(obj, res, file);
+      if (obj.index) {
+        this.form1[obj.index] = `http://voice.xunsheng.org.cn/${res.key}`;
+      } else {
+        this.form.dialogImageUrl = `http://voice.xunsheng.org.cn/${res.key}`;
+      }
       this.uploadLoading.close();
       this.qiToken = JSON.parse(sessionStorage.qiToken);
     },
-    videoUploadSuccess(response, file, fileList) {
-      this.form2.url = `http://voice.xunsheng.org.cn/${response.key}`;
+    videoUploadSuccess(obj, res, file) {
+      // 视频上传成功
+      console.log(obj, res, file);
+      if (obj.index) {
+        this.form1[obj.index] = `http://voice.xunsheng.org.cn/${res.key}`;
+        this.uploadLoading.close();
+      } else {
+        this.form2.url = `http://voice.xunsheng.org.cn/${res.key}`;
+      }
       this.uploadLoading.close();
       this.qiToken = JSON.parse(sessionStorage.qiToken);
     },
-    delCodeVideo() {
-      this.form2.url = "";
+    delCodeVideo(index) {
+      // 删除视频
+      console.log(this.form1[index]);
+      if (index) {
+        this.form1.splice(index, 1, "");
+      } else {
+        this.form2.url = "";
+      }
+      console.log(this.form1[index]);
     },
     deleTP(n) {
       let img = this.picList[n];

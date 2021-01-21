@@ -128,3 +128,19 @@ export function expandCreate(data) {
     data
   })
 }
+// 删除扩展字段
+export function expandDel(data) {
+  return request({
+    url: '/api/store/expand/del',
+    method: 'post',
+    data
+  })
+}
+// 修改扩展字段
+export function expandEdit(data) {
+  return request({
+    url: '/api/store/expand/edit',
+    method: 'post',
+    data
+  })
+}
