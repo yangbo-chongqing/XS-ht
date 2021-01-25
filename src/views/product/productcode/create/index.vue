@@ -11,14 +11,14 @@
         <el-form-item label="产品编码">
           <el-input v-model="form.unique" style="width: 220px"></el-input>
         </el-form-item>
-        <el-form-item label="上市时间">
+        <!-- <el-form-item label="上市时间">
           <el-date-picker
             v-model="form.listed"
             type="date"
             placeholder="选择日期"
           >
           </el-date-picker>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="产品图标">
           <div></div>
           <el-upload
@@ -176,7 +176,7 @@
           <div class="code-img-tips">
             <el-button type="warning" @click="delCodeVideo">删除</el-button>
           </div>
-          <video width="100%" controls :src="form2.url" />
+          <video width="100%" height="250px" controls :src="form2.url" />
         </div>
         <el-upload
           v-else

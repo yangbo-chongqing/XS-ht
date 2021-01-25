@@ -6,28 +6,37 @@
       :before-close="handleClose"
       center
     >
-      <el-tabs v-model="activeName" stretch>
+      <el-tabs v-model="activeName" stretch @tab-click="handleClick">
         <el-tab-pane label="样式标签" name="first">
-          <div class="first">
+          <div class="first" style="text-align: center">
             <el-input v-model="input" placeholder="请输入标签内容"></el-input>
-            <div class="first-body" ref="imageWrapperTag">
-              <div class="first-body-img">
+            <div id="printTest1" class="first-body" ref="imageWrapperTag">
+              <div style="text-align: center" class="first-body-img">
                 <img :src="codeImg" alt="" />
-                <p class="" v-if="input">{{ input }}</p>
-                <p class="" v-else>二维码标签内容</p>
+                <p style="text-align: center" class="" v-if="input">
+                  {{ input }}
+                </p>
+                <p style="text-align: center" v-else>二维码标签内容</p>
               </div>
             </div>
           </div>
         </el-tab-pane>
         <el-tab-pane label="普通二维码标签" name="second">
-          <div class="second-body" ref="imageWrapper">
-            <div class="second-body-img">
+          <div
+            class="second-body"
+            style="text-align: center"
+            ref="imageWrapper"
+            id="printTest2"
+          >
+            <div style="text-align: center" class="second-body-img">
               <img :src="codeImg" alt="" />
             </div>
           </div>
         </el-tab-pane>
       </el-tabs>
       <span slot="footer" class="dialog-footer">
+        <el-button v-print="`#printTest${n}`">打 印</el-button>
+
         <el-button @click="toggle('close')">取 消</el-button>
         <el-button type="primary" @click="toggle('down')">下 载</el-button>
       </span>
@@ -45,6 +54,7 @@ export default {
     return {
       activeName: "second",
       input: "",
+      n: 1,
     };
   },
   created() {},
@@ -53,6 +63,9 @@ export default {
     handleClose(done) {
       this.$emit("toggleDialog");
       this.activeName = "second";
+    },
+    handleClick(tab, event) {
+      this.n = tab.index * 1 + 1;
     },
     toggle(type) {
       if (type == "down") {

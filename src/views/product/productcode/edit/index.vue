@@ -11,14 +11,14 @@
         <el-form-item label="产品编码">
           <el-input v-model="form.unique" disabled></el-input>
         </el-form-item>
-        <el-form-item label="上市时间">
+        <!-- <el-form-item label="上市时间">
           <el-date-picker
             v-model="form.listed"
             type="date"
             placeholder="选择日期"
           >
           </el-date-picker>
-        </el-form-item>
+        </el-form-item> -->
         <!-- <el-form-item label="厂家">
           <el-input v-model="form.factory"></el-input>
         </el-form-item> -->
@@ -183,7 +183,7 @@
           :headers="headers"
           accept=".MPEG,.baiAVI,.nAVI,.ASF,.MOV,.3GP,.mp4"
           :show-file-list="false"
-          :on-success="videoUploadSuccess"
+          :on-success="videoUploadSuccess.bind(null, {})"
           :on-progress="uploadProgress"
         >
           <el-button

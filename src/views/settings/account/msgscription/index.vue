@@ -2,7 +2,7 @@
   <div class="msgscription-container">
     <div class="msgscription-text">消息通知及订阅</div>
     <p class="msgscription-smal">
-      关注寻声地图公众号，可以在微信中接收推送消息及订阅内容<span
+      关注寻声扫码公众号，可以在微信中接收推送消息及订阅内容<span
         ><el-link type="primary">点击扫码关注</el-link></span
       >
     </p>

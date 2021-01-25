@@ -5,7 +5,7 @@
         <el-col :span="14"><div class="entry-title">产品码</div></el-col>
         <el-col :span="10">
           <el-row :gutter="20">
-            <el-col :span="12">
+            <el-col :span="18">
               <div class="entry-search">
                 <el-input
                   v-model="keyword"
@@ -17,13 +17,13 @@
                 </el-input>
               </div>
             </el-col>
-            <el-col :span="6">
+            <!-- <el-col :span="6">
               <div class="entry-search">
                 <el-button type="primary" @click="golinkpage('/customCode')"
                   >新增扩展字段</el-button
                 >
               </div>
-            </el-col>
+            </el-col> -->
             <el-col :span="5">
               <div class="entry-search">
                 <el-button
@@ -121,11 +121,11 @@
             >
           </template>
         </el-table-column> -->
-        <el-table-column label="上市时间" align="center">
+        <!-- <el-table-column label="上市时间" align="center">
           <template slot-scope="scope">
             {{ scope.row.listed }}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <!-- <el-table-column label="是否上架" width="120" align="center">
           <template slot-scope="scope">
             <el-switch

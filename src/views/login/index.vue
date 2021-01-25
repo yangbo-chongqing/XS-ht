@@ -11,7 +11,7 @@
             label-position="left"
           >
             <div class="title-container">
-              <h3 class="title">寻声地图商户登录</h3>
+              <h3 class="title">寻声扫码商户登录</h3>
             </div>
             <el-form-item prop="phone">
               <span class="svg-container">
@@ -60,7 +60,7 @@
           </el-form>
           <div class="textCenter">
             <input type="checkbox" v-model="checked" />&nbsp;
-            <span class="fontB">同意寻声地图</span> &nbsp;<span
+            <span class="fontB">同意寻声扫码</span> &nbsp;<span
               @click="readBook"
               class="fontP"
               >平台登录协议</span

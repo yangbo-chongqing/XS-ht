@@ -69,6 +69,13 @@
       >
       <el-col :span="24"
         ><div class="AccountInfo-item">
+          <label>用户密码:</label>
+          <!-- <span>*******</span> -->
+          <span class="aFont" @click="dialogVisible = true">修改</span>
+        </div></el-col
+      >
+      <el-col :span="24"
+        ><div class="AccountInfo-item">
           <label>店铺上架:</label>
           <span
             ><el-switch
@@ -83,12 +90,42 @@
           ></span></div
       ></el-col>
     </el-row>
+    <el-dialog
+      title="密码修改"
+      :visible.sync="dialogVisible"
+      width="330px"
+      :before-close="closeEdit"
+    >
+      <div
+        style="
+          display: block;
+          font-size: 14px;
+          color: #333;
+          line-height: 18px;
+          padding-bottom: 10px;
+        "
+      >
+        新密码：
+      </div>
+      <div>
+        <el-input
+          placeholder="请输入密码"
+          v-model="inputPsd"
+          style="width: 100%"
+          show-password
+        ></el-input>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeEdit">取 消</el-button>
+        <el-button type="primary" @click="edPsd">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { postAccountSettings } from "@/api/user";
-import { getGetMuse, changeAdmin } from "@/api/settings";
+import { getGetMuse, changeAdmin, edPD } from "@/api/settings";
 import { mapGetters } from "vuex";
 export default {
   name: "AccountInfo",
@@ -98,6 +135,8 @@ export default {
       isShowUserTel: false,
       isShowUserName: false,
       upOrDown: "",
+      dialogVisible: false,
+      inputPsd: "",
     };
   },
   computed: {
@@ -107,6 +146,22 @@ export default {
     this.GetMuse();
   },
   methods: {
+    edPsd() {
+      edPD(this.qs.stringify({ password: this.inputPsd })).then((res) => {
+        if (res.status == 200) {
+          this.$message({
+            message: res.msg,
+            type: "success",
+          });
+        }
+      });
+      this.dialogVisible = false;
+      this.inputPsd = "";
+    },
+    closeEdit() {
+      this.inputPsd = "";
+      this.dialogVisible = false;
+    },
     chaangeUP(val) {
       changeAdmin(this.qs.stringify({ state: val })).then((res) => {
         console.log(res);
@@ -153,7 +208,7 @@ export default {
 <style lang="scss" scoped>
 .AccountInfo-container {
   padding: 20px;
-  height: 220px;
+  height: 260px;
   box-sizing: border-box;
   border: 1px solid #f5f5f5;
   box-shadow: 0px 0px 10px #f5f5f5;
@@ -173,5 +228,10 @@ export default {
       color: #999;
     }
   }
+}
+.aFont {
+  color: #409eff !important;
+  font-weight: 400;
+  cursor: pointer;
 }
 </style>

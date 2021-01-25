@@ -72,7 +72,7 @@
             ></i>
             ：
 
-            <el-select
+            <!-- <el-select
               style="width: 180px"
               v-if="showValue == index"
               v-model="item.field_type"
@@ -86,13 +86,13 @@
                 :value="item.label"
               >
               </el-option>
-            </el-select>
-            <span class="pDis" v-else> {{ item.field_type }}类型 </span>
-            <i
+            </el-select> -->
+            <span class="pDis"> {{ item.field_type }}类型 </span>
+            <!-- <i
               class="el-icon-edit disBlock"
               style="margin-right: 10px"
               @click="updateTit(index, 'right')"
-            ></i>
+            ></i> -->
 
             <i @click="delet(item)" class="el-icon-delete disBlock"></i>
           </el-form-item>

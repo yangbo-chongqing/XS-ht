@@ -148,9 +148,9 @@ export default {
             this.dataList.push(list[i].children[n].path);
           }
         }
-        console.log(this.dataList);
+        // console.log(this.dataList);
         sessionStorage.setItem("router", JSON.stringify(this.dataList));
-        console.log(sessionStorage.getItem("router"));
+        // console.log(sessionStorage.getItem("router"));
       });
     },
     resolvePath(routePath) {

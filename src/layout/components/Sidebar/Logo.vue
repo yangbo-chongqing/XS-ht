@@ -43,7 +43,7 @@ export default {
   },
   data() {
     return {
-      title: "寻声地图",
+      title: "寻声扫码",
       logo: "http://www.xunsheng.org.cn/img/logo-white.png?v=2018",
     };
   },

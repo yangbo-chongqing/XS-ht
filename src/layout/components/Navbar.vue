@@ -8,7 +8,7 @@
 
     <breadcrumb class="breadcrumb-container" />
     <div class="right-menu">
-      <el-select
+      <!-- <el-select
         style="width: 180px; margin-right: 10px"
         v-model="id"
         placeholder="请选择切换的公司"
@@ -21,7 +21,7 @@
           :value="item.id"
         >
         </el-option>
-      </el-select>
+      </el-select> -->
       <router-link target="_blank" :to="{ name: 'help' }">
         <div class="avatar-hlpe"><i class="el-icon-question" />帮助</div>
       </router-link>

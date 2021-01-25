@@ -52,12 +52,12 @@ export const constantRoutes = [
         component: () => import('@/views/settings/homepage/index'),
         meta: { title: '企业主页', icon: 'table', noCache: true }
       },
-      {
-        path: 'mapping',
-        name: 'Mapping',
-        component: () => import('@/views/codelist/entrycode/mapping/index'),
-        meta: { title: '旅游导图', icon: 'table', noCache: true }
-      },
+      // {
+      //   path: 'mapping',
+      //   name: 'Mapping',
+      //   component: () => import('@/views/codelist/entrycode/mapping/index'),
+      //   meta: { title: '旅游导图', icon: 'table', noCache: true }
+      // },
       // {
       //   path: '/entrytype',
       //   component: () => import('@/views/codelist/entrytype/index'),
@@ -189,6 +189,23 @@ export const constantRoutes = [
 
     ]
   },
+  // 广告设置
+  {
+    path: '/advertising',
+    component: Layout,
+    redirect: 'Setting',
+    name: 'advertising',
+    meta: { title: '广告', icon: 'el-icon-s-custom', noCache: true },
+    children: [
+
+      {
+        path: 'Setting',
+        name: 'advertisingSetting',
+        component: () => import('@/views/advertising/advertising'),
+        meta: { title: '广告设置', icon: 'el-icon-s-custom', noCache: true },
+      },
+    ]
+  },
   {
     path: '/settings',
     component: Layout,
@@ -211,6 +228,7 @@ export const constantRoutes = [
       }
     ]
   },
+
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true },
 

@@ -1,6 +1,6 @@
 import defaultSettings from '@/settings'
 
-const title = defaultSettings.title || '寻声地图'
+const title = defaultSettings.title || '寻声扫码'
 
 export default function getPageTitle(pageTitle) {
   if (pageTitle) {

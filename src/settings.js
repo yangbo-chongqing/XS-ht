@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '寻声地图',
+  title: '寻声扫码',
 
   /**
    * @type {boolean} true | false

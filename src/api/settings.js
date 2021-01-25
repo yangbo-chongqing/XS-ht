@@ -57,3 +57,11 @@ export function changeAdmin(data) {
   })
 }
 
+// 修改密码
+export function edPD(data) {
+  return request({
+    url: '/api/store/user/resetpass',
+    method: 'post',
+    data: data
+  })
+}
