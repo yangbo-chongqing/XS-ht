@@ -8,7 +8,7 @@
         <el-form-item label="产品名称">
           <el-input v-model="form.name" style="width: 220px"></el-input>
         </el-form-item>
-        <el-form-item label="产品编码">
+        <el-form-item label="产品编号">
           <el-input v-model="form.unique" style="width: 220px"></el-input>
         </el-form-item>
         <!-- <el-form-item label="上市时间">
@@ -19,7 +19,7 @@
           >
           </el-date-picker>
         </el-form-item> -->
-        <el-form-item label="产品图标">
+        <el-form-item label="产品封面图">
           <div></div>
           <el-upload
             class="upload-demo"
@@ -62,6 +62,7 @@
           /></el-button>
         </el-form-item>
         <!-- <template v-for="(item, index) of addList">
+          扩展字段
           <el-form-item :label="item.name" :key="index">
             <el-upload
               v-if="item.type == 3"

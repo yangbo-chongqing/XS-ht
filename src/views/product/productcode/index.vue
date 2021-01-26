@@ -28,7 +28,7 @@
               <div class="entry-search">
                 <el-button
                   type="primary"
-                  @click="golinkpage('/product/productcreate')"
+                  @click="golinkpage('/product/productedit', {})"
                   >新增产品码</el-button
                 >
               </div>

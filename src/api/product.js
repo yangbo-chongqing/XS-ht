@@ -144,3 +144,36 @@ export function expandEdit(data) {
     data
   })
 }
+
+// 添加词条相关内容
+export function createsRelated(data) {
+  return request({
+    url: '/api/store/related/create',
+    method: 'post',
+    data
+  })
+}
+// 获取词条相关内容列表
+export function relatedList(data) {
+  return request({
+    url: '/api/store/related/list',
+    method: 'post',
+    data
+  })
+}
+// 编辑词条相关内容
+export function relatedEdit(data) {
+  return request({
+    url: '/api/store/related/edit',
+    method: 'post',
+    data
+  })
+}
+// 删除词条相关内容
+export function relatedDel(data) {
+  return request({
+    url: '/api/store/related/del',
+    method: 'post',
+    data
+  })
+}

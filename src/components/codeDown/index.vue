@@ -10,8 +10,12 @@
         <el-tab-pane label="样式标签" name="first">
           <div class="first" style="text-align: center">
             <el-input v-model="input" placeholder="请输入标签内容"></el-input>
-            <div id="printTest1" class="first-body" ref="imageWrapperTag">
-              <div style="text-align: center" class="first-body-img">
+            <div id="printTest1" class="first-body">
+              <div
+                style="text-align: center"
+                class="first-body-img"
+                ref="imageWrapperTag"
+              >
                 <img :src="codeImg" alt="" />
                 <p style="text-align: center" class="" v-if="input">
                   {{ input }}
@@ -74,6 +78,7 @@ export default {
             allowTaint: true,
             useCORS: true,
           }).then((canvas) => {
+            console.log(canvas);
             let dataURL = canvas.toDataURL("image/png");
             this.downloadImg(dataURL, "普通二维码");
           });
@@ -85,6 +90,7 @@ export default {
             });
             return false;
           }
+          console.log(this.$refs.imageWrapperTag);
           html2canvas(this.$refs.imageWrapperTag, {
             allowTaint: true,
             useCORS: true,
@@ -99,6 +105,7 @@ export default {
     },
     //二维码下载
     downloadImg(img, imgname) {
+      console.log(img, imgname);
       downloadIamge(img, imgname);
     },
   },
