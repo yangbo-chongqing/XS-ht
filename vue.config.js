@@ -1,7 +1,5 @@
 'use strict'
 const path = require('path')
-const CompressionWebpackPlugin = require('compression-webpack-plugin')
-const productionGzipExtensions = ['js', 'css']
 const isProduction = process.env.NODE_ENV === 'production'
 const defaultSettings = require('./src/settings.js')
 
@@ -27,8 +25,8 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '//xsdtcentercdn.xunsheng.org.cn/',
-  // publicPath: '/',
+  // publicPath: '//xsdtcentercdn.xunsheng.org.cn/',
+  publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: false,         //process.env.NODE_ENV === 'development',
@@ -56,28 +54,7 @@ module.exports = {
         '@': resolve('src')
       }
     },
-    // plugins: [
-    //   // 压缩js加载文件，提升首页加载速度
-    //   // Ignore all locale files of moment.js
-    //   new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    //   new UglifyJsPlugin({
-    //     uglifyOptions: {
-    //       compress: {
-    //         drop_debugger: true,
-    //         drop_console: true
-    //       }
-    //     },
-    //     sourceMap: false,
-    //     parallel: true
-    //   }),
-    //   // 配置compression-webpack-plugin压缩
-    //   new CompressionWebpackPlugin({
-    //     algorithm: 'gzip',
-    //     test: new RegExp('\\.(' + productionGzipExtensions.join('|') + ')$'),
-    //     threshold: 10240,
-    //     minRatio: 0.8
-    //   })
-    // ]
+    
   },
   chainWebpack(config) {
     // it can improve the speed of the first screen, it is recommended to turn on preload
@@ -148,6 +125,19 @@ module.exports = {
             })
           // https:// webpack.js.org/configuration/optimization/#optimizationruntimechunk
           config.optimization.runtimeChunk('single')
+          //开启压缩
+          const CompressionPlugin = require('compression-webpack-plugin')
+          const productionGzipExtensions = /\.(js|css|json|txt|html|ico|svg)(\?.*)?$/i
+          config.resolve.alias.set('@', resolve('src'))
+          config.plugin('compressionPlugin')
+            .use(new CompressionPlugin({
+              filename: '[path].gz[query]',
+              algorithm: 'gzip',
+              test: productionGzipExtensions,
+              threshold: 10240,
+              minRatio: 0.8,
+              deleteOriginalAssets: false
+            }))
         }
       )
   }
