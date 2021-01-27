@@ -26,7 +26,7 @@
               <div class="entry-search">
                 <el-button
                   type="primary"
-                  @click="golinkpage('/product/flowcodecreate', { id: id })"
+                  @click="golinkpage('/codelist/flowcodecreate', { id: id })"
                   >新增流水码</el-button
                 >
               </div>
@@ -91,7 +91,7 @@
               ><el-link
                 type="primary"
                 @click="
-                  golinkpage('/product/flowcodeedit', { id: scope.row.id })
+                  golinkpage('/codelist/flowcodeedit', { id: scope.row.id })
                 "
                 >编辑</el-link
               ></span

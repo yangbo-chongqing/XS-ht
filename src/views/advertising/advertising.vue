@@ -174,6 +174,7 @@ export default {
       list: [],
       page: 1,
       form: {},
+      count: 0,
       formLabelWidth: "120px",
 
       tableHeight: document.body.clientHeight - 230,
@@ -190,6 +191,10 @@ export default {
       //   获取广告列表;
       advertisingList(this.qs.stringify({ page: this.page })).then((res) => {
         this.list = res.data.list.data;
+        this.count = res.data.list.total;
+        if (this.count > 10) {
+          this.showPage = true;
+        }
       });
     },
     edit(data) {
@@ -202,6 +207,22 @@ export default {
         this.dialogFormVisible = true;
         this.title = "新增广告";
       }
+    },
+    handleCurrentChange(val) {
+      this.page = val;
+      this.getList();
+    },
+    deteleAdvertis(id) {
+      // console.log(id);
+      advertisingDel(this.qs.stringify({ id: id.id })).then((res) => {
+        if (res.status == 200) {
+          this.$message({
+            message: res.msg,
+            type: "success",
+          });
+          this.getList();
+        }
+      });
     },
     closeOrAdd(n) {
       if (n == 0) {

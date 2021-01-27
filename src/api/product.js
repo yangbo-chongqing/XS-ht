@@ -48,6 +48,14 @@ export function productCreate(data, meta) {
     meta
   })
 }
+// 产品码删除
+export function productDel(data) {
+  return request({
+    url: '/api/store/product/del',
+    method: 'post',
+    data,
+  })
+}
 //产品列表
 export function productList(data) {
   return request({

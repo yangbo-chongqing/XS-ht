@@ -21,7 +21,7 @@
               <div class="entry-search">
                 <el-button
                   type="primary"
-                  @click="golinkpage('/product/instructionscreate')"
+                  @click="golinkpage('/codelist/instructionscreate')"
                   >新增说明书</el-button
                 >
               </div>
@@ -55,7 +55,7 @@
             <span class="code-name">{{ scope.row.create_time }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center"  label="操作" width="220">
+        <el-table-column align="center" label="操作" width="220">
           <template slot-scope="scope">
             <!-- <span class="el-link-btn"
               ><el-link
@@ -66,7 +66,9 @@
             <span class="el-link-btn"
               ><el-link
                 type="primary"
-                @click="golinkpage('/product/instructionsedit', { id: scope.row.id })"
+                @click="
+                  golinkpage('/codelist/instructionsedit', { id: scope.row.id })
+                "
                 >编辑</el-link
               ></span
             >
@@ -88,7 +90,7 @@
 </template>
 
 <script>
-import { manualList,productEdit } from "@/api/product";
+import { manualList, productEdit } from "@/api/product";
 export default {
   name: "Instructions",
   data() {
@@ -126,15 +128,15 @@ export default {
       this.fetchData();
     },
     //是否上架
-    toggleShow(id,flag){
+    toggleShow(id, flag) {
       let loading = this.$loading({
-        text:'修改中...'
-      })
+        text: "修改中...",
+      });
       let parmas = {
         id: id,
-        show: flag?1:0,
+        show: flag ? 1 : 0,
       };
-      productEdit(this.qs.stringify(parmas)).then((res)=>{
+      productEdit(this.qs.stringify(parmas)).then((res) => {
         loading.close();
         if (res.status == 200) {
           this.$message({
@@ -142,7 +144,7 @@ export default {
             type: "success",
           });
         }
-      })
+      });
     },
     fetchData() {
       this.listLoading = true;
@@ -152,10 +154,10 @@ export default {
       };
       manualList(this.qs.stringify(parmas)).then((res) => {
         this.count = res.data.total;
-        if(res.data.data.length>0){
-          res.data.data.map((item,index)=>{
-            item.showFlag = item.show==1?true:false;
-          })
+        if (res.data.data.length > 0) {
+          res.data.data.map((item, index) => {
+            item.showFlag = item.show == 1 ? true : false;
+          });
         }
         this.list = res.data.data;
         console.log(this.list);

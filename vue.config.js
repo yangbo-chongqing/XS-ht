@@ -25,8 +25,8 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  // publicPath: '//xsdtcentercdn.xunsheng.org.cn/',
-  publicPath: '/',
+  publicPath: '//xsdtcentercdn.xunsheng.org.cn/',
+  // publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: false,         //process.env.NODE_ENV === 'development',
@@ -54,7 +54,7 @@ module.exports = {
         '@': resolve('src')
       }
     },
-    
+
   },
   chainWebpack(config) {
     // it can improve the speed of the first screen, it is recommended to turn on preload

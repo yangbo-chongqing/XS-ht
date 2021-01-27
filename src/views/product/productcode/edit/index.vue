@@ -20,13 +20,17 @@
                 action="http://upload.qiniup.com"
                 :headers="headers"
                 accept=".jpg,.png"
+                :on-error="uploadToken"
                 :before-upload="uploadPic"
                 v-if="!form.dialogImageUrl"
                 :on-success="imageUploadSuccess.bind(null, {})"
                 :on-progress="uploadProgress"
                 :show-file-list="false"
               >
-                <div class="upload-box"><i class="el-icon-plus"></i></div>
+                <div class="upload-box relaFa">
+                  <i class="el-icon-plus"></i>
+                  <div class="absChild">建议尺寸750*421</div>
+                </div>
               </el-upload>
               <div class="upload-box" v-else>
                 <img :src="form.dialogImageUrl" alt="" /><span
@@ -54,9 +58,9 @@
             ></ue>
             <ue
               class="ueClass"
+              v-if="!ids"
               :value="productState"
               :ueConfig="ueConfig"
-              v-else
               @input="setProductState"
               :mobHtml="mobHtml"
             ></ue>
@@ -74,7 +78,7 @@
               class="marBot"
               size="small"
               type="primary"
-              @click="add(0)"
+              @click="add(0, 2)"
               >添加集锦<i class="el-icon-upload el-icon--right"
             /></el-button>
             <el-table :data="tableData" border style="width: 100%">
@@ -96,7 +100,7 @@
                 <template slot-scope="scope">
                   <i
                     class="el-icon-edit"
-                    @click="editActivity(scope.row, 0)"
+                    @click="editActivity(scope.row, 0, 1)"
                   ></i>
                   <i
                     style="margin-left: 10px"
@@ -109,7 +113,11 @@
           </template>
         </el-tab-pane>
         <el-tab-pane label="产品评测" name="fourth">
-          <el-button class="marBot" size="small" type="primary" @click="add(1)"
+          <el-button
+            class="marBot"
+            size="small"
+            type="primary"
+            @click="add(1, 2)"
             >添加评测<i class="el-icon-upload el-icon--right"
           /></el-button>
           <el-table :data="tableData1" border style="width: 100%">
@@ -129,7 +137,10 @@
             <el-table-column prop="sort" label="排序"> </el-table-column>
             <el-table-column prop="address" label="操作">
               <template slot-scope="scope">
-                <i class="el-icon-edit" @click="editActivity(scope.row, 1)"></i>
+                <i
+                  class="el-icon-edit"
+                  @click="editActivity(scope.row, 1, 1)"
+                ></i>
                 <i
                   style="margin-left: 10px"
                   class="el-icon-delete"
@@ -140,7 +151,11 @@
           </el-table>
         </el-tab-pane>
         <el-tab-pane label="常见问题" name="five">
-          <el-button class="marBot" size="small" type="primary" @click="add(2)"
+          <el-button
+            class="marBot"
+            size="small"
+            type="primary"
+            @click="add(2, 2)"
             >添加问题<i class="el-icon-upload el-icon--right"
           /></el-button>
           <el-table :data="tableData2" border style="width: 100%">
@@ -159,7 +174,10 @@
             <el-table-column prop="sort" label="排序"> </el-table-column>
             <el-table-column prop="address" label="操作">
               <template slot-scope="scope">
-                <i class="el-icon-edit" @click="editActivity(scope.row, 2)"></i>
+                <i
+                  class="el-icon-edit"
+                  @click="editActivity(scope.row, 2, 1)"
+                ></i>
                 <i
                   style="margin-left: 10px"
                   class="el-icon-delete"
@@ -175,7 +193,7 @@
               class="marBot"
               size="small"
               type="primary"
-              @click="add(3)"
+              @click="add(3, 2)"
               >添加商城<i class="el-icon-upload el-icon--right"
             /></el-button>
             <el-table :data="tableData3" border style="width: 100%">
@@ -200,7 +218,7 @@
                 <template slot-scope="scope">
                   <i
                     class="el-icon-edit"
-                    @click="editActivity(scope.row, 3)"
+                    @click="editActivity(scope.row, 3, 1)"
                   ></i>
                   <i
                     style="margin-left: 10px"
@@ -591,13 +609,21 @@
             action="http://upload.qiniup.com"
             :headers="headers"
             accept=".jpg,.png"
+            :on-error="uploadToken"
             :before-upload="uploadPic"
             v-if="!form3.image"
             :on-success="imageUploadSuccess.bind(null, { type: 'activity' })"
             :on-progress="uploadProgress"
             :show-file-list="false"
           >
-            <div class="upload-box"><i class="el-icon-plus"></i></div>
+            <div class="upload-box relaFa">
+              <i class="el-icon-plus"></i>
+              <div v-if="typeNum == 0 || typeNum == 2" class="absChild">
+                建议尺寸750*187
+              </div>
+              <div v-if="typeNum == 1" class="absChild">建议尺寸750*526</div>
+              <div v-if="typeNum == 3" class="absChild">建议尺寸240*240</div>
+            </div>
           </el-upload>
           <div class="upload-box" v-else>
             <img :src="form3.image" alt="" /><span @click="form3.image = ''"
@@ -640,6 +666,7 @@
         <el-upload
           v-else
           class="upload-demo"
+          :on-error="uploadToken"
           action="http://upload.qiniup.com"
           :data="qiToken"
           :before-upload="uploadVideo"
@@ -682,10 +709,10 @@ import {
   relatedDel,
   productCreate,
 } from "@/api/product";
+import { getQiToken } from "@/api/user";
 import ue from "@/components/ue";
 import { getToken } from "@/utils/auth";
 import { Loading } from "element-ui";
-// import { image } from "html2canvas/dist/types/css/types/image";
 export default {
   name: "ProductEdit",
   components: {
@@ -697,6 +724,7 @@ export default {
       id: this.$route.query.id,
       activeName: "first",
       addList: [], //扩展字段列表
+      ids: this.$route.query.id,
       form: {
         name: "",
         unique: "",
@@ -705,6 +733,7 @@ export default {
         listed: "",
       },
       form2: {},
+      dialogType: 1, //打开弹窗的方式
       tableData: [], //活动集锦列表
       tableData1: [], //产品评测
       tableData2: [], //常见问题
@@ -832,6 +861,21 @@ export default {
           this.form1.push(this.addList[i].value);
         }
       });
+    },
+    uploadToken(err, file, fileList) {
+      console.log(err);
+      getQiToken({}).then((res) => {
+        let str = res.data.data;
+        str.token = JSON.parse(JSON.stringify(str.upToken));
+        str.key = JSON.parse(JSON.stringify(str.path));
+        delete str.path;
+        delete str.upToken;
+        sessionStorage.setItem("qiToken", JSON.stringify(str));
+      });
+      this.uploadLoading.close();
+
+      this.qiToken = JSON.parse(sessionStorage.qiToken);
+      this.$message.error("Token失效，请重新上传");
     },
     addOrEdit() {
       if (!this.id) {
@@ -965,10 +1009,11 @@ export default {
       };
       this.VisiblePic = false;
     },
-    editActivity(row, index) {
+    editActivity(row, index, type) {
       this.typeNum = JSON.parse(JSON.stringify(index));
       this.form3 = JSON.parse(JSON.stringify(row));
       this.activity = true;
+      this.dialogType = type;
     },
     deleteActivity(row, type) {
       relatedDel(
@@ -1093,8 +1138,9 @@ export default {
       this.activity = false;
       this.form3 = {};
     },
-    add(n) {
+    add(n, m) {
       console.log(n);
+      this.dialogType = m;
       this.typeNum = n;
       // 添加相关内容，实现弹窗
       // 类型 0 活动集锦 1 产品评测 2 常见问题 3 网络商城
@@ -1115,7 +1161,9 @@ export default {
     },
     handleClose(none) {
       // 关闭活动集锦的弹窗
-      this.form3 = {};
+      if (this.dialogType == 1) {
+        this.form3 = {};
+      }
       none();
     },
   },
@@ -1234,5 +1282,15 @@ export default {
 }
 .classInput {
   width: 220px;
+}
+.relaFa {
+  position: relative;
+  .absChild {
+    position: absolute;
+    color: red;
+    bottom: 2px;
+    text-align: center;
+    width: 100%;
+  }
 }
 </style>

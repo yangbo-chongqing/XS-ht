@@ -28,7 +28,7 @@
               <div class="entry-search">
                 <el-button
                   type="primary"
-                  @click="golinkpage('/product/productedit', {})"
+                  @click="golinkpage('/codelist/productedit', {})"
                   >新增产品码</el-button
                 >
               </div>
@@ -142,7 +142,7 @@
             <span class="el-link-btn"
               ><el-link
                 type="primary"
-                @click="golinkpage('/product/flowcode', { id: scope.row.id })"
+                @click="golinkpage('/codelist/flowcode', { id: scope.row.id })"
                 >查看流水码</el-link
               ></span
             >
@@ -164,11 +164,14 @@
               ><el-link
                 type="primary"
                 @click="
-                  golinkpage('/product/productedit', { id: scope.row.id })
+                  golinkpage('/codelist/productedit', { id: scope.row.id })
                 "
                 >编辑</el-link
               ></span
             >
+            <span class="el-link-btn">
+              <el-link type="primary" @click="dele(scope.row)">删除</el-link>
+            </span>
           </template>
         </el-table-column>
       </el-table>
@@ -182,7 +185,7 @@
           @current-change="handleCurrentChange"
         />
       </div>
-      <el-dialog
+      <!-- <el-dialog
         :title="addinstruFromFlag ? '新增说明书' : '关联说明书'"
         :visible.sync="addInstruFlag"
         width="30%"
@@ -226,10 +229,10 @@
         </el-form>
         <el-form ref="form" :model="form" label-width="90px" v-else>
           <el-form-item label="说明书名称">
-            <!-- <el-input
+             <el-input
               v-model="form.manual_name"
               placeholder="请输入说明书名称"
-            ></el-input> -->
+            ></el-input> 
             <el-select
               v-model="value"
               filterable
@@ -257,8 +260,8 @@
           <el-button @click="addInstruFlag = false">取 消</el-button>
           <el-button type="primary" @click="onEdit(value)">立即关联</el-button>
         </span>
-      </el-dialog>
-      <el-dialog
+      </el-dialog> -->
+      <!-- <el-dialog
         :title="type == 'video' ? '添加装潢视频' : '添加质检报告'"
         :visible.sync="addInspectionFlag"
         width="30%"
@@ -276,7 +279,7 @@
               :file-list="form.fileList"
             >
               <el-button size="small" type="primary">点击上传</el-button>
-              <!-- <div slot="tip" class="el-upload__tip">只能上传PDF文件</div> -->
+               <div slot="tip" class="el-upload__tip">只能上传PDF文件</div> 
             </el-upload>
           </el-form-item>
         </el-form>
@@ -286,7 +289,7 @@
             >立即创建</el-button
           >
         </span>
-      </el-dialog>
+      </el-dialog> -->
       <codedown
         :dialogVisible="codeDialog"
         :codeImg="codeImg"
@@ -303,6 +306,7 @@ import {
   preview,
   manualList,
   manualCreate,
+  productDel,
 } from "@/api/product";
 import { downloadIamge } from "@/utils/utils";
 import { getToken } from "@/utils/auth";
@@ -357,6 +361,19 @@ export default {
     });
   },
   methods: {
+    dele(id) {
+      // 删除产品码
+      console.log(id);
+      productDel(this.qs.stringify({ id: id.id })).then((res) => {
+        if (res.status == 200) {
+          this.$message({
+            message: res.message,
+            type: "success",
+          });
+          this.fetchData();
+        }
+      });
+    },
     toggle() {
       this.codeDialog = !this.codeDialog;
       this.codeImg = "";

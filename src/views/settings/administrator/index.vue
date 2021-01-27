@@ -54,11 +54,9 @@
       >
         删除
       </el-button> -->
-      <el-button
-        style="margin-bottom: 20px"
-        type="primary"
-        @click="addAdmin"
-      >新增管理员</el-button>
+      <el-button style="margin-bottom: 20px" type="primary" @click="addAdmin"
+        >新增管理员</el-button
+      >
       <el-table
         ref="multipleTable"
         v-loading="listLoading"
@@ -77,8 +75,13 @@
               width="30"
               alt=""
               srcset=""
-            >
+            />
             <span class="code-name">{{ scope.row.nickname }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="联系电话" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.mobile }}
           </template>
         </el-table-column>
         <el-table-column label="添加时间" align="center">
@@ -88,164 +91,201 @@
         </el-table-column>
         <el-table-column align="center" label="操作" width="220">
           <template slot-scope="scope">
-            <span
-              class="el-link-btn"
-            ><el-link
-              type="primary"
-              @click="delDelAadmin(scope.row.user_id, scope)"
-            >删除</el-link></span>
+            <span class="el-link-btn"
+              ><el-link
+                type="primary"
+                @click="delDelAadmin(scope.row.user_id, scope)"
+                >删除</el-link
+              ></span
+            >
+            <span class="el-link-btn"
+              ><el-link type="primary" @click="editAadmin(scope)"
+                >权限编辑</el-link
+              ></span
+            >
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <el-dialog title="权限编辑" width="400px" :visible.sync="dialogFormVisible">
+      <el-form :model="form">
+        <el-form-item label="活动名称" :label-width="formLabelWidth">
+          <el-input
+            class="inputWid"
+            v-model="form.name"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="活动区域" :label-width="formLabelWidth">
+          <el-select v-model="form.region" placeholder="请选择活动区域">
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false"
+          >确 定</el-button
+        >
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { getSubAdmin, delAadmin, insertAdmin } from '@/api/settings'
+import { getSubAdmin, delAadmin, insertAdmin } from "@/api/settings";
 export default {
-  name: 'EntryCode',
+  name: "EntryCode",
   data() {
     return {
       list: null,
       listLoading: true,
       multipleSelection: [],
       downloadLoading: false,
-      filename: '',
+      filename: "",
       page: 1,
       pages: 0,
       count: 0,
       page_size: 10,
-      keyword: ''
-    }
+      keyword: "",
+      form: {},
+      dialogFormVisible: false,
+      formLabelWidth: "80px",
+    };
   },
   created() {
-    this.SubAdmin()
+    this.SubAdmin();
   },
   methods: {
     // 添加管理员
     addAdmin() {
-      this.$prompt('请输入手机号', '添加管理员', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputErrorMessage: '手机号格式不正确',
+      this.$prompt("请输入手机号", "添加管理员", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        inputErrorMessage: "手机号格式不正确",
         beforeClose: (action, instance, done) => {
           const params = {
-            mobile: instance.inputValue
-          }
+            mobile: instance.inputValue,
+          };
           insertAdmin(this.qs.stringify(params)).then((res) => {
             if (res.status == 200) {
               this.$message({
-                type: 'success',
-                message: '添加成功'
-              })
+                type: "success",
+                message: "添加成功",
+              });
+              this.SubAdmin();
             }
-          })
+          });
 
-          done()
-        }
-      }).catch(() => {})
+          done();
+        },
+      }).catch(() => {});
+    },
+    editAadmin(row) {
+      this.dialogFormVisible = true;
     },
     // 删除管理员
     delDelAadmin(id, item) {
-      this.$confirm('此操作将删除该管理员, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("此操作将删除该管理员, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
           const parmas = {
-            del_user_id: id
-          }
+            del_user_id: id,
+          };
           delAadmin(this.qs.stringify(parmas)).then((res) => {
             if (res.status == 200) {
-              this.list.splice(item.$index, 1)
+              this.list.splice(item.$index, 1);
               this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
+                type: "success",
+                message: "删除成功!",
+              });
+              this.SubAdmin();
             }
-          })
+          });
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
     golinkpage(page, obj) {
       this.$router.push({
         path: page,
         query: {
-          ...obj
-        }
-      })
+          ...obj,
+        },
+      });
     },
     onSearch() {
-      this.page = 1
-      this.fetchData()
+      this.page = 1;
+      this.fetchData();
     },
     handleSizeChange(size) {
-      this.page = size
-      this.fetchData()
+      this.page = size;
+      this.fetchData();
     },
     handleCurrentChange(size) {
-      this.page = size
-      this.fetchData()
+      this.page = size;
+      this.fetchData();
     },
     SubAdmin() {
-      this.listLoading = true
+      this.listLoading = true;
       getSubAdmin().then((res) => {
-        this.list = res.data.user_list
-        this.listLoading = false
-      })
+        this.list = res.data.user_list;
+        this.listLoading = false;
+      });
     },
     handleSelectionChange(val) {
-      this.multipleSelection = val
+      this.multipleSelection = val;
     },
     handleDownload() {
       if (this.multipleSelection.length) {
-        this.downloadLoading = true
-        import('@/vendor/Export2Excel').then((excel) => {
-          const tHeader = ['二维码', '二维码名称', '分类', '创建时间']
+        this.downloadLoading = true;
+        import("@/vendor/Export2Excel").then((excel) => {
+          const tHeader = ["二维码", "二维码名称", "分类", "创建时间"];
           const filterVal = [
             {
-              title: '二维码',
-              key: 'mini_code',
-              type: 'image',
+              title: "二维码",
+              key: "mini_code",
+              type: "image",
               width: 50,
-              height: 50
+              height: 50,
             },
-            'name',
-            'type_name',
-            'create_time'
-          ]
+            "name",
+            "type_name",
+            "create_time",
+          ];
           const list = this.multipleSelection.map((item, index) => {
-            item.type_name = item.type.type_name
-            return item
-          })
-          const data = this.formatJson(filterVal, list)
-          console.log(list)
+            item.type_name = item.type.type_name;
+            return item;
+          });
+          const data = this.formatJson(filterVal, list);
+          console.log(list);
           excel.export_json_to_excel({
             header: tHeader,
             data,
-            filename: this.filename
-          })
-          this.$refs.multipleTable.clearSelection()
-          this.downloadLoading = false
-        })
+            filename: this.filename,
+          });
+          this.$refs.multipleTable.clearSelection();
+          this.downloadLoading = false;
+        });
       } else {
         this.$message({
-          message: '请选择导出的数据',
-          type: 'warning'
-        })
+          message: "请选择导出的数据",
+          type: "warning",
+        });
       }
     },
     formatJson(filterVal, jsonData) {
-      return jsonData.map((v) => filterVal.map((j) => v[j]))
-    }
-  }
-}
+      return jsonData.map((v) => filterVal.map((j) => v[j]));
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -273,5 +313,8 @@ export default {
     margin-top: 20px;
     text-align: right;
   }
+}
+.inputWid {
+  width: 220px;
 }
 </style>

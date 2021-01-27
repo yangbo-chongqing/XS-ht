@@ -10,18 +10,34 @@
         <img v-if="logo" :src="logo" class="sidebar-logo" />
         <h1 v-else class="sidebar-title">{{ title }}</h1>
       </router-link>
-      <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <div class="logo-body">
+      <div v-else class="logo-body">
+        <router-link key="expand" class="sidebar-logo-link" to="/">
           <img v-if="logo" :src="logo" class="sidebar-logo" />
-          <h1 class="sidebar-title">{{ title }}</h1>
-        </div>
-      </router-link>
+        </router-link>
+        <el-select
+          style="width: 180px"
+          v-model="id"
+          placeholder="请选择切换的公司"
+          @change="changeValue"
+        >
+          <el-option
+            v-for="(item, index) of userinfo.muse_list"
+            :key="index"
+            :label="item.muse_name"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+        <!-- <h1 class="sidebar-title">{{ title }}</h1> -->
+      </div>
     </transition>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import { museSwitch } from "@/api/user";
+
 export default {
   name: "SidebarLogo",
   props: {
@@ -31,13 +47,14 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["userinfo"]),
+    ...mapGetters(["sidebar", "avatar", "name", "userinfo"]),
   },
   created() {
     this.userinfo.muse_list.map((item) => {
       if (item.select == 1) {
         this.logo = item.logo;
         this.title = item.muse_name;
+        this.id = item.id;
       }
     });
   },
@@ -45,7 +62,39 @@ export default {
     return {
       title: "寻声扫码",
       logo: "http://www.xunsheng.org.cn/img/logo-white.png?v=2018",
+      id: "",
+      dataList: [],
     };
+  },
+  methods: {
+    async changeValue(id) {
+      // 切换后 页面刷新
+      this.id = id;
+      await this.getId();
+      await this.$store.dispatch("user/getInfo");
+      await this.$router.go(0);
+      await this.getMenuList();
+      // await this.reload();
+    },
+
+    async getMenuList() {
+      await getMenu().then((res) => {
+        let list = res.data.menu;
+        for (let i = 0; i < list.length; i++) {
+          this.dataList.push(list[i].path);
+          for (let n = 0; n < list[i].children.length; n++) {
+            this.dataList.push(list[i].children[n].path);
+          }
+        }
+        sessionStorage.setItem("router", JSON.stringify(this.dataList));
+      });
+    },
+    getId() {
+      // 切换公司ID
+      museSwitch(
+        this.qs.stringify({ id: JSON.stringify(this.id) })
+      ).then((res) => {});
+    },
   },
 };
 </script>
@@ -73,7 +122,6 @@ export default {
 
 .sidebar-logo-container {
   position: relative;
-  width: 100%;
   height: 50px;
   line-height: 50px;
   padding-left: 20px;
@@ -111,5 +159,8 @@ export default {
       height: 15px;
     }
   }
+}
+.sidebar-container a {
+  width: 52px !important;
 }
 </style>

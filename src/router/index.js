@@ -37,88 +37,21 @@ export const constantRoutes = [
     path: '/codelist',
     component: Layout,
     name: 'CodeList',
-    redirect: '/codelist/entrycode',
+    redirect: '/codelist/homepage',
     meta: { title: '编辑', icon: 'el-icon-s-help' },
     children: [
-      {
-        path: 'entrycode',
-        name: 'EntryCode',
-        component: () => import('@/views/codelist/entrycode/index'),
-        meta: { title: '词条', icon: 'el-icon-bank-card', noCache: false, isBack: false }
-      },
       {
         path: 'homepage',
         name: 'HomePage',
         component: () => import('@/views/settings/homepage/index'),
         meta: { title: '企业主页', icon: 'table', noCache: true }
       },
-      // {
-      //   path: 'mapping',
-      //   name: 'Mapping',
-      //   component: () => import('@/views/codelist/entrycode/mapping/index'),
-      //   meta: { title: '旅游导图', icon: 'table', noCache: true }
-      // },
-      // {
-      //   path: '/entrytype',
-      //   component: () => import('@/views/codelist/entrytype/index'),
-      //   name: 'entrytype',
-      //   meta: { title: '分馆管理', icon: 'el-icon-menu', noCache: true }
-      // },
       {
-        path: '/codelist/entrytypeedit',
-        component: () => import('@/views/codelist/entrytype/edit/index'),
-        name: 'entrytypeedit',
+        path: 'entrycode',
+        name: 'EntryCode',
+        component: () => import('@/views/codelist/entrycode/index'),
+        meta: { title: '词条', icon: 'el-icon-bank-card', noCache: false, isBack: false }
       },
-      {
-        path: '/entrytypecreate',
-        component: () => import('@/views/codelist/entrytype/create/index'),
-        name: 'CreateArticle',
-        hidden: true,
-        meta: { title: '新增词条分类', noCache: true }
-      },
-      {
-        path: 'create',
-        component: () => import('@/views/codelist/entrycode/create'),
-        name: 'CreateArticle',
-        hidden: true,
-        meta: { title: '新增二维码', noCache: true }
-      },
-      {
-        path: 'edit',
-        component: () => import('@/views/codelist/entrycode/edit'),
-        name: 'EntryEdit',
-        hidden: true,
-        meta: { title: '编辑词条', noCache: true }
-      },
-      // {
-      //   path: 'funcode',
-      //   name: 'FunCode',
-      //   component: () => import('@/views/codelist/funcode/index'),
-      //   meta: { title: '功能码', icon: 'table' }
-      // },
-      {
-        path: 'funcreate',
-        component: () => import('@/views/codelist/funcode/create'),
-        name: 'FunCreateArticle',
-        hidden: true,
-        meta: { title: '新增功能码', noCache: true }
-      },
-      {
-        path: 'funedit',
-        component: () => import('@/views/codelist/funcode/edit'),
-        name: 'FunEntryEdit',
-        hidden: true,
-        meta: { title: '编辑功能码', noCache: true }
-      }
-    ]
-  },
-  {
-    path: '/product',
-    component: Layout,
-    name: 'Product',
-    redirect: '/product/productcode',
-    meta: { title: '产品管理', icon: 'el-icon-s-help', noCache: true },
-    children: [
       {
         path: 'productcode',
         name: 'ProductCode',
@@ -186,9 +119,77 @@ export const constantRoutes = [
         hidden: true,
         meta: { title: '修改说明书', noCache: true }
       },
-
+      // {
+      //   path: 'mapping',
+      //   name: 'Mapping',
+      //   component: () => import('@/views/codelist/entrycode/mapping/index'),
+      //   meta: { title: '旅游导图', icon: 'table', noCache: true }
+      // },
+      // {
+      //   path: '/entrytype',
+      //   component: () => import('@/views/codelist/entrytype/index'),
+      //   name: 'entrytype',
+      //   meta: { title: '分馆管理', icon: 'el-icon-menu', noCache: true }
+      // },
+      {
+        path: '/codelist/entrytypeedit',
+        component: () => import('@/views/codelist/entrytype/edit/index'),
+        name: 'entrytypeedit',
+      },
+      {
+        path: '/entrytypecreate',
+        component: () => import('@/views/codelist/entrytype/create/index'),
+        name: 'CreateArticle',
+        hidden: true,
+        meta: { title: '新增词条分类', noCache: true }
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/codelist/entrycode/create'),
+        name: 'CreateArticle',
+        hidden: true,
+        meta: { title: '新增二维码', noCache: true }
+      },
+      {
+        path: 'edit',
+        component: () => import('@/views/codelist/entrycode/edit'),
+        name: 'EntryEdit',
+        hidden: true,
+        meta: { title: '编辑词条', noCache: true }
+      },
+      // {
+      //   path: 'funcode',
+      //   name: 'FunCode',
+      //   component: () => import('@/views/codelist/funcode/index'),
+      //   meta: { title: '功能码', icon: 'table' }
+      // },
+      {
+        path: 'funcreate',
+        component: () => import('@/views/codelist/funcode/create'),
+        name: 'FunCreateArticle',
+        hidden: true,
+        meta: { title: '新增功能码', noCache: true }
+      },
+      {
+        path: 'funedit',
+        component: () => import('@/views/codelist/funcode/edit'),
+        name: 'FunEntryEdit',
+        hidden: true,
+        meta: { title: '编辑功能码', noCache: true }
+      }
     ]
   },
+  // {
+  //   path: '/product',
+  //   component: Layout,
+  //   name: 'Product',
+  //   redirect: '/product/productcode',
+  //   meta: { title: '产品管理', icon: 'el-icon-s-help', noCache: true },
+  //   children: [
+
+
+  //   ]
+  // },
   // 广告设置
   {
     path: '/advertising',
