@@ -65,3 +65,19 @@ export function edPD(data) {
     data: data
   })
 }
+//人员权限详情
+export function subadminDetail(data) {
+  return request({
+    url: '/api/store/subadmin/detail',
+    method: 'post',
+    data
+  })
+}
+//人员权限详情
+export function subadminEdit(data) {
+  return request({
+    url: '/api/store/subadmin/edit',
+    method: 'post',
+    data
+  })
+}

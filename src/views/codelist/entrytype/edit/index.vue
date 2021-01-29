@@ -12,6 +12,7 @@
           <el-upload
             style="width: 200px; height: 220px"
             :before-upload="beforeAvatarUpload"
+            :on-error="uploadToken"
             class="logo-uploader"
             action="/api/store/upload"
             :headers="headers"
@@ -42,6 +43,7 @@
 <script>
 import { getDetails, updateDetail } from "@/api/entrycode";
 import { getToken } from "@/utils/auth";
+import { getQiToken } from "@/api/user";
 import { Loading } from "element-ui";
 export default {
   name: "InstructionsCreate",
@@ -129,6 +131,22 @@ export default {
           this.enterpriseLogo = res.data.part.image;
         }
       });
+    },
+    uploadToken(err, file, fileList) {
+      // 上传失败处理方式
+      console.log(err);
+      getQiToken({}).then((res) => {
+        let str = res.data.data;
+        str.token = JSON.parse(JSON.stringify(str.upToken));
+        str.key = JSON.parse(JSON.stringify(str.path));
+        delete str.path;
+        delete str.upToken;
+        sessionStorage.setItem("qiToken", JSON.stringify(str));
+      });
+      // this.uploadLoading.close();
+
+      this.qiToken = JSON.parse(sessionStorage.qiToken);
+      this.$message.error("Token失效，请重新上传");
     },
     imageUploadSuccess(response, file, fileList) {
       //  拿到上传图片地址

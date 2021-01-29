@@ -31,3 +31,11 @@ export function advertisingDel(data) {
         data
     })
 }
+//广告设置-单个广告的列表
+export function detailsList(data) {
+    return request({
+        url: '/api/store/advertising/details',
+        method: 'post',
+        data
+    })
+}

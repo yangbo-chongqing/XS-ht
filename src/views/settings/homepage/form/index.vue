@@ -56,6 +56,7 @@
               action="http://upload.qiniup.com"
               :before-upload="beforeUp"
               accept=".mp3,.m4a"
+              :on-error="uploadToken"
               :data="qiToken"
               :headers="headers"
               :show-file-list="false"
@@ -78,6 +79,7 @@
             <el-upload
               class="upload-demo"
               accept=".mp4"
+              :on-error="uploadToken"
               :before-upload="beforeUpVideo"
               :headers="headers"
               action="http://upload.qiniup.com"
@@ -99,6 +101,7 @@
             />
             <el-upload
               class="upload-demo"
+              :on-error="uploadToken"
               :before-upload="beforeUpload"
               :data="qiToken"
               action="http://upload.qiniup.com"
@@ -132,6 +135,7 @@
           action="http://upload.qiniup.com"
           :headers="headers"
           :data="qiToken"
+          :on-error="uploadToken"
           :show-file-list="false"
           :on-success="logoUploadSuccess"
           :on-change="uploadProgress"
@@ -263,6 +267,22 @@ export default {
     },
     change(n) {
       this.isEditFlag = n;
+    },
+    uploadToken(err, file, fileList) {
+      // 上传失败处理方式
+      console.log(err);
+      getQiToken({}).then((res) => {
+        let str = res.data.data;
+        str.token = JSON.parse(JSON.stringify(str.upToken));
+        str.key = JSON.parse(JSON.stringify(str.path));
+        delete str.path;
+        delete str.upToken;
+        sessionStorage.setItem("qiToken", JSON.stringify(str));
+      });
+      // this.uploadLoading.close();
+
+      this.qiToken = JSON.parse(sessionStorage.qiToken);
+      this.$message.error("Token失效，请重新上传");
     },
     saveEditEditMuse() {
       this.loading = this.$loading({

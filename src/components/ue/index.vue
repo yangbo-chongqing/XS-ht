@@ -398,20 +398,7 @@
       >
         <el-tabs v-model="activeNum" @tab-click="getPic" type="border-card">
           <el-tab-pane name="one" label="本地上传">
-            <!-- <el-upload
-              class="upload-demo"
-              :before-upload="uploadPic"
-              :data="qiToken"
-              action="http://upload.qiniup.com"
-              :headers="headers"
-              :on-preview="handlePreview"
-              :on-remove="handleRemove"
-              list-type="picture-card"
-            >
-              <i slot="default" class="el-icon-plus"></i>
-            </el-upload> -->
             <drag :picList="imgList" play="1" @childFn="parentFn" />
-            <!-- {{ imgList }} -->
           </el-tab-pane>
           <el-tab-pane name="two" label="在线管理">
             <div class="demo-image__lazy">
@@ -776,7 +763,7 @@ export default {
         let str = `  <div id="pic${this.ids}"   contenteditable="false" class="borderMy"  data-id="${this.ids}" style="-khtml-user-select: none;user-select: none;display: flex;justify-content: center;">
         <div style="width:170px;height:200px; cursor: pointer;display: table-cell;text-align: center;"><img
                 data-id="${this.ids}" class="dataL" style="width: 100%;height: 100%;object-fit: cover;object-position: center;" src="${img[0]}" alt=""></div><div style="display: flex;flex-direction: column;width:170px;height:200px;cursor: pointer;position:relative;">
-            <img data-id="${this.ids}" class="dataRT" style="width: 100%;height: 50%;object-fit: cover;object-position: center;" src="${img[1]}" alt=""><img data-id="${this.ids}" style="width: 100%;height: 50%;object-fit: cover;object-position: center;" src="${img[2]}" alt=""><span data-id="${this.ids}" class="data" style="position: absolute;cursor: pointer;background: #2b323e;opacity: 0.8;width:170px;height: 100px;left: 0;bottom: 0;font-weight: 500; letter-spacing:2px; font-size:22px;line-height:100px;color:#fff;text-align: center; ">共${imgThis.length}张</span><div class="showIcon${this.ids} delete" style="text-align: center; position: absolute; top:-5px;display:none;right:-35px;width:120px"><button data-updateId="${this.ids}" class='updateBtn ckEditorToolbarBtn'>修 改</button><button     class='deleteBtn ckEditorToolbarBtn' data-deleteId="${this.ids}">删 除</button></div></div></div><div><br></div>`;
+            <img data-id="${this.ids}" class="dataRT" style="width: 100%;height: 50%;object-fit: cover;object-position: center;" src="${img[1]}" alt=""><img data-id="${this.ids}" style="width: 100%;height: 50%;object-fit: cover;object-position: center;" src="${img[2]}" alt=""><span data-id="${this.ids}" class="data" style="position: absolute;cursor: pointer;background: #2b323e;opacity: 0.8;width:100%;height: 100px;left: 0;bottom: 0;font-weight: 500; letter-spacing:2px; font-size:22px;line-height:100px;color:#fff;text-align: center; ">共${imgThis.length}张</span><div class="showIcon${this.ids} delete" style="text-align: center; position: absolute; top:-5px;display:none;right:-35px;width:120px"><button data-updateId="${this.ids}" class='updateBtn ckEditorToolbarBtn'>修 改</button><button     class='deleteBtn ckEditorToolbarBtn' data-deleteId="${this.ids}">删 除</button></div></div></div><div><br></div>`;
         this.editor.execCommand("inserthtml", str);
         this.imgList = [];
         this.activeNum = "one";
@@ -817,7 +804,7 @@ export default {
         let str = `  <div id="pic${this.ids}"   contenteditable="false" class="borderMy"  data-id="${this.ids}" style="-khtml-user-select: none;user-select: none;display: flex;justify-content: center;">
         <div style="width:170px;height:200px; cursor: pointer;display: table-cell;text-align: center;"><img
                 data-id="${this.ids}" class="dataL" style="width: 100%;height: 100%;object-fit: cover;object-position: center;" src="${img[0]}" alt=""></div><div style="display: flex;flex-direction: column;width:170px;height:200px;cursor: pointer;position:relative;">
-            <img data-id="${this.ids}" class="dataRT" style="width: 100%;height: 50%;object-fit: cover;object-position: center;" src="${img[1]}" alt=""><img data-id="${this.ids}" style="width: 100%;height: 50%;object-fit: cover;object-position: center;" src="${img[2]}" alt=""><span data-id="${this.ids}" class="data" style="position: absolute;cursor: pointer;background: #2b323e;opacity: 0.8;width:170px;height: 100px;left: 0;bottom: 0;font-weight: 500; letter-spacing:2px; font-size:22px;line-height:100px;color:#fff;text-align: center; ">共${imgThis.length}张</span><div class="showIcon${this.ids} delete" style="text-align: center; position: absolute; top:-5px;display:none;right:-35px;width:120px"><button data-updateId="${this.ids}" class='updateBtn ckEditorToolbarBtn'>修 改</button><button     class='deleteBtn ckEditorToolbarBtn' data-deleteId="${this.ids}">删 除</button></div></div></div><div><br></div>`;
+            <img data-id="${this.ids}" class="dataRT" style="width: 100%;height: 50%;object-fit: cover;object-position: center;" src="${img[1]}" alt=""><img data-id="${this.ids}" style="width: 100%;height: 50%;object-fit: cover;object-position: center;" src="${img[2]}" alt=""><span data-id="${this.ids}" class="data" style="position: absolute;cursor: pointer;background: #2b323e;opacity: 0.8;width:100%;height: 100px;left: 0;bottom: 0;font-weight: 500; letter-spacing:2px; font-size:22px;line-height:100px;color:#fff;text-align: center; ">共${imgThis.length}张</span><div class="showIcon${this.ids} delete" style="text-align: center; position: absolute; top:-5px;display:none;right:-35px;width:120px"><button data-updateId="${this.ids}" class='updateBtn ckEditorToolbarBtn'>修 改</button><button     class='deleteBtn ckEditorToolbarBtn' data-deleteId="${this.ids}">删 除</button></div></div></div><div><br></div>`;
         this.editor.execCommand("inserthtml", str);
         this.imgList = [];
         this.activeNum = "one";

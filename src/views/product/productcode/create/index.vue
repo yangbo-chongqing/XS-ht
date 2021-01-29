@@ -297,6 +297,7 @@ export default {
         elementPathEnable: false,
         wordCount: false,
         serverUrl: "/api/store/ueditor/config",
+        // UEDITOR_HOME_URL: "//xsdtcentercdn.xunsheng.org.cn/UEditor/",
         UEDITOR_HOME_URL: "/UEditor/",
       },
       dialogVisible: false,

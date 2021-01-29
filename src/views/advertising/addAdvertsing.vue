@@ -48,6 +48,7 @@ import { productCreate } from "@/api/product";
 import { getToken } from "@/utils/auth";
 import { Loading } from "element-ui";
 import ue from "@/components/ue";
+import { publicPath } from "vue.config";
 export default {
   name: "ProductCreate",
   components: {
@@ -127,6 +128,7 @@ export default {
         elementPathEnable: false,
         wordCount: false,
         serverUrl: "/api/store/ueditor/config",
+        // UEDITOR_HOME_URL: "//xsdtcentercdn.xunsheng.org.cn/UEditor/",
         UEDITOR_HOME_URL: "/UEditor/",
       },
       dialogVisible: false,

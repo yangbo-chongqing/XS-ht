@@ -57,6 +57,7 @@
       <el-button style="margin-bottom: 20px" type="primary" @click="addAdmin"
         >新增管理员</el-button
       >
+
       <el-table
         ref="multipleTable"
         v-loading="listLoading"
@@ -99,7 +100,7 @@
               ></span
             >
             <span class="el-link-btn"
-              ><el-link type="primary" @click="editAadmin(scope)"
+              ><el-link type="primary" @click="editAadmin(scope.row)"
                 >权限编辑</el-link
               ></span
             >
@@ -107,33 +108,39 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog title="权限编辑" width="400px" :visible.sync="dialogFormVisible">
-      <el-form :model="form">
-        <el-form-item label="活动名称" :label-width="formLabelWidth">
-          <el-input
-            class="inputWid"
-            v-model="form.name"
-            autocomplete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="活动区域" :label-width="formLabelWidth">
-          <el-select v-model="form.region" placeholder="请选择活动区域">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
+    <el-dialog :title="title" width="400px" :visible.sync="dialogFormVisible">
+      <div v-if="title == '创建子管理员'" style="padding-bottom: 10px">
+        手机号码：<el-input v-model="mobile" style="width: 220px" />
+      </div>
+      <span style="margin-bottom: 10px" v-if="title == '创建子管理员'"
+        >权限分配：</span
+      >
+      <el-tree
+        :data="data"
+        show-checkbox
+        default-expand-all
+        node-key="id"
+        ref="tree"
+        :default-checked-keys="selectHave"
+        highlight-current
+        :props="defaultProps"
+      >
+      </el-tree>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="editTree">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
-import { getSubAdmin, delAadmin, insertAdmin } from "@/api/settings";
+import {
+  getSubAdmin,
+  delAadmin,
+  insertAdmin,
+  subadminDetail,
+  subadminEdit,
+} from "@/api/settings";
 export default {
   name: "EntryCode",
   data() {
@@ -145,12 +152,22 @@ export default {
       filename: "",
       page: 1,
       pages: 0,
+      id: "",
+      title: "",
+      dataList: [],
+      mobile: "",
       count: 0,
       page_size: 10,
+      data: [],
       keyword: "",
       form: {},
+      selectHave: [],
       dialogFormVisible: false,
       formLabelWidth: "80px",
+      defaultProps: {
+        children: "list",
+        label: "name",
+      },
     };
   },
   created() {
@@ -159,30 +176,73 @@ export default {
   methods: {
     // 添加管理员
     addAdmin() {
-      this.$prompt("请输入手机号", "添加管理员", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        inputErrorMessage: "手机号格式不正确",
-        beforeClose: (action, instance, done) => {
-          const params = {
-            mobile: instance.inputValue,
-          };
-          insertAdmin(this.qs.stringify(params)).then((res) => {
-            if (res.status == 200) {
-              this.$message({
-                type: "success",
-                message: "添加成功",
-              });
-              this.SubAdmin();
-            }
-          });
-
-          done();
-        },
-      }).catch(() => {});
+      this.title = "创建子管理员";
+      this.dialogFormVisible = true;
+      this.selectHave = [];
+      this.data = this.dataList;
+      this.mobile = "";
+    },
+    editTree() {
+      // 子管理员创建或修改弹窗确认按钮
+      if (this.title == "创建子管理员") {
+        let data = this.$refs.tree.getCheckedNodes();
+        let rules = [];
+        for (let i = 0; i < data.length; i++) {
+          rules.push(data[i].id);
+        }
+        const params = {
+          mobile: this.mobile,
+          rules: JSON.stringify(rules),
+        };
+        insertAdmin(this.qs.stringify(params)).then((res) => {
+          if (res.status == 200) {
+            this.$message({
+              type: "success",
+              message: "添加成功",
+            });
+            this.SubAdmin();
+          }
+        });
+      } else {
+        let data = this.$refs.tree.getCheckedNodes();
+        let rules = [];
+        for (let i = 0; i < data.length; i++) {
+          rules.push(data[i].id);
+        }
+        let params = {
+          user_id: this.id,
+          rules: JSON.stringify(rules),
+        };
+        subadminEdit(this.qs.stringify(params)).then((res) => {
+          if (res.status == 200) {
+            this.$message({
+              type: "success",
+              message: "编辑成功",
+            });
+            this.SubAdmin();
+          }
+        });
+      }
+      this.dialogFormVisible = false;
     },
     editAadmin(row) {
+      // 编辑获取权限树状图
+      this.title = "权限编辑";
+      this.selectHave = [];
       this.dialogFormVisible = true;
+      // this.data=
+      this.id = row.user_id;
+      console.log(row.user_id);
+      subadminDetail(this.qs.stringify({ user_id: row.user_id })).then(
+        (res) => {
+          this.data = res.data.rules;
+          for (let i = 0; i < this.data[0].list.length; i++) {
+            if (this.data[0].list[i].have == 1) {
+              this.selectHave.push(this.data[0].list[i].id);
+            }
+          }
+        }
+      );
     },
     // 删除管理员
     delDelAadmin(id, item) {
@@ -237,6 +297,7 @@ export default {
       this.listLoading = true;
       getSubAdmin().then((res) => {
         this.list = res.data.user_list;
+        this.dataList = res.data.rule;
         this.listLoading = false;
       });
     },

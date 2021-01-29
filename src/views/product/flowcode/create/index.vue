@@ -14,6 +14,9 @@
         <el-form-item label="发动机号">
           <el-input v-model="form.engine"></el-input>
         </el-form-item> -->
+        <el-form-item label="车架号">
+          <el-input v-model="form.clsbdh"></el-input>
+        </el-form-item>
         <el-form-item label="合格编号">
           <el-input v-model="form.certificate_id"></el-input>
         </el-form-item>
@@ -56,6 +59,7 @@ export default {
         colour: this.form.colour,
         engine: this.form.engine,
         certificate_id: this.form.certificate_id,
+        clsbdh: this.form.clsbdh,
         certificate_core: this.form.certificate_core,
       };
       floWingCreate(this.qs.stringify(params)).then((res) => {
@@ -68,6 +72,7 @@ export default {
           this.form.pkid = "";
           this.form.colour = "";
           this.form.engine = "";
+          this.form.clsbdh = "";
           this.form.certificate_id = "";
           this.form.certificate_core = "";
         }

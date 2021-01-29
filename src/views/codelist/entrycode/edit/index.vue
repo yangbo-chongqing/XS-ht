@@ -94,6 +94,7 @@
                       class="upload-demo"
                       :before-upload="uploadPic"
                       :data="qiToken"
+                      :on-error="uploadToken"
                       action="http://upload.qiniup.com"
                       :headers="headers"
                       :on-success="imageUploadSuccess"
@@ -110,6 +111,7 @@
                     <el-upload
                       class="upload-demo"
                       :before-upload="uploadAudio"
+                      :on-error="uploadToken"
                       :data="qiToken"
                       action="http://upload.qiniup.com"
                       :headers="headers"
@@ -127,6 +129,7 @@
                     <el-upload
                       class="upload-demo"
                       action="http://upload.qiniup.com"
+                      :on-error="uploadToken"
                       :data="qiToken"
                       :before-upload="uploadVideo"
                       :headers="headers"
@@ -655,6 +658,7 @@ import { Loading } from "element-ui";
 import { getToken } from "@/utils/auth";
 import codedown from "@/components/codeDown/index";
 import entrytype from "@/views/codelist/entrytype/create/index";
+import { getQiToken } from "@/api/user";
 
 import {
   postEntryList,
@@ -754,6 +758,8 @@ export default {
           allimage: "图片集",
         },
         compressSide: 0,
+        publicPath: "//xsdtcentercdn.xunsheng.org.cn/",
+
         maxImageSideLength: 500,
         catchRemoteImageEnable: true,
         // 初始容器高度
@@ -764,6 +770,7 @@ export default {
         elementPathEnable: false,
         wordCount: false,
         serverUrl: "/api/store/ueditor/config",
+        // UEDITOR_HOME_URL: "//xsdtcentercdn.xunsheng.org.cn/UEditor/",
         UEDITOR_HOME_URL: "/UEditor/",
       },
       headers: { Authorization: "Bearer " + getToken() },
@@ -855,6 +862,22 @@ export default {
       }
       this.entryXFlag = true;
       this.fetchData(type);
+    },
+    uploadToken(err, file, fileList) {
+      // 上传失败处理方式
+      console.log(err);
+      getQiToken({}).then((res) => {
+        let str = res.data.data;
+        str.token = JSON.parse(JSON.stringify(str.upToken));
+        str.key = JSON.parse(JSON.stringify(str.path));
+        delete str.path;
+        delete str.upToken;
+        sessionStorage.setItem("qiToken", JSON.stringify(str));
+      });
+      // this.uploadLoading.close();
+
+      this.qiToken = JSON.parse(sessionStorage.qiToken);
+      this.$message.error("Token失效，请重新上传");
     },
     getListGuan() {
       const params = {

@@ -86,6 +86,7 @@
                       class="upload-demo"
                       :before-upload="uploadPic"
                       :data="qiToken"
+                      :on-error="uploadToken"
                       action="http://upload.qiniup.com"
                       :headers="headers"
                       :on-success="imageUploadSuccess"
@@ -102,6 +103,7 @@
                     <el-upload
                       class="upload-demo"
                       :before-upload="uploadAudio"
+                      :on-error="uploadToken"
                       :data="qiToken"
                       action="http://upload.qiniup.com"
                       :headers="headers"
@@ -121,6 +123,7 @@
                       action="http://upload.qiniup.com"
                       :data="qiToken"
                       :before-upload="uploadVideo"
+                      :on-error="uploadToken"
                       :headers="headers"
                       accept=".MPEG,.baiAVI,.nAVI,.ASF,.MOV,.3GP,.mp4"
                       :show-file-list="false"
@@ -653,6 +656,7 @@
 import { downloadIamge } from "@/utils/utils";
 import EntryQuery from "@/components/EntryQuery";
 import { Loading } from "element-ui";
+import { getQiToken } from "@/api/user";
 import { getToken } from "@/utils/auth";
 import { mapGetters } from "vuex";
 import entrytype from "@/views/codelist/entrytype/create/index";
@@ -769,6 +773,7 @@ export default {
         elementPathEnable: false,
         wordCount: false,
         serverUrl: "/api/store/ueditor/config",
+        // UEDITOR_HOME_URL: "//xsdtcentercdn.xunsheng.org.cn/UEditor/",
         UEDITOR_HOME_URL: "/UEditor/",
       },
       activeName: "first",
@@ -867,6 +872,22 @@ export default {
     },
     entryToggle(row) {
       row.flag = !row.flag;
+    },
+    uploadToken(err, file, fileList) {
+      // 上传失败处理方式
+      console.log(err);
+      getQiToken({}).then((res) => {
+        let str = res.data.data;
+        str.token = JSON.parse(JSON.stringify(str.upToken));
+        str.key = JSON.parse(JSON.stringify(str.path));
+        delete str.path;
+        delete str.upToken;
+        sessionStorage.setItem("qiToken", JSON.stringify(str));
+      });
+      // this.uploadLoading.close();
+
+      this.qiToken = JSON.parse(sessionStorage.qiToken);
+      this.$message.error("Token失效，请重新上传");
     },
     getListGuan() {
       // 获取分馆列表
@@ -1156,9 +1177,7 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
-
 .create-code {
-  
   .table-header {
     display: flex;
     justify-content: space-between;

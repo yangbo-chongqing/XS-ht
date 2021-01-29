@@ -39,7 +39,7 @@
         </el-tab-pane>
       </el-tabs>
       <span slot="footer" class="dialog-footer">
-        <el-button v-print="`#printTest${n}`">打 印</el-button>
+        <el-button v-print="`#printTest2`">打 印</el-button>
 
         <el-button @click="toggle('close')">取 消</el-button>
         <el-button type="primary" @click="toggle('down')">下 载</el-button>
@@ -58,7 +58,6 @@ export default {
     return {
       activeName: "second",
       input: "",
-      n: 1,
     };
   },
   created() {},
@@ -69,7 +68,16 @@ export default {
       this.activeName = "second";
     },
     handleClick(tab, event) {
-      this.n = tab.index * 1 + 1;
+      // 动态修改id,保证动态打印
+      let a = document.getElementsByClassName("first-body");
+      let b = document.getElementsByClassName("second-body");
+      if (tab.name == "first") {
+        a[0].attributes.id.value = "printTest2";
+        b[0].attributes.id.value = "printTest1";
+      } else {
+        a[0].attributes.id.value = "printTest1";
+        b[0].attributes.id.value = "printTest2";
+      }
     },
     toggle(type) {
       if (type == "down") {

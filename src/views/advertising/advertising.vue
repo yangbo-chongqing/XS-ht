@@ -4,7 +4,7 @@
       <el-row>
         <el-col :span="14"><div class="entry-title">广告</div></el-col>
         <div style="text-align: right">
-          <el-button type="primary" @click="edit">新增广告</el-button>
+          <!-- <el-button type="primary" @click="edit">新增广告</el-button> -->
         </div>
       </el-row>
     </div>
@@ -75,11 +75,11 @@
                 >编辑</el-link
               ></span
             >
-            <span class="el-link-btn"
+            <!-- <span class="el-link-btn"
               ><el-link type="primary" @click="deteleAdvertis(scope.row)"
                 >删除</el-link
               ></span
-            >
+            > -->
           </template>
         </el-table-column>
       </el-table>
@@ -114,6 +114,7 @@
           <el-upload
             class="upload-demo"
             :before-upload="uploadPic"
+            :on-error="uploadToken"
             :data="qiToken"
             action="http://upload.qiniup.com"
             :headers="headers"
@@ -160,7 +161,7 @@
 </template>
 <script>
 import {
-  advertisingList,
+  detailsList,
   advertisingCreate,
   advertisingDel,
   advertisingEdit,
@@ -189,12 +190,15 @@ export default {
   methods: {
     getList() {
       //   获取广告列表;
-      advertisingList(this.qs.stringify({ page: this.page })).then((res) => {
-        this.list = res.data.list.data;
-        this.count = res.data.list.total;
+      detailsList(this.qs.stringify({})).then((res) => {
+        let t = [];
+        t.push(res.data.info);
+        this.list = t;
+        // this.count = res.data.list.total;
         if (this.count > 10) {
           this.showPage = true;
         }
+        console.log(this.list);
       });
     },
     edit(data) {
@@ -211,6 +215,22 @@ export default {
     handleCurrentChange(val) {
       this.page = val;
       this.getList();
+    },
+    uploadToken(err, file, fileList) {
+      // 上传失败处理方式
+      console.log(err);
+      getQiToken({}).then((res) => {
+        let str = res.data.data;
+        str.token = JSON.parse(JSON.stringify(str.upToken));
+        str.key = JSON.parse(JSON.stringify(str.path));
+        delete str.path;
+        delete str.upToken;
+        sessionStorage.setItem("qiToken", JSON.stringify(str));
+      });
+      this.uploadLoading.close();
+
+      this.qiToken = JSON.parse(sessionStorage.qiToken);
+      this.$message.error("Token失效，请重新上传");
     },
     deteleAdvertis(id) {
       // console.log(id);

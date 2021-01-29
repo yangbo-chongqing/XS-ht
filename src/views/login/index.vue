@@ -121,6 +121,7 @@ import {
   LoginQR,
   getQiToken,
 } from "@/api/user";
+import { getMenu } from "@/api/user";
 export default {
   name: "Login",
   data() {
@@ -138,6 +139,7 @@ export default {
       setInt: "",
       checked: "1",
       read: false,
+      dataList: [],
       readDetail: "",
     };
   },
@@ -165,12 +167,13 @@ export default {
       this.codeState = 0;
       this.loginCredentials();
     },
+    getLogin() {},
     // 获取二维码状态
-    getCodeStatus() {
+    async getCodeStatus() {
       const params = {
         key: this.codeKey,
       };
-      GetCodeStatus(this.qs.stringify(params)).then((res) => {
+      await GetCodeStatus(this.qs.stringify(params)).then((res) => {
         this.codeState = res.data.state;
         if (this.codeState == 1) {
           clearInterval(this.setInt);
@@ -180,13 +183,30 @@ export default {
           this.$store
             .dispatch("user/erLogin", res.data)
             .then(() => {
-              this.$router.push({ path: this.redirect || "/" });
+              this.getMenuList();
               this.loading = false;
             })
             .catch(() => {
               this.loading = false;
             });
         }
+      });
+    },
+    async getMenuList() {
+      sessionStorage.removeItem("router");
+      getMenu().then((res) => {
+        let list = res.data.menu;
+        for (let i = 0; i < list.length; i++) {
+          this.dataList.push(list[i].path);
+          if (list[i].children) {
+            for (let n = 0; n < list[i].children.length; n++) {
+              this.dataList.push(list[i].children[n].path);
+            }
+          }
+        }
+        // console.log(this.dataList);
+        sessionStorage.setItem("router", JSON.stringify(this.dataList));
+        this.$router.push({ path: this.redirect || "/" });
       });
     },
     readBook() {
@@ -219,7 +239,7 @@ export default {
         this.$refs.password.focus();
       });
     },
-    handleLogin() {
+    async handleLogin() {
       if (this.checked != 1) {
         this.$message({
           message: "请阅读协议后，完成勾选进行登录",
@@ -227,12 +247,12 @@ export default {
         });
         return;
       }
+
       this.loading = true;
-      this.$store
+      await this.$store
         .dispatch("user/login", this.loginForm)
         .then(() => {
-          this.$router.push({ path: this.redirect || "/" });
-          console.log(this.redirect);
+          this.getMenuList();
           this.loading = false;
         })
         .catch(() => {

@@ -24,7 +24,7 @@
                 >
               </div>
             </el-col> -->
-            <el-col :span="5">
+            <el-col :span="5" v-if="userinfo.purview.product.add">
               <div class="entry-search">
                 <el-button
                   type="primary"
@@ -139,7 +139,7 @@
         </el-table-column> -->
         <el-table-column align="center" label="操作" width="220">
           <template slot-scope="scope">
-            <span class="el-link-btn"
+            <span class="el-link-btn" v-if="userinfo.purview.flowing.select"
               ><el-link
                 type="primary"
                 @click="golinkpage('/codelist/flowcode', { id: scope.row.id })"
@@ -160,7 +160,7 @@
                 >下载二维码</el-link
               ></span
             > -->
-            <span class="el-link-btn"
+            <span class="el-link-btn" v-if="userinfo.purview.product.edit"
               ><el-link
                 type="primary"
                 @click="
@@ -169,7 +169,7 @@
                 >编辑</el-link
               ></span
             >
-            <span class="el-link-btn">
+            <span class="el-link-btn" v-if="userinfo.purview.product.del">
               <el-link type="primary" @click="dele(scope.row)">删除</el-link>
             </span>
           </template>
@@ -312,13 +312,13 @@ import { downloadIamge } from "@/utils/utils";
 import { getToken } from "@/utils/auth";
 import { mapGetters } from "vuex";
 import { getQiToken } from "@/api/user";
-
 import codedown from "@/components/codeDown/index";
 export default {
   name: "ProductCode",
   components: {
     codedown,
   },
+
   data() {
     return {
       list: null,
@@ -359,6 +359,7 @@ export default {
       delete str.upToken;
       sessionStorage.setItem("qiToken", JSON.stringify(str));
     });
+    console.log(this.userinfo);
   },
   methods: {
     dele(id) {

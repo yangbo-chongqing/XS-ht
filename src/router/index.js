@@ -198,7 +198,6 @@ export const constantRoutes = [
     name: 'advertising',
     meta: { title: '广告', icon: 'el-icon-s-custom', noCache: true },
     children: [
-
       {
         path: 'Setting',
         name: 'advertisingSetting',

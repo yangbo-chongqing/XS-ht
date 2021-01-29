@@ -22,7 +22,7 @@
                 </el-input>
               </div>
             </el-col>
-            <el-col :span="4">
+            <el-col :span="4" v-if="userinfo.purview.flowing.add">
               <div class="entry-search">
                 <el-button
                   type="primary"
@@ -56,12 +56,12 @@
             <span class="code-name">{{ scope.row.certificate_id }}</span>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="发动机号">
+        <el-table-column label="车架号">
           <template slot-scope="scope">
-            <span class="code-name">{{ scope.row.engine }}</span>
+            <span class="code-name">{{ scope.row.clsbdh }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="合格证编号">
+        <!--    <el-table-column label="合格证编号">
           <template slot-scope="scope">
             <span class="code-name">{{ scope.row.certificate_id }}</span>
           </template>
@@ -87,7 +87,7 @@
                 >下载二维码</el-link
               ></span
             >
-            <span class="el-link-btn"
+            <span class="el-link-btn" v-if="userinfo.purview.flowing.edit"
               ><el-link
                 type="primary"
                 @click="
@@ -96,7 +96,7 @@
                 >编辑</el-link
               ></span
             >
-            <span class="el-link-btn"
+            <span class="el-link-btn" v-if="userinfo.purview.flowing.del"
               ><el-link type="primary" @click="delFow(scope.row.id, scope)"
                 >删除</el-link
               ></span

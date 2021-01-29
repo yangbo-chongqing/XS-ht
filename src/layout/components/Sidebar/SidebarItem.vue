@@ -78,15 +78,17 @@ export default {
     this.onlyOneChild = null;
     return {
       roles: store.getters.userinfo.user_info.roles,
-      dataList: [],
+      dataList: sessionStorage.getItem("router"),
     };
   },
   created() {
-    if (!sessionStorage.getItem("router")) {
-      this.getMenuList();
-    } else {
-      this.dataList = sessionStorage.getItem("router");
-    }
+    this.dataList = sessionStorage.getItem("router");
+    // console.log(this.dataList);
+    // if (!sessionStorage.getItem("router")) {
+    // this.getMenuList();
+    // } else {
+    // this.dataList = sessionStorage.getItem("router");
+    // }
     if (this.roles == 1) {
       if (this.item.children) {
         this.item.children.map((item, index) => {
@@ -139,20 +141,22 @@ export default {
 
       return false;
     },
-    async getMenuList() {
-      await getMenu().then((res) => {
-        let list = res.data.menu;
-        for (let i = 0; i < list.length; i++) {
-          this.dataList.push(list[i].path);
-          for (let n = 0; n < list[i].children.length; n++) {
-            this.dataList.push(list[i].children[n].path);
-          }
-        }
-        // console.log(this.dataList);
-        sessionStorage.setItem("router", JSON.stringify(this.dataList));
-        // console.log(sessionStorage.getItem("router"));
-      });
-    },
+    // async getMenuList() {
+    //   await getMenu().then((res) => {
+    //     let list = res.data.menu;
+    //     for (let i = 0; i < list.length; i++) {
+    //       this.dataList.push(list[i].path);
+    //       if (list[i].children) {
+    //         for (let n = 0; n < list[i].children.length; n++) {
+    //           this.dataList.push(list[i].children[n].path);
+    //         }
+    //       }
+    //     }
+    //     // console.log(this.dataList);
+    //     sessionStorage.setItem("router", JSON.stringify(this.dataList));
+    //     console.log(sessionStorage.getItem("router"));
+    //   });
+    // },
     resolvePath(routePath) {
       if (isExternal(routePath)) {
         return routePath;

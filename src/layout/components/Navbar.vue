@@ -53,6 +53,7 @@ import { mapGetters } from "vuex";
 import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
 import { museSwitch } from "@/api/user";
+
 import { getGetMuse } from "@/api/settings";
 export default {
   inject: ["reload"],
@@ -79,21 +80,22 @@ export default {
       await this.getId();
       await this.$store.dispatch("user/getInfo");
       await this.$router.go(0);
-      await this.getMenuList();
+      // await this.getMenuList();
       // await this.reload();
     },
-    async getMenuList() {
-      await getMenu().then((res) => {
-        let list = res.data.menu;
-        for (let i = 0; i < list.length; i++) {
-          this.dataList.push(list[i].path);
-          for (let n = 0; n < list[i].children.length; n++) {
-            this.dataList.push(list[i].children[n].path);
-          }
-        }
-        sessionStorage.setItem("router", JSON.stringify(this.dataList));
-      });
-    },
+
+    // async getMenuList() {
+    //   await getMenu().then((res) => {
+    //     let list = res.data.menu;
+    //     for (let i = 0; i < list.length; i++) {
+    //       this.dataList.push(list[i].path);
+    //       for (let n = 0; n < list[i].children.length; n++) {
+    //         this.dataList.push(list[i].children[n].path);
+    //       }
+    //     }
+    //     sessionStorage.setItem("router", JSON.stringify(this.dataList));
+    //   });
+    // },
     getId() {
       // 切换公司ID
       museSwitch(
@@ -109,11 +111,13 @@ export default {
     },
     async logout() {
       await this.$store.dispatch("user/logout");
+      sessionStorage.removeItem("router"); //移除sessionStorage
       this.$router.push(`/login?redirect=${this.$route.fullPath}`);
     },
   },
   created() {
     console.log("bbbbbbbbb");
+    // this.getMenuList();
     this.userinfo.muse_list.map((item) => {
       if (item.select == 1) {
         this.id = item.id;

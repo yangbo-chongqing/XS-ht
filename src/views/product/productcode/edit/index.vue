@@ -709,6 +709,8 @@ import {
   relatedDel,
   productCreate,
 } from "@/api/product";
+import { mapGetters } from "vuex";
+
 import { getQiToken } from "@/api/user";
 import ue from "@/components/ue";
 import { getToken } from "@/utils/auth";
@@ -812,6 +814,7 @@ export default {
         elementPathEnable: false,
         wordCount: false,
         serverUrl: "/api/store/ueditor/config",
+        // UEDITOR_HOME_URL: "//xsdtcentercdn.xunsheng.org.cn/UEditor/",
         UEDITOR_HOME_URL: "/UEditor/",
       },
     };
@@ -825,6 +828,9 @@ export default {
 
     // 显示扩展字段
     // this.geList();
+  },
+  computed: {
+    ...mapGetters(["userinfo"]),
   },
   methods: {
     //查询产品码
