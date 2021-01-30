@@ -659,6 +659,7 @@ import { getToken } from "@/utils/auth";
 import codedown from "@/components/codeDown/index";
 import entrytype from "@/views/codelist/entrytype/create/index";
 import { getQiToken } from "@/api/user";
+import { publicPath } from "@/main";
 
 import {
   postEntryList,
@@ -758,8 +759,6 @@ export default {
           allimage: "图片集",
         },
         compressSide: 0,
-        publicPath: "//xsdtcentercdn.xunsheng.org.cn/",
-
         maxImageSideLength: 500,
         catchRemoteImageEnable: true,
         // 初始容器高度
@@ -771,7 +770,7 @@ export default {
         wordCount: false,
         serverUrl: "/api/store/ueditor/config",
         // UEDITOR_HOME_URL: "//xsdtcentercdn.xunsheng.org.cn/UEditor/",
-        UEDITOR_HOME_URL: "/UEditor/",
+        UEDITOR_HOME_URL: publicPath + "UEditor/",
       },
       headers: { Authorization: "Bearer " + getToken() },
       popoverFlag: false,

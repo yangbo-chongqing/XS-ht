@@ -193,7 +193,7 @@ export default {
       });
     },
     async getMenuList() {
-      sessionStorage.removeItem("router");
+      localStorage.removeItem("router");
       getMenu().then((res) => {
         let list = res.data.menu;
         for (let i = 0; i < list.length; i++) {
@@ -205,7 +205,7 @@ export default {
           }
         }
         // console.log(this.dataList);
-        sessionStorage.setItem("router", JSON.stringify(this.dataList));
+        localStorage.setItem("router", JSON.stringify(this.dataList));
         this.$router.push({ path: this.redirect || "/" });
       });
     },

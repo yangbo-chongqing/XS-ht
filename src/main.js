@@ -15,6 +15,8 @@ import qs from 'qs'
 import '@/icons' // icon
 import '@/permission' // permission control
 Vue.prototype.qs = qs
+// export const publicPath = '//xsdtcentercdn.xunsheng.org.cn/'
+export const publicPath = '/'
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

@@ -661,6 +661,8 @@ import { getToken } from "@/utils/auth";
 import { mapGetters } from "vuex";
 import entrytype from "@/views/codelist/entrytype/create/index";
 import codedown from "@/components/codeDown/index";
+import { publicPath } from "@/main";
+
 import {
   postPublish,
   typeList,
@@ -774,7 +776,7 @@ export default {
         wordCount: false,
         serverUrl: "/api/store/ueditor/config",
         // UEDITOR_HOME_URL: "//xsdtcentercdn.xunsheng.org.cn/UEditor/",
-        UEDITOR_HOME_URL: "/UEditor/",
+        UEDITOR_HOME_URL: publicPath + "UEditor/",
       },
       activeName: "first",
       id: "",

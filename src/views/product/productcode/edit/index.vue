@@ -254,6 +254,96 @@
             <el-button @click="back">取消</el-button>
           </div>
         </el-tab-pane>
+        <el-tab-pane label="扩展字段" name="eight" v-if="addList.length > 0">
+          <template v-for="(item, index) of addList">
+            <div v-if="item.field_type == '文本'" :key="index" class="itemRich">
+              <div class="font">{{ item.field_name }}</div>
+              <el-input v-model="form1[index]" style="width: 360px"></el-input>
+            </div>
+            <div v-if="item.field_type == '视频'" :key="index" class="itemRich">
+              <div class="font">{{ item.field_name }}</div>
+              <div style="display: inline-block">
+                <div
+                  v-if="form1[index]"
+                  class="upload-info"
+                  style="width: 320px"
+                >
+                  <div class="code-img-tips">
+                    <el-button type="warning" @click="delCodeVideo(index)"
+                      >删除</el-button
+                    >
+                  </div>
+                  <video width="100%" controls :src="form1[index]" />
+                </div>
+                <el-upload
+                  v-else
+                  class="upload-demo"
+                  action="http://upload.qiniup.com"
+                  :data="qiToken"
+                  :before-upload="uploadVideo"
+                  :headers="headers"
+                  accept=".MPEG,.baiAVI,.nAVI,.ASF,.MOV,.3GP,.mp4"
+                  :show-file-list="false"
+                  :on-success="
+                    videoUploadSuccess.bind(null, { item, index: index })
+                  "
+                  :on-progress="uploadProgress"
+                >
+                  <el-button
+                    size="small"
+                    type="primary"
+                    style="margin-left: 18px; margin-bottom: 20px"
+                    >视频上传<i class="el-icon-upload el-icon--right"
+                  /></el-button>
+                </el-upload>
+              </div>
+            </div>
+            <div v-if="item.field_type == '图片'" :key="index" class="itemRich">
+              <div class="font">{{ item.field_name }}</div>
+              <div class="ueClass">
+                <el-upload
+                  class="upload-demo"
+                  :data="qiToken"
+                  action="http://upload.qiniup.com"
+                  :headers="headers"
+                  accept=".jpg,.png"
+                  :before-upload="uploadPic"
+                  v-if="!form1[index]"
+                  :on-success="imageUploadSuccess.bind(null, { index })"
+                  :on-progress="uploadProgress"
+                  :show-file-list="false"
+                >
+                  <div class="upload-box"><i class="el-icon-plus"></i></div>
+                </el-upload>
+                <div class="upload-box" v-else>
+                  <img :src="form1[index]" alt="" /><span
+                    @click="delCodeVideo(index)"
+                    ><i class="el-icon-close"></i
+                  ></span>
+                </div>
+              </div>
+            </div>
+            <div
+              v-if="item.field_type == '富文本'"
+              :key="index"
+              class="itemRich"
+            >
+              <div class="font">{{ item.field_name }}</div>
+              <ue
+                class="ueClass"
+                :value="form1[index]"
+                :ueConfig="ueConfig"
+                @input="setProductDetail($event, index)"
+              ></ue>
+            </div>
+          </template>
+          <el-form>
+            <el-form-item>
+              <el-button type="primary" @click="onSubmit">保存</el-button>
+              <el-button @click="back">取消</el-button>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
       </el-tabs>
       <!--     <el-form ref="form" :model="form" label-width="100px">
         <el-form-item label="产品名称">
@@ -515,85 +605,7 @@
           ></ue>
         </div>
          动态生成扩展字段 
-        <template v-for="(item, index) of addList">
-          <div v-if="item.field_type == '文本'" :key="index" class="itemRich">
-            <div class="font">{{ item.field_name }}</div>
-            <el-input v-model="form1[index]" style="width: 360px"></el-input>
-          </div>
-          <div v-if="item.field_type == '视频'" :key="index" class="itemRich">
-            <div class="font">{{ item.field_name }}</div>
-            <div style="display: inline-block">
-              <div v-if="form1[index]" class="upload-info" style="width: 320px">
-                <div class="code-img-tips">
-                  <el-button type="warning" @click="delCodeVideo(index)"
-                    >删除</el-button
-                  >
-                </div>
-                <video width="100%" controls :src="form1[index]" />
-              </div>
-              <el-upload
-                v-else
-                class="upload-demo"
-                action="http://upload.qiniup.com"
-                :data="qiToken"
-                :before-upload="uploadVideo"
-                :headers="headers"
-                accept=".MPEG,.baiAVI,.nAVI,.ASF,.MOV,.3GP,.mp4"
-                :show-file-list="false"
-                :on-success="
-                  videoUploadSuccess.bind(null, { item, index: index })
-                "
-                :on-progress="uploadProgress"
-              >
-                <el-button
-                  size="small"
-                  type="primary"
-                  style="margin-left: 18px; margin-bottom: 20px"
-                  >视频上传<i class="el-icon-upload el-icon--right"
-                /></el-button>
-              </el-upload>
-            </div>
-          </div>
-          <div v-if="item.field_type == '图片'" :key="index" class="itemRich">
-            <div class="font">{{ item.field_name }}</div>
-            <div class="ueClass">
-              <el-upload
-                class="upload-demo"
-                :data="qiToken"
-                action="http://upload.qiniup.com"
-                :headers="headers"
-                accept=".jpg,.png"
-                :before-upload="uploadPic"
-                v-if="!form1[index]"
-                :on-success="imageUploadSuccess.bind(null, { index })"
-                :on-progress="uploadProgress"
-                :show-file-list="false"
-              >
-                <div class="upload-box"><i class="el-icon-plus"></i></div>
-              </el-upload>
-              <div class="upload-box" v-else>
-                <img :src="form1[index]" alt="" /><span
-                  @click="delCodeVideo(index)"
-                  ><i class="el-icon-close"></i
-                ></span>
-              </div>
-            </div>
-          </div>
-          <div v-if="item.field_type == '富文本'" :key="index" class="itemRich">
-            <div class="font">{{ item.field_name }}</div>
-            <ue
-              class="ueClass"
-              :value="form1[index]"
-              :ueConfig="ueConfig"
-              @input="setProductDetail($event, index)"
-            ></ue>
-          </div>
-        </template>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">保存</el-button>
-          <el-button @click="back">取消</el-button>
-        </el-form-item>
-      </el-form> -->
+ -->
     </div>
     <el-dialog
       :title="titName + '编辑'"
@@ -714,6 +726,7 @@ import { mapGetters } from "vuex";
 import { getQiToken } from "@/api/user";
 import ue from "@/components/ue";
 import { getToken } from "@/utils/auth";
+import { publicPath } from "@/main";
 import { Loading } from "element-ui";
 export default {
   name: "ProductEdit",
@@ -815,7 +828,7 @@ export default {
         wordCount: false,
         serverUrl: "/api/store/ueditor/config",
         // UEDITOR_HOME_URL: "//xsdtcentercdn.xunsheng.org.cn/UEditor/",
-        UEDITOR_HOME_URL: "/UEditor/",
+        UEDITOR_HOME_URL: publicPath + "UEditor/",
       },
     };
   },

@@ -78,11 +78,11 @@ export default {
     this.onlyOneChild = null;
     return {
       roles: store.getters.userinfo.user_info.roles,
-      dataList: sessionStorage.getItem("router"),
+      dataList: localStorage.getItem("router"),
     };
   },
   created() {
-    this.dataList = sessionStorage.getItem("router");
+    this.dataList = localStorage.getItem("router");
     // console.log(this.dataList);
     // if (!sessionStorage.getItem("router")) {
     // this.getMenuList();

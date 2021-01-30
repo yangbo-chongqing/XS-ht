@@ -882,7 +882,7 @@ export default {
   //   padding-left: 75px;
   // }
   .el-tabs__content {
-    height: 635px;
+    // height: 635px;
     overflow-y: scroll;
     background: white;
   }

@@ -15,6 +15,7 @@ const name = defaultSettings.title || '寻声扫码' // page title
 // You can change the port by the following methods:
 // port = 9528 npm run dev OR npm run dev --port = 9528
 const port = process.env.port || process.env.npm_config_port || 9528 // dev port
+console.log(name)
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -25,8 +26,9 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '//xssdtcentercdn.xunsheng.org.cn/',
+  publicPath: '//xsdtcentercdn.xunsheng.org.cn/',
   // publicPath: '/',
+
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: false,         //process.env.NODE_ENV === 'development',
@@ -67,7 +69,6 @@ module.exports = {
         include: 'initial'
       }
     ])
-
     // when there are many pages, it will cause too many meaningless requests
     config.plugins.delete('prefetch')
 

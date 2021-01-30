@@ -111,7 +111,7 @@ export default {
     },
     async logout() {
       await this.$store.dispatch("user/logout");
-      sessionStorage.removeItem("router"); //移除sessionStorage
+      localStorage.removeItem("router"); //移除sessionStorage
       this.$router.push(`/login?redirect=${this.$route.fullPath}`);
     },
   },
