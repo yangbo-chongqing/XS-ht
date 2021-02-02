@@ -18,6 +18,44 @@
     </div>
     <div class="workbench-admin-code-body">
       <el-row>
+        <el-col :span="12" style="text-align: center"
+          ><div>昨日词条码</div></el-col
+        >
+        <el-col :span="12" style="text-align: center"
+          ><div>昨日产品码</div></el-col
+        >
+      </el-row>
+      <div class="workbench-chart-tips">
+        <el-row :gutter="20">
+          <el-col :span="6"
+            ><div class="workbench-chart-tip">
+              <p>新增</p>
+              <p class="tip-number">{{ readList.entry_add }}</p>
+            </div></el-col
+          >
+          <el-col :span="6"
+            ><div class="workbench-chart-tip">
+              <p>编辑</p>
+              <p class="tip-number">{{ readList.entry_edit }}</p>
+            </div></el-col
+          >
+          <el-col :span="6"
+            ><div class="workbench-chart-tip">
+              <p>新增</p>
+              <p class="tip-number">{{ readList.product_add }}</p>
+            </div></el-col
+          >
+          <el-col :span="6"
+            ><div class="workbench-chart-tip">
+              <p>编辑</p>
+              <p class="tip-number">{{ readList.product_edit }}</p>
+            </div></el-col
+          >
+        </el-row>
+      </div>
+    </div>
+    <div class="workbench-admin-code-body">
+      <el-row>
         <el-col :span="24"><div>近3日热码</div></el-col>
       </el-row>
       <div class="workbench-code-list">
@@ -116,6 +154,10 @@ export default {
     codedown,
   },
   props: {
+    readList: {
+      type: Object,
+      default: {},
+    },
     relicsCount: {
       type: Number,
       default: 0,
@@ -240,6 +282,19 @@ export default {
     .row-bg {
       padding: 10px 0;
       background-color: #f9fafc;
+    }
+  }
+}
+.workbench-chart-tips {
+  padding-top: 20px;
+  .workbench-chart-tip {
+    text-align: center;
+    .tip-title {
+      color: #999;
+    }
+    .tip-number {
+      color: #4caf50;
+      margin-top: 10px;
     }
   }
 }

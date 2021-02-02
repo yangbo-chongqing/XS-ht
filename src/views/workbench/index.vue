@@ -1,7 +1,11 @@
 <template>
   <div class="workbench-container">
     <div class="workbench-left">
-      <adminContent :relics-count="relicsCount" :relics-list="relicsList" />
+      <adminContent
+        :relics-count="relicsCount"
+        :readList="readList"
+        :relics-list="relicsList"
+      />
     </div>
     <div class="workbench-right">
       <chartContent
@@ -29,6 +33,7 @@ export default {
       codeObj: {},
       chartData: [],
       newsList: [],
+      readList: [],
     };
   },
   created() {
@@ -49,6 +54,7 @@ export default {
       workbench().then((res) => {
         this.relicsCount = res.data.relics_count;
         this.relicsList = res.data.relics_list;
+        this.readList = res.data.log_data;
         this.codeObj = {
           monthly_count: res.data.monthly_count,
           seven_count: res.data.seven_count,

@@ -156,21 +156,29 @@ export default {
   },
   methods: {
     // 切换时间
+
     toggleDate(index) {
       this.dateTabIndex = index;
+      let start = new Date();
+      let end = new Date();
+      console.log(index);
       if (index == 1) {
+        start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+
         this.start_time =
-          new Date().getFullYear() +
+          start.getFullYear() +
           "-" +
-          (new Date().getMonth() + 1) +
+          start.getMonth() +
+          1 +
           "-" +
-          (new Date().getDate() - 1);
+          start.getDate();
         this.end_time =
-          new Date().getFullYear() +
+          start.getFullYear() +
           "-" +
-          (new Date().getMonth() + 1) +
+          start.getMonth() +
+          1 +
           "-" +
-          (new Date().getDate() - 1);
+          start.getDate();
       } else if (index == 2) {
         this.start_time =
           new Date().getFullYear() +
@@ -185,32 +193,35 @@ export default {
           "-" +
           new Date().getDate();
       } else if (index == 3) {
+        start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
         this.start_time =
-          new Date().getFullYear() +
+          start.getFullYear() +
           "-" +
-          (new Date().getMonth() + 1) +
+          start.getMonth() +
+          1 +
           "-" +
-          (new Date().getDate() - 7);
+          start.getDate();
         this.end_time =
-          new Date().getFullYear() +
+          end.getFullYear() +
           "-" +
-          (new Date().getMonth() + 1) +
+          (end.getMonth() + 1 * 1) +
           "-" +
-          (new Date().getDate() - 1);
+          end.getDate();
       } else if (index == 4) {
-        let y = new Date().getFullYear();
-        let t = new Date().getMonth();
-        if (new Date().getMonth() == 0) {
-          t = 12;
-          y -= 1;
-        }
-        this.start_time = y + "-" + t + "-" + new Date().getDate();
+        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+        this.start_time =
+          start.getFullYear() +
+          "-" +
+          start.getMonth() +
+          1 +
+          "-" +
+          start.getDate();
         this.end_time =
-          new Date().getFullYear() +
+          end.getFullYear() +
           "-" +
-          (new Date().getMonth() + 1) +
+          (end.getMonth() + 1 * 1) +
           "-" +
-          (new Date().getDate() - 1);
+          end.getDate();
       } else {
         this.start_time = new Date(this.dateZdy[0]).toLocaleDateString();
         this.end_time = new Date(this.dateZdy[1]).toLocaleDateString();

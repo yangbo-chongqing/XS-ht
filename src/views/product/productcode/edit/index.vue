@@ -14,30 +14,58 @@
               <el-input class="classInput" v-model="form.unique"></el-input>
             </el-form-item>
             <el-form-item label="产品封面图">
-              <el-upload
-                class="upload-demo"
-                :data="qiToken"
-                action="http://upload.qiniup.com"
-                :headers="headers"
-                accept=".jpg,.png"
-                :on-error="uploadToken"
-                :before-upload="uploadPic"
-                v-if="!form.dialogImageUrl"
-                :on-success="imageUploadSuccess.bind(null, {})"
-                :on-progress="uploadProgress"
-                :show-file-list="false"
-              >
-                <div class="upload-box relaFa">
-                  <i class="el-icon-plus"></i>
-                  <div class="absChild">建议尺寸750*421</div>
-                </div>
-              </el-upload>
-              <div class="upload-box" v-else>
-                <img :src="form.dialogImageUrl" alt="" /><span
-                  @click="form.dialogImageUrl = ''"
-                  ><i class="el-icon-close"></i
-                ></span>
+              <div style="display: flex">
+                <template v-if="imgs[0]">
+                  <div
+                    @click.stop="selectPic(index)"
+                    v-for="(item, index) of imgs"
+                    class="upload-box plot"
+                    :key="index"
+                  >
+                    <img :src="item" alt="" /><span
+                      @click.stop="deletImg(index)"
+                      ><i class="el-icon-close"></i
+                    ></span>
+                    <div class="imgLeft" v-show="nIndex == index">
+                      <img src="@/assets/icon/fm.png" alt="" />
+                    </div>
+                  </div>
+                </template>
+                <el-upload
+                  class="upload-demo"
+                  :data="qiToken"
+                  action="http://upload.qiniup.com"
+                  :headers="headers"
+                  accept=".jpg,.png"
+                  :on-error="uploadToken"
+                  :before-upload="uploadPic"
+                  :on-success="imageUploadSuccess.bind(null, {})"
+                  :on-progress="uploadProgress"
+                  :show-file-list="false"
+                >
+                  <div class="upload-box relaFa">
+                    <i class="el-icon-plus"></i>
+                    <div class="absChild">建议尺寸750*421</div>
+                  </div>
+                </el-upload>
+                <!-- <div class="upload-box plot" v-else>
+                  <img :src="form.dialogImageUrl" alt="" /><span
+                    @click="form.dialogImageUrl = ''"
+                    ><i class="el-icon-close"></i
+                  ></span>
+                </div> -->
               </div>
+            </el-form-item>
+            <el-form-item label="状态">
+              <el-select v-model="form.state" placeholder="请选择">
+                <el-option
+                  v-for="(item, index) of editState"
+                  :key="index"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="onSubmit">保存</el-button>
@@ -722,7 +750,6 @@ import {
   productCreate,
 } from "@/api/product";
 import { mapGetters } from "vuex";
-
 import { getQiToken } from "@/api/user";
 import ue from "@/components/ue";
 import { getToken } from "@/utils/auth";
@@ -740,14 +767,21 @@ export default {
       activeName: "first",
       addList: [], //扩展字段列表
       ids: this.$route.query.id,
+      nIndex: 0, //默认封面图
+      editState: [
+        { label: "开启", value: 1 },
+        { label: "关闭", value: 0 },
+      ],
       form: {
         name: "",
         unique: "",
         dialogImageUrl: "",
         factory: "",
         listed: "",
+        state: 1,
       },
       form2: {},
+      imgs: [], //基础信息封面图集
       dialogType: 1, //打开弹窗的方式
       tableData: [], //活动集锦列表
       tableData1: [], //产品评测
@@ -846,6 +880,11 @@ export default {
     ...mapGetters(["userinfo"]),
   },
   methods: {
+    selectPic(n) {
+      // 选中主页图片
+      this.nIndex = n;
+      console.log(n);
+    },
     //查询产品码
     queryDetails() {
       let loading = this.$loading({
@@ -856,9 +895,16 @@ export default {
       };
       productDetails(this.qs.stringify(params)).then((res) => {
         loading.close();
+        for (let i = 0; i < res.data.data.picture.length; i++) {
+          this.imgs.push(res.data.data.picture[i].value);
+          if (res.data.data.picture[i].main == 1) {
+            this.nIndex = i;
+          }
+        }
         this.form.name = res.data.data.name;
         this.form.unique = res.data.data.unique;
-        this.form.dialogImageUrl = res.data.data.image;
+        // this.form.dialogImageUrl = res.data.data.image;
+        this.form.state = res.data.data.state;
         this.form.factory = res.data.data.factory;
         this.form.listed = res.data.data.listed;
         this.picList = res.data.data.video;
@@ -906,6 +952,16 @@ export default {
       }
     },
     onSubmit() {
+      let arry = [];
+      for (let n = 0; n < this.imgs.length; n++) {
+        if (this.nIndex == n) {
+          let obj = { value: this.imgs[n], main: 1 };
+          arry.push(obj);
+        } else {
+          let obj = { value: this.imgs[n], main: 0 };
+          arry.push(obj);
+        }
+      }
       // 提交保存
       if (this.id) {
         let expand = [];
@@ -922,11 +978,14 @@ export default {
         let params = {
           id: this.id,
           name: this.form.name,
-          image: this.form.dialogImageUrl,
+          image: this.imgs,
+          // image: this.form.dialogImageUrl,
           factory: this.form.factory,
+          state: this.form.state,
           listed: this.form.listed,
           details: this.productDetail,
           manual: this.productState,
+          picture: JSON.stringify(arry),
           videos: JSON.stringify(this.picList),
           expand: expand,
         };
@@ -950,7 +1009,10 @@ export default {
         let params = {
           unique: this.form.unique,
           name: this.form.name,
+          // image: this.imgs,
           image: this.form.dialogImageUrl,
+          state: this.form.state,
+          picture: JSON.stringify(arry),
         };
         productCreate(this.qs.stringify(params), { meta: 1 }).then((res) => {
           loading.close();
@@ -964,7 +1026,6 @@ export default {
         });
       }
     },
-
     handleRemove(file) {},
     handlePictureCardPreview(file) {
       this.dialogVisible = true;
@@ -1118,7 +1179,8 @@ export default {
       } else if (obj.type == "activity") {
         this.form3.image = `http://voice.xunsheng.org.cn/${res.key}`;
       } else {
-        this.form.dialogImageUrl = `http://voice.xunsheng.org.cn/${res.key}`;
+        this.imgs.push(`http://voice.xunsheng.org.cn/${res.key}`);
+        // this.form.dialogImageUrl = `http://voice.xunsheng.org.cn/${res.key}`;
       }
       this.uploadLoading.close();
       this.qiToken = JSON.parse(sessionStorage.qiToken);
@@ -1156,6 +1218,18 @@ export default {
     activityClose() {
       this.activity = false;
       this.form3 = {};
+    },
+    deletImg(index) {
+      // 删除产品封面图;
+      if (index == this.nIndex && index != 0) {
+        let n = this.nIndex - 1;
+        this.nIndex = n;
+      } else if (index == 0 && this.imgs.length == 1) {
+        this.nIndex = 0;
+      } else if (index < this.nIndex) {
+        this.nIndex -= 1;
+      }
+      this.imgs.splice(index, 1);
     },
     add(n, m) {
       console.log(n);
@@ -1200,6 +1274,7 @@ export default {
   .upload-box {
     width: 170px;
     height: 170px;
+    margin-right: 10px;
     display: flex;
     border: 1px solid #ccc;
     position: relative;
@@ -1310,6 +1385,22 @@ export default {
     bottom: 2px;
     text-align: center;
     width: 100%;
+  }
+}
+.plot {
+  position: relative;
+  cursor: pointer;
+  .imgLeft {
+    width: 65px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    // display: none;
+  }
+  &:hover {
+    .imgLeft {
+      display: block !important;
+    }
   }
 }
 </style>
