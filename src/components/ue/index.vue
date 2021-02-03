@@ -867,7 +867,6 @@ export default {
     // 修改或者删除按钮
     updateOrDelete(e) {
       // console.log(e.target);
-      // console.log(e.target);
       if (e.target.dataset.deleteid) {
         // console.log(
         //   this.fram.document.querySelector(`#pic${e.target.dataset.deleteid}`)

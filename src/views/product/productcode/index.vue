@@ -24,6 +24,15 @@
                 >
               </div>
             </el-col> -->
+            <el-col :span="6">
+              <div class="entry-search">
+                <el-button
+                  type="primary"
+                  @click="golinkpage('/workOrder/workOrderList')"
+                  >新增扩展字段</el-button
+                >
+              </div>
+            </el-col>
             <el-col :span="5" v-if="userinfo.purview.product.add">
               <div class="entry-search">
                 <el-button

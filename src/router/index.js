@@ -190,6 +190,28 @@ export const constantRoutes = [
 
   //   ]
   // },
+  // 工单管理
+  {
+    path: '/workOrder',
+    component: Layout,
+    redirect: 'workOrderList',
+    name: 'workOrder',
+    meta: { title: '工单管理', icon: 'el-icon-s-opportunity', noCache: true },
+    children: [
+      {
+        path: 'workOrderList',
+        name: 'workOrderList',
+        component: () => import('@/views/workOrder/workOrderList'),
+        meta: { title: '工单列表', icon: 'el-icon-s-opportunity', noCache: true },
+      },
+      {
+        path: 'workOrderListDetail',
+        name: 'workOrderListDetail',
+        component: () => import('@/views/workOrder/workOrderListDetail'),
+        meta: { title: '工单详情', noCache: true },
+      },
+    ]
+  },
   // 广告设置
   {
     path: '/advertising',
