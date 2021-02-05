@@ -39,3 +39,28 @@ export function detailsList(data) {
         data
     })
 }
+
+// 工单管理-工单列表
+export function workorderList(data) {
+    return request({
+        url: '/api/store/workorder/list',
+        method: 'post',
+        data
+    })
+}
+// 工单管理-工单详情
+export function workorderDetails(data) {
+    return request({
+        url: '/api/store/workorder/details',
+        method: 'post',
+        data
+    })
+}
+// 工单管理-工单详情
+export function workorderReply(data) {
+    return request({
+        url: '/api/store/workorder/reply',
+        method: 'post',
+        data
+    })
+}

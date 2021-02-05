@@ -24,12 +24,12 @@
                 >
               </div>
             </el-col> -->
-            <el-col :span="6">
+            <el-col :span="1">
               <div class="entry-search">
                 <el-button
                   type="primary"
                   @click="golinkpage('/workOrder/workOrderList')"
-                  >新增扩展字段</el-button
+                  >1</el-button
                 >
               </div>
             </el-col>
@@ -360,7 +360,7 @@ export default {
   created() {
     this.fetchData();
     // 获取七牛token
-    getQiToken({}).then((res) => {
+    getQiToken().then((res) => {
       let str = res.data.data;
       str.token = JSON.parse(JSON.stringify(str.upToken));
       str.key = JSON.parse(JSON.stringify(str.path));

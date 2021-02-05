@@ -6,7 +6,7 @@ const args = rawArgv.join(' ')
 
 if (process.env.npm_config_preview || rawArgv.includes('--preview')) {
   const report = rawArgv.includes('--report')
-
+  console.log(report)
   run(`vue-cli-service build ${args}`)
 
   const port = 9526

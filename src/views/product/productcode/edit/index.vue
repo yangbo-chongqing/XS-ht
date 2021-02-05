@@ -282,7 +282,11 @@
             <el-button @click="back">取消</el-button>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="扩展字段" name="eight" v-if="addList.length > 0">
+        <el-tab-pane
+          label="扩展字段"
+          name="eight"
+          v-if="this.addList.length > 0"
+        >
           <template v-for="(item, index) of addList">
             <div v-if="item.field_type == '文本'" :key="index" class="itemRich">
               <div class="font">{{ item.field_name }}</div>
@@ -781,6 +785,7 @@ export default {
         state: 1,
       },
       form2: {},
+      form1: [],
       imgs: [], //基础信息封面图集
       dialogType: 1, //打开弹窗的方式
       tableData: [], //活动集锦列表
@@ -874,7 +879,7 @@ export default {
     this.qiToken = JSON.parse(sessionStorage.qiToken);
 
     // 显示扩展字段
-    // this.geList();
+    this.geList();
   },
   computed: {
     ...mapGetters(["userinfo"]),
@@ -922,6 +927,7 @@ export default {
         this.productState = JSON.parse(JSON.stringify(this.getproductState));
         this.productDetail = JSON.parse(JSON.stringify(this.getproductDetail));
         this.addList = res.data.data.muse_expand;
+        console.log(this.addList);
         for (let i = 0; i < this.addList.length; i++) {
           this.form1.push(this.addList[i].value);
         }
@@ -1187,8 +1193,9 @@ export default {
     },
     videoUploadSuccess(obj, res, file) {
       // 视频上传成功
+      console.log(this.form1);
       console.log(obj, res, file);
-      if (obj.index) {
+      if (obj) {
         this.form1[obj.index] = `http://voice.xunsheng.org.cn/${res.key}`;
         this.uploadLoading.close();
       } else {

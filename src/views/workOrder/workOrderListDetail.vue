@@ -2,69 +2,97 @@
   <div class="body">
     <div class="top">
       <div class="topFont">
-        <span class="leftError" :title="fontContent"
-          >问题：{{ fontContent }}</span
-        >
-        <span class="rightStatus">状态：312312312</span>
+        <span class="leftError">问题：{{ question.title }}</span>
+        <span class="rightStatus" v-if="question.state == 0"
+          >状态：<span class="noup">未回复</span>
+        </span>
+        <span class="rightStatus" v-if="question.state == 1"
+          ><span class="okup">已回复</span>
+        </span>
+        <span class="rightStatus" v-if="question.state == 2"
+          ><span class="closeup">已解决</span>
+        </span>
       </div>
     </div>
     <div class="centerbody">
       <div class="content">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. At officia
-        unde praesentium rem mollitia, autem repellat. Laborum doloribus omnis
-        debitis id velit, suscipit temporibus corporis eveniet excepturi rem
-        obcaecati doloremque. Tempore at placeat sint quibusdam mollitia odit
-        nihil aperiam! Quaerat sint non rem, maiores perferendis aliquam
-        obcaecati eius dolor distinctio porro nemo magni molestias vero nostrum
-        fuga officiis blanditiis dolorem? Vitae quae necessitatibus, iusto
-        nostrum consequatur quis optio vel fugiat sunt praesentium tempora
-        distinctio itaque, magnam soluta incidunt rerum nulla autem in ratione
-        repellendus totam! Veritatis tenetur tempora maxime voluptatibus
-        repellendus voluptates rem doloribus sint ipsam maiores dicta, harum
-        libero dolorum voluptatem, nam, alias iste fugiat mollitia vel optio
-        deserunt minima? Numquam tenetur porro neque quisquam, blanditiis
-        perspiciatis, iure amet laudantium mollitia cumque voluptas dolores
-        obcaecati quod deleniti cum quo? Laborum nemo quisquam, placeat non
-        inventore nobis cumque dolorem asperiores veritatis quaerat voluptates
-        deserunt voluptatem cum iusto odit vero esse animi similique beatae,
-        distinctio repellendus eveniet vitae accusamus? Unde aliquam iusto at
-        alias ratione optio error commodi voluptas recusandae esse officiis
-        eveniet a, perferendis expedita velit modi doloribus consequuntur! Rem,
-        ad incidunt deserunt illum totam corrupti repellat culpa laboriosam
-        placeat voluptatum cumque quae molestiae enim laborum sapiente voluptas
-        architecto asperiores facilis? Odit, consectetur dolorum. Officia
-        deleniti architecto facilis quibusdam sed minima dolorum suscipit quia,
-        eligendi amet blanditiis! Consequuntur voluptate ab sit provident nemo
-        veritatis. Officia dolorum error at excepturi aperiam tenetur quibusdam
-        dolore, iste dignissimos aliquid perferendis sint sed in reiciendis vel
-        corrupti amet? Illo est labore consequatur eum dignissimos velit cumque
-        expedita voluptatem. Adipisci, vero. Quam dignissimos illo facilis
-        magni, animi vel rem ipsam optio? Dolores ut officia dignissimos libero
-        voluptatum optio dicta numquam modi atque, distinctio quam laboriosam.
-        Aperiam voluptates ipsam exercitationem odit soluta velit cumque aliquam
-        similique. Dolor impedit in debitis perspiciatis. Quia necessitatibus
-        architecto odio, iste voluptatibus omnis vero distinctio provident
-        tempore maiores veniam delectus quaerat, nisi et cumque dicta, illum
-        nihil repellendus. Impedit, sequi. Eligendi a inventore beatae quaerat
-        tenetur voluptate obcaecati, sequi natus doloribus autem rerum nisi in
-        hic blanditiis sapiente modi id molestiae laborum est. Quasi assumenda
-        sit id velit, voluptatem blanditiis culpa nam dolor rem nulla rerum
-        itaque dolore natus optio corporis accusantium similique illum odio
-        eligendi porro pariatur animi sed facere saepe! Temporibus ducimus
-        exercitationem, animi dolorum ea, itaque minus iure harum saepe
-        dignissimos deleniti in nesciunt atque aut vitae. Asperiores quos iste
-        sunt ab molestiae, officiis quis accusamus nesciunt dignissimos dolor
-        possimus quia tenetur repudiandae ipsa molestias consequatur doloremque
-        maiores modi, corrupti, neque enim mollitia deleniti minima? Nostrum
-        exercitationem, quaerat dignissimos consequatur magni incidunt facilis
-        adipisci, laudantium at molestias et rerum. Numquam blanditiis itaque
-        sed, tenetur fuga culpa obcaecati eligendi perspiciatis aperiam
-        molestias voluptates aliquid id delectus, dignissimos doloremque
-        explicabo commodi est illo possimus laborum facere? Tempora est unde at
-        veniam magnam, quia quidem accusamus dicta fugit dolores deleniti vero
-        aliquam, molestias consectetur harum, aut dolorem officiis fuga animi
-        ipsam rem provident magni quisquam omnis. Facilis saepe unde, aspernatur
-        minima deleniti enim nam, eligendi natus provident sed, et ad est.
+        <!-- <div class="contentDetail">
+          <div class="leftCon">
+            <div class="contentTit">{{ contentList[0].create_time }} 客户</div>
+            <div class="leftContent">
+              <el-image
+                v-for="(item, index) of contentList[0].image"
+                :key="index"
+                style="width: 180px; height: 170px; margin-right: 10px"
+                :src="item"
+                :preview-src-list="[item]"
+              >
+              </el-image>
+            </div>
+          </div>
+        </div> -->
+        <div class="contentDetail">
+          <div class="leftCon">
+            <div class="contentTit">{{ contentList[0].create_time }} 客户</div>
+            <div class="leftContent">
+              <el-image
+                v-for="(item, index) of contentList[0].image"
+                :key="index"
+                style="width: 180px; height: 170px; margin-right: 10px"
+                fit="cover"
+                :src="item"
+                :preview-src-list="contentList[0].image"
+              >
+              </el-image>
+              <p>产品名称：{{ question.product_name }}</p>
+              <p>车架号：{{ question.frame_number }}</p>
+              <p>产品编号：{{ question.product_number }}</p>
+              <p>产品类型：{{ question.problem_type }}</p>
+              <p>问题描述：{{ question.problem_content }}</p>
+              <p>手机号：{{ question.phone }}</p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="contentDetail"
+          v-for="(item, index) of contentList"
+          :key="index"
+        >
+          <div class="leftCon" v-if="item.type == 0 && index != 0">
+            <div class="contentTit">{{ item.create_time }} 客户</div>
+            <div class="rightContent" v-if="item.content || item.image.length">
+              {{ item.content }}
+            </div>
+            <div v-if="item.image.length">
+              <el-image
+                style="width: 180px; height: 170px; margin-right: 10px"
+                fit="cover"
+                :src="item.image[0]"
+                :preview-src-list="item.image[0]"
+              >
+              </el-image>
+            </div>
+            <div v-if="index + 1 == contentList.length" id="bottom"></div>
+          </div>
+          <div class="rightCon" v-if="item.type == 1 && index != 0">
+            <div class="contentTit" v-if="item.content || item.image.length">
+              {{ item.create_time }} 客服
+            </div>
+            <div v-if="item.image.length">
+              <el-image
+                style="width: 180px; height: 170px; margin-right: 10px"
+                fit="cover"
+                :src="item.image[0]"
+                :preview-src-list="item.image[0]"
+              >
+              </el-image>
+            </div>
+            <div v-if="item.content" class="rightContent">
+              {{ item.content }}
+            </div>
+            <div v-if="index + 1 == contentList.length" id="bottom"></div>
+          </div>
+        </div>
       </div>
       <div class="bottomInput">
         <div class="picIcon">
@@ -76,7 +104,7 @@
             accept=".jpg,.png"
             :on-error="uploadToken"
             :before-upload="uploadPic"
-            :on-success="imageUploadSuccess"
+            :on-success="imageUploadSuccess.bind(null, {})"
             :show-file-list="false"
           >
             <i class="el-icon-picture"></i>
@@ -89,12 +117,16 @@
             placeholder="请输入内容"
             class="resizeNone"
             v-model="textarea"
-            @keyup.enter.native="add(111)"
+            @keyup.enter.native="add()"
           >
           </el-input>
         </div>
         <div style="text-align: right">
-          <el-button type="primary" style="margin: 8px 5px 0 0" size="mini"
+          <el-button
+            type="primary"
+            style="margin: 8px 5px 0 0"
+            size="mini"
+            @click="add()"
             >发 送</el-button
           >
         </div>
@@ -105,27 +137,41 @@
 <script>
 import { getQiToken } from "@/api/user";
 import { getToken } from "@/utils/auth";
-
+import { workorderDetails, workorderReply } from "@/api/myApi";
 export default {
   data() {
     return {
-      bodyHeight: 180,
       headers: { Authorization: "Bearer " + getToken() },
-
       textarea: "",
       qiToken: {},
-      fontContent:
-        "问题：2009年,W3C 提出了一种新的方案---Flex布局,可以简便、完整、响应式地实现各种页面布局。目前,它已经得到了所有浏览器的支持,这意味着,现在就能很安全地使用这现在就能很安全地使用这现在就能很安全地使用这",
+      id: this.$route.query.id,
+      contentList: [],
+      question: {},
     };
   },
   methods: {
-    add(e) {
-      console.log(e);
+    add() {
+      let parasm = {
+        workorder_id: this.id,
+        content: this.textarea,
+      };
+      workorderReply(this.qs.stringify(parasm)).then((res) => {
+        this.getDetail();
+      });
       this.textarea = "";
+      document.getElementById("bottom").scrollIntoView();
     },
-    imageUploadSuccess() {
+    imageUploadSuccess(obj, res, file) {
       // 图片上传成功
-      this.form1[obj.index] = `http://voice.xunsheng.org.cn/${res.key}`;
+      let img = `http://voice.xunsheng.org.cn/${res.key}`;
+      let parasm = {
+        workorder_id: this.id,
+        content: this.textarea,
+        image: JSON.stringify([img]),
+      };
+      workorderReply(this.qs.stringify(parasm)).then((res) => {
+        this.getDetail();
+      });
       this.qiToken = JSON.parse(sessionStorage.qiToken);
     },
     uploadToken(err, file, fileList) {
@@ -145,9 +191,19 @@ export default {
       let newTime = new Date().getTime();
       this.qiToken.key = `${this.qiToken.key}${newTime}.png`;
     },
+    getDetail() {
+      let params = {
+        workorder_id: this.id,
+      };
+      workorderDetails(this.qs.stringify(params)).then((res) => {
+        this.question = res.data.info;
+        this.contentList = res.data.list.data;
+      });
+    },
   },
   created() {
     this.qiToken = JSON.parse(sessionStorage.qiToken);
+    this.getDetail();
   },
 };
 </script>
@@ -163,12 +219,12 @@ export default {
     .topFont {
       box-sizing: border-box;
       margin-left: 10px;
-      padding-top: 10px;
       color: #343036;
       display: flex;
       justify-content: space-between;
       .leftError {
         padding-right: 60px;
+        line-height: 60px;
         text-overflow: -o-ellipsis-lastline;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -179,6 +235,16 @@ export default {
       }
       .rightStatus {
         padding-right: 10px;
+        line-height: 60px;
+        .noup {
+          color: #eb5648;
+        }
+        .okup {
+          color: #4caf50;
+        }
+        .closeup {
+          color: #a79999;
+        }
       }
     }
   }
@@ -203,6 +269,68 @@ export default {
       overflow-y: auto;
       padding: 20px;
       background-color: #fff;
+      .contentDetail {
+        .leftCon {
+          float: left;
+          width: 420px;
+          .contentTit {
+            font-size: 14px;
+            padding-left: 10px;
+            color: #a1a6af;
+            padding-bottom: 5px;
+          }
+          .leftContent {
+            // min-width: 160px;
+            max-width: 420px;
+            float: left;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: justify;
+            word-break: break-all;
+            border: 1px solid #2f2f2f;
+            &::after {
+              clear: both;
+              content: " ";
+            }
+          }
+          &::after {
+            display: table;
+            content: " ";
+          }
+        }
+        .rightCon {
+          width: 420px;
+          float: right;
+          text-align: right;
+          .contentTit {
+            font-size: 14px;
+            padding-right: 10px;
+            text-align: right;
+            color: #a1a6af;
+            padding-bottom: 5px;
+          }
+          .rightContent {
+            margin-bottom: 10px;
+            text-align: justify;
+            float: right;
+            padding: 10px;
+            border-radius: 5px;
+            word-break: break-all;
+            // min-width: 160px;
+            max-width: 420px;
+            border: 1px solid #2f2f2f;
+            &::after {
+              clear: both;
+              content: "";
+            }
+          }
+          &::after {
+            clear: both;
+            content: "";
+          }
+        }
+      }
     }
     .bottomInput {
       box-sizing: border-box;

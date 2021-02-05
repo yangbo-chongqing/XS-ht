@@ -50,35 +50,24 @@
       >
         <el-table-column label="工单ID" width="150" align="center">
           <template slot-scope="scope">
-            {{ scope.row.unique }}
+            {{ scope.row.id }}
           </template>
         </el-table-column>
         <el-table-column label="用户" align="center">
           <template slot-scope="scope">
-            <span class="code-name">{{ scope.row.name }}</span>
+            <span class="code-name">{{ scope.row.user_info.nickname }}</span>
           </template>
         </el-table-column>
         <el-table-column label="标题" align="center">
           <template slot-scope="scope">
-            <div
-              style="
-                text-align: center;
-                overflow: hidden;
-                display: inline-block;
-              "
-            >
-              <el-image
-                style="width: 60px; height: 60px"
-                :src="scope.row.image"
-                :preview-src-list="[scope.row.image]"
-              >
-              </el-image>
-            </div>
+            <span class="code-name">{{ scope.row.title }}</span>
           </template>
         </el-table-column>
         <el-table-column label="状态" align="center">
           <template slot-scope="scope">
-            <span class="code-name">{{ scope.row.name }}</span>
+            <span class="code-name" v-if="scope.row.state == 0">未回复</span>
+            <span class="code-name" v-if="scope.row.state == 1">已回复</span>
+            <span class="code-name" v-if="scope.row.state == 2">已解决</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作" width="220">
@@ -87,7 +76,7 @@
               ><el-link
                 type="primary"
                 @click="
-                  golinkpage('/workOrderList/workOrderListDetail', {
+                  golinkpage('/workOrder/workOrderListDetail', {
                     id: scope.row.id,
                   })
                 "
@@ -111,6 +100,7 @@
   </div>
 </template>
 <script>
+import { workorderList } from "@/api/myApi";
 export default {
   data() {
     return {
@@ -133,6 +123,11 @@ export default {
       this.page = size;
       this.fetchData();
     },
+    getList() {
+      workorderList().then((res) => {
+        this.list = res.data.list.data;
+      });
+    },
     golinkpage(page, obj) {
       // 路由跳转
       this.$router.push({
@@ -142,6 +137,9 @@ export default {
         },
       });
     },
+  },
+  created() {
+    this.getList();
   },
 };
 </script>

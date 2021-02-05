@@ -53,7 +53,7 @@ module.exports = {
     resolve: {
       alias: {
         '@': resolve('src')
-      }
+      },
     },
 
   },
@@ -68,6 +68,13 @@ module.exports = {
         include: 'initial'
       }
     ])
+    // config.output.filename('js/[name].[chunkhash].js').end();
+    // config.output.chunkFilename('js/[name].[chunkhash].js').end();
+    // // 修改生产配置
+    // config.plugin('extract-css').tap(args => [{
+    //   filename: `css/[name].[chunkhash].css`,
+    //   chunkFilename: `css/[name].[chunkhash].css`
+    // }])
     // when there are many pages, it will cause too many meaningless requests
     config.plugins.delete('prefetch')
 
@@ -120,7 +127,7 @@ module.exports = {
                   minChunks: 3, //  minimum common number
                   priority: 5,
                   reuseExistingChunk: true
-                }
+                },
               }
             })
           // https:// webpack.js.org/configuration/optimization/#optimizationruntimechunk

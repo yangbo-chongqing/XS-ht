@@ -33,7 +33,7 @@ export default {
       codeObj: {},
       chartData: [],
       newsList: [],
-      readList: [],
+      readList: {},
     };
   },
   created() {
