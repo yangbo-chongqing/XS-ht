@@ -2,26 +2,34 @@
   <div class="fun-code">
     <div class="fun-code-head">
       <el-row>
-        <el-col :span="16"
-          ><div
-            class="entry-title"
-            @click="golinkpage('/workOrder/workOrderListDetail')"
-          >
-            工单列表
-          </div></el-col
-        >
-        <el-col :span="8">
+        <el-col :span="20"><div class="entry-title">工单列表</div></el-col>
+        <el-col :span="4">
           <el-row :gutter="24">
             <el-col :span="24">
               <div class="entry-search">
-                <el-input
+                <!-- <el-input
                   v-model="keyword"
                   type="search"
                   clearable
                   placeholder="搜索工单号"
                   ><i slot="prefix" class="el-input__icon el-icon-search" />
                   <el-button slot="append" @click="onSearch">搜索</el-button>
-                </el-input>
+                </el-input> -->
+                状态：
+                <el-select
+                  style="width: 140px"
+                  v-model="state"
+                  placeholder="请选择"
+                  @change="selectState"
+                >
+                  <el-option
+                    v-for="item in states"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
               </div>
             </el-col>
             <!-- <el-col :span="5">
@@ -65,7 +73,7 @@
         </el-table-column>
         <el-table-column label="状态" align="center">
           <template slot-scope="scope">
-            <span class="code-name" v-if="scope.row.state == 0">未回复</span>
+            <span class="code-name" v-if="scope.row.state == 0">待回复</span>
             <span class="code-name" v-if="scope.row.state == 1">已回复</span>
             <span class="code-name" v-if="scope.row.state == 2">已解决</span>
           </template>
@@ -110,6 +118,12 @@ export default {
       tableHeight: document.body.clientHeight - 230,
       page: 1, //页码
       count: 0, //总条数
+      state: "-1", //筛选状态
+      states: [
+        { label: "全部", value: "-1" },
+        { label: "待回复", value: "0" },
+        { label: "已回复", value: "1" },
+      ],
     };
   },
   methods: {
@@ -117,15 +131,24 @@ export default {
     handleCurrentChange(size) {
       // 换页
       this.page = size;
-      this.fetchData();
+      this.getList();
     },
     handleSizeChange(size) {
       this.page = size;
-      this.fetchData();
+      this.getList();
+    },
+    selectState() {
+      this.page = 1;
+      this.getList();
     },
     getList() {
-      workorderList().then((res) => {
+      let parasm = {
+        page: this.page,
+        state: this.state,
+      };
+      workorderList(this.qs.stringify(parasm)).then((res) => {
         this.list = res.data.list.data;
+        this.count = res.data.list.total;
       });
     },
     golinkpage(page, obj) {

@@ -206,7 +206,8 @@ export default {
         }
         // console.log(this.dataList);
         localStorage.setItem("router", JSON.stringify(this.dataList));
-        this.$router.push({ path: this.redirect || "/" });
+        // this.$router.push({ path: this.redirect || "/" });
+        this.$router.push({ path: "/" });
       });
     },
     readBook() {

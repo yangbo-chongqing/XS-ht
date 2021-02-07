@@ -207,8 +207,9 @@ export const constantRoutes = [
       {
         path: 'workOrderListDetail',
         name: 'workOrderListDetail',
+        hidden: true,
         component: () => import('@/views/workOrder/workOrderListDetail'),
-        meta: { title: '工单详情', noCache: true },
+        meta: { title: '工单详情', icon: 'el-icon-s-opportunity', noCache: true },
       },
     ]
   },

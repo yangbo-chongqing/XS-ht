@@ -142,6 +142,7 @@ export default {
       page: 1,
       count: 0,
       showPage: false,
+      pageed: this.$route.query.page,
       tableHeight: document.body.clientHeight - 220,
       codeDialog: false,
       codeImg: "",
@@ -229,7 +230,13 @@ export default {
       });
     },
     back() {
-      this.$router.go(-1);
+      // this.$router.go(-1);
+      this.$router.push({
+        name: "ProductCode",
+        params: {
+          page: this.pageed,
+        },
+      });
     },
   },
   computed: {

@@ -16,21 +16,6 @@
     </div>
     <div class="centerbody">
       <div class="content">
-        <!-- <div class="contentDetail">
-          <div class="leftCon">
-            <div class="contentTit">{{ contentList[0].create_time }} 客户</div>
-            <div class="leftContent">
-              <el-image
-                v-for="(item, index) of contentList[0].image"
-                :key="index"
-                style="width: 180px; height: 170px; margin-right: 10px"
-                :src="item"
-                :preview-src-list="[item]"
-              >
-              </el-image>
-            </div>
-          </div>
-        </div> -->
         <div class="contentDetail">
           <div class="leftCon">
             <div class="contentTit">{{ contentList[0].create_time }} 客户</div>
@@ -60,7 +45,7 @@
         >
           <div class="leftCon" v-if="item.type == 0 && index != 0">
             <div class="contentTit">{{ item.create_time }} 客户</div>
-            <div class="rightContent" v-if="item.content || item.image.length">
+            <div class="leftContent" v-if="item.content">
               {{ item.content }}
             </div>
             <div v-if="item.image.length">
@@ -68,11 +53,10 @@
                 style="width: 180px; height: 170px; margin-right: 10px"
                 fit="cover"
                 :src="item.image[0]"
-                :preview-src-list="item.image[0]"
+                :preview-src-list="[item.image[0]]"
               >
               </el-image>
             </div>
-            <div v-if="index + 1 == contentList.length" id="bottom"></div>
           </div>
           <div class="rightCon" v-if="item.type == 1 && index != 0">
             <div class="contentTit" v-if="item.content || item.image.length">
@@ -83,7 +67,7 @@
                 style="width: 180px; height: 170px; margin-right: 10px"
                 fit="cover"
                 :src="item.image[0]"
-                :preview-src-list="item.image[0]"
+                :preview-src-list="[item.image[0]]"
               >
               </el-image>
             </div>
@@ -159,7 +143,7 @@ export default {
         this.getDetail();
       });
       this.textarea = "";
-      document.getElementById("bottom").scrollIntoView();
+      //   document.getElementById("bottom").scrollIntoView();
     },
     imageUploadSuccess(obj, res, file) {
       // 图片上传成功
@@ -198,6 +182,17 @@ export default {
       workorderDetails(this.qs.stringify(params)).then((res) => {
         this.question = res.data.info;
         this.contentList = res.data.list.data;
+      });
+    },
+  },
+  watch: {
+    contentList: function () {
+      // 监听加载自动下拉到底
+      let doclass = document.getElementsByClassName("content");
+      //   console.log(doclass);
+      this.$nextTick(() => {
+        doclass[0].scrollTop = doclass[0].scrollHeight;
+        // console.log(doclass[0].scrollTop);
       });
     },
   },

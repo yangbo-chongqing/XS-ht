@@ -242,7 +242,12 @@
               <span class="el-link-btn"
                 ><el-link
                   type="primary"
-                  @click="golinkpage('/codelist/edit', { id: scope.row.id })"
+                  @click="
+                    golinkpage('/codelist/edit', {
+                      id: scope.row.id,
+                      page: page,
+                    })
+                  "
                   >编辑</el-link
                 ></span
               >
@@ -404,26 +409,30 @@ export default {
   //   }
   //   next();
   // },
-  activated() {
-    if (!this.$route.meta.isBack) {
-      getQiToken({}).then((res) => {
-        let str = res.data.data;
-        str.token = JSON.parse(JSON.stringify(str.upToken));
-        str.key = JSON.parse(JSON.stringify(str.path));
-        delete str.path;
-        delete str.upToken;
-        sessionStorage.setItem("qiToken", JSON.stringify(str));
-      });
-      this.page = 1;
-      // 如果isBack是false，表明需要获取新数据，否则就不再请求，直接使用缓存的数据
-      this.fetchData();
-      this.GetMuse();
-      this.typeList();
-    }
-    // 恢复成默认的false，避免isBack一直是true，导致下次无法获取数据
-    this.$route.meta.isBack = false;
-  },
+  // activated() {
+  //   if (!this.$route.meta.isBack) {
+  //     getQiToken({}).then((res) => {
+  //       let str = res.data.data;
+  //       str.token = JSON.parse(JSON.stringify(str.upToken));
+  //       str.key = JSON.parse(JSON.stringify(str.path));
+  //       delete str.path;
+  //       delete str.upToken;
+  //       sessionStorage.setItem("qiToken", JSON.stringify(str));
+  //     });
+  //     this.page = 1;
+  //     // 如果isBack是false，表明需要获取新数据，否则就不再请求，直接使用缓存的数据
+  //     this.fetchData();
+  //     this.GetMuse();
+  //     this.typeList();
+  //   }
+  //   // 恢复成默认的false，避免isBack一直是true，导致下次无法获取数据
+  //   this.$route.meta.isBack = false;
+  // },
   created() {
+    console.log(this.$route);
+    if (this.$route.params.page) {
+      this.page = this.$route.params.page * 1;
+    }
     this.fetchData();
     this.GetMuse();
     this.typeList();

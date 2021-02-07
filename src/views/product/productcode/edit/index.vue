@@ -771,6 +771,7 @@ export default {
       activeName: "first",
       addList: [], //扩展字段列表
       ids: this.$route.query.id,
+      pageed: this.$route.query.page,
       nIndex: 0, //默认封面图
       editState: [
         { label: "开启", value: 1 },
@@ -1043,7 +1044,13 @@ export default {
       });
     },
     back() {
-      this.$router.go(-1);
+      // this.$router.go(-1);
+      this.$router.push({
+        name: "ProductCode",
+        params: {
+          page: this.pageed,
+        },
+      });
     },
     uploadPic(file) {
       let newTime = new Date().getTime();

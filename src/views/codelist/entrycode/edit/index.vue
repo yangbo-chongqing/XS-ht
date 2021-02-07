@@ -820,6 +820,7 @@ export default {
       progressFlag: false, // 关闭进度条
       dialogVisible: false,
       codeImg: "",
+      pageed: this.$route.query.page,
     };
   },
 
@@ -993,7 +994,14 @@ export default {
     },
     // 返回
     goback() {
-      this.$router.go(-1);
+      console.log(this.$route);
+      // this.$router.go(-1);
+      this.$router.push({
+        name: "EntryCode",
+        params: {
+          page: this.pageed,
+        },
+      });
     },
     // 编辑
     entryEdit(state) {

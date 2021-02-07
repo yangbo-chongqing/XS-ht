@@ -24,15 +24,6 @@
                 >
               </div>
             </el-col> -->
-            <el-col :span="1">
-              <div class="entry-search">
-                <el-button
-                  type="primary"
-                  @click="golinkpage('/workOrder/workOrderList')"
-                  >1</el-button
-                >
-              </div>
-            </el-col>
             <el-col :span="5" v-if="userinfo.purview.product.add">
               <div class="entry-search">
                 <el-button
@@ -151,7 +142,12 @@
             <span class="el-link-btn" v-if="userinfo.purview.flowing.select"
               ><el-link
                 type="primary"
-                @click="golinkpage('/codelist/flowcode', { id: scope.row.id })"
+                @click="
+                  golinkpage('/codelist/flowcode', {
+                    id: scope.row.id,
+                    page: page,
+                  })
+                "
                 >查看流水码</el-link
               ></span
             >
@@ -173,7 +169,10 @@
               ><el-link
                 type="primary"
                 @click="
-                  golinkpage('/codelist/productedit', { id: scope.row.id })
+                  golinkpage('/codelist/productedit', {
+                    id: scope.row.id,
+                    page: page,
+                  })
                 "
                 >编辑</el-link
               ></span
@@ -358,6 +357,11 @@ export default {
     ...mapGetters(["userinfo"]),
   },
   created() {
+    console.log(this.$route);
+    if (this.$route.params.page) {
+      this.page = this.$route.params.page * 1;
+    }
+
     this.fetchData();
     // 获取七牛token
     getQiToken().then((res) => {
@@ -551,6 +555,7 @@ export default {
       this.fetchData();
     },
     golinkpage(page, obj) {
+      console.log(obj);
       this.$router.push({
         path: page,
         query: {
@@ -564,6 +569,7 @@ export default {
     },
     handleCurrentChange(size) {
       this.page = size;
+      console.log(size);
       this.fetchData();
     },
     //是否上架
@@ -587,6 +593,7 @@ export default {
     },
     fetchData() {
       this.listLoading = true;
+
       let parmas = {
         page: this.page,
         keyword: this.keyword,
