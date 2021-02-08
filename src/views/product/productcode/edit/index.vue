@@ -889,7 +889,6 @@ export default {
     selectPic(n) {
       // 选中主页图片
       this.nIndex = n;
-      console.log(n);
     },
     //查询产品码
     queryDetails() {
@@ -928,14 +927,12 @@ export default {
         this.productState = JSON.parse(JSON.stringify(this.getproductState));
         this.productDetail = JSON.parse(JSON.stringify(this.getproductDetail));
         this.addList = res.data.data.muse_expand;
-        console.log(this.addList);
         for (let i = 0; i < this.addList.length; i++) {
           this.form1.push(this.addList[i].value);
         }
       });
     },
     uploadToken(err, file, fileList) {
-      console.log(err);
       getQiToken({}).then((res) => {
         let str = res.data.data;
         str.token = JSON.parse(JSON.stringify(str.upToken));
@@ -1125,7 +1122,6 @@ export default {
     },
     activityAdd() {
       // 确认增加或修改
-      console.log(this.typeNum);
       if (this.form3.id) {
         // 修改
         if (!this.form3.title || !this.form3.image) {
@@ -1186,8 +1182,7 @@ export default {
     },
     imageUploadSuccess(obj, res, file) {
       // 图片上传成功
-      console.log(obj, res, file);
-      if (obj.index) {
+      if (obj.index || obj.index === 0) {
         this.form1[obj.index] = `http://voice.xunsheng.org.cn/${res.key}`;
       } else if (obj.type == "activity") {
         this.form3.image = `http://voice.xunsheng.org.cn/${res.key}`;
@@ -1200,8 +1195,6 @@ export default {
     },
     videoUploadSuccess(obj, res, file) {
       // 视频上传成功
-      console.log(this.form1);
-      console.log(obj, res, file);
       if (obj) {
         this.form1[obj.index] = `http://voice.xunsheng.org.cn/${res.key}`;
         this.uploadLoading.close();
@@ -1209,19 +1202,16 @@ export default {
         this.form2.url = `http://voice.xunsheng.org.cn/${res.key}`;
         let b = JSON.parse(JSON.stringify(file.name));
         this.form2.name = b.substring(0, b.indexOf("."));
-        console.log(this.form2.name);
       }
       this.uploadLoading.close();
       this.qiToken = JSON.parse(sessionStorage.qiToken);
     },
     delCodeVideo(index) {
       // 删除视频
-      console.log(index);
       if (typeof index == "number") {
         this.form1.splice(index, 1, "");
       } else {
         this.form2.url = "";
-        console.log(this.form2);
       }
     },
     deleTP(n) {
@@ -1246,7 +1236,6 @@ export default {
       this.imgs.splice(index, 1);
     },
     add(n, m) {
-      console.log(n);
       this.dialogType = m;
       this.typeNum = n;
       // 添加相关内容，实现弹窗
@@ -1264,7 +1253,6 @@ export default {
         this.titName = "商城";
         this.activity = true;
       }
-      console.log(this.typeNum);
     },
     handleClose(none) {
       // 关闭活动集锦的弹窗

@@ -168,15 +168,13 @@ export default {
         this.start_time =
           start.getFullYear() +
           "-" +
-          start.getMonth() +
-          1 +
+          (start.getMonth() * 1 + 1) +
           "-" +
           start.getDate();
         this.end_time =
           start.getFullYear() +
           "-" +
-          start.getMonth() +
-          1 +
+          (start.getMonth() * 1 + 1) +
           "-" +
           start.getDate();
       } else if (index == 2) {
@@ -197,8 +195,7 @@ export default {
         this.start_time =
           start.getFullYear() +
           "-" +
-          start.getMonth() +
-          1 +
+          (start.getMonth() * 1 + 1) +
           "-" +
           start.getDate();
         this.end_time =
@@ -212,8 +209,7 @@ export default {
         this.start_time =
           start.getFullYear() +
           "-" +
-          start.getMonth() +
-          1 +
+          (start.getMonth() * 1 + 1) +
           "-" +
           start.getDate();
         this.end_time =

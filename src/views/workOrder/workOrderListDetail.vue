@@ -18,7 +18,9 @@
       <div class="content">
         <div class="contentDetail">
           <div class="leftCon">
-            <div class="contentTit">{{ contentList[0].create_time }} 客户</div>
+            <div class="contentTit">
+              {{ contentList[0].create_time }} {{ question.username }}
+            </div>
             <div class="leftContent">
               <el-image
                 v-for="(item, index) of contentList[0].image"
@@ -32,7 +34,11 @@
               <p>产品名称：{{ question.product_name }}</p>
               <p>车架号：{{ question.frame_number }}</p>
               <p>产品编号：{{ question.product_number }}</p>
-              <p>产品类型：{{ question.problem_type }}</p>
+              <p>
+                产品类型：{{ question.problem_categories }}--{{
+                  question.problem_type
+                }}
+              </p>
               <p>问题描述：{{ question.problem_content }}</p>
               <p>手机号：{{ question.phone }}</p>
             </div>

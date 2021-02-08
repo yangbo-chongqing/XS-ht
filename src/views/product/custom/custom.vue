@@ -193,16 +193,23 @@ export default {
     },
     delet(n) {
       // 删除该条数据
-      expandDel(this.qs.stringify({ id: n.id })).then((res) => {
-        if (res) {
-          if (res.status == 200) {
-            this.$message({
-              message: res.message,
-              type: "success",
-            });
-            this.geList();
+      this.$confirm("确定删除该字段?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        expandDel(this.qs.stringify({ id: n.id })).then((res) => {
+          if (res) {
+            if (res.status == 200) {
+              this.$message({
+                message: res.message,
+                type: "success",
+              });
+              this.geList();
+            }
           }
-        }
+        });
+
         // 重定义，只要非空就行
         this.showId = "d3232";
         this.showValue = "dsadasd";
