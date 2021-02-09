@@ -64,3 +64,11 @@ export function workorderReply(data) {
         data
     })
 }
+// 工单管理-工单完结
+export function workorderFinish(data) {
+    return request({
+        url: '/api/store/workorder/finish',
+        method: 'post',
+        data
+    })
+}

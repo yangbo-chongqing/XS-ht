@@ -17,13 +17,13 @@
                 </el-input>
               </div>
             </el-col>
-            <el-col :span="6">
+            <!-- <el-col :span="6">
               <div class="entry-search">
                 <el-button type="primary" @click="golinkpage('/customCode')"
                   >新增扩展字段</el-button
                 >
               </div>
-            </el-col>
+            </el-col> -->
             <el-col :span="5" v-if="userinfo.purview.product.add">
               <div class="entry-search">
                 <el-button

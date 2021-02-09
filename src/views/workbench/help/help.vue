@@ -98,7 +98,6 @@ export default {
       this.$store.dispatch("app/toggleSideBar");
     },
     settings() {
-      console.log(111111111);
       this.$router.push("/settings/account");
     },
     async logout() {

@@ -3,13 +3,15 @@
     <div class="top">
       <div class="topFont">
         <span class="leftError">问题：{{ question.title }}</span>
-        <span class="rightStatus" v-if="question.state == 0"
+        <span
+          class="rightStatus"
+          v-if="question.state == 0 || question.state == 1"
           >状态：<span class="noup">未回复</span>
         </span>
-        <span class="rightStatus" v-if="question.state == 1"
+        <span class="rightStatus" v-if="question.state == 2"
           ><span class="okup">已回复</span>
         </span>
-        <span class="rightStatus" v-if="question.state == 2"
+        <span class="rightStatus" v-if="question.state == 3"
           ><span class="closeup">已解决</span>
         </span>
       </div>
@@ -19,7 +21,7 @@
         <div class="contentDetail">
           <div class="leftCon">
             <div class="contentTit">
-              {{ contentList[0].create_time }} {{ question.username }}
+              {{ contentList[0].create_time }} {{ question.user_info.nickname }}
             </div>
             <div class="leftContent">
               <el-image
@@ -34,13 +36,14 @@
               <p>产品名称：{{ question.product_name }}</p>
               <p>车架号：{{ question.frame_number }}</p>
               <p>产品编号：{{ question.product_number }}</p>
-              <p>
+              <p v-if="question.problem_categories">
                 产品类型：{{ question.problem_categories }}--{{
                   question.problem_type
                 }}
               </p>
               <p>问题描述：{{ question.problem_content }}</p>
-              <p>手机号：{{ question.phone }}</p>
+              <p v-if="question.username">姓名：{{ question.username }}</p>
+              <p v-if="question.phone">手机号：{{ question.phone }}</p>
             </div>
           </div>
         </div>

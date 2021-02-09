@@ -73,9 +73,13 @@
         </el-table-column>
         <el-table-column label="状态" align="center">
           <template slot-scope="scope">
-            <span class="code-name" v-if="scope.row.state == 0">待回复</span>
-            <span class="code-name" v-if="scope.row.state == 1">已回复</span>
-            <span class="code-name" v-if="scope.row.state == 2">已解决</span>
+            <span
+              class="code-name"
+              v-if="scope.row.state == 0 || scope.row.state == 1"
+              >待回复</span
+            >
+            <span class="code-name" v-if="scope.row.state == 2">已回复</span>
+            <span class="code-name" v-if="scope.row.state == 3">已解决</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作" width="220">
@@ -91,6 +95,11 @@
                 >查看</el-link
               ></span
             >
+            <!-- <span class="el-link-btn"
+              ><el-link type="primary" @click="over(scope.row)"
+                >完结</el-link
+              ></span
+            > -->
           </template>
         </el-table-column>
       </el-table>
@@ -108,7 +117,7 @@
   </div>
 </template>
 <script>
-import { workorderList } from "@/api/myApi";
+import { workorderList, workorderFinish } from "@/api/myApi";
 export default {
   data() {
     return {
@@ -149,6 +158,17 @@ export default {
       workorderList(this.qs.stringify(parasm)).then((res) => {
         this.list = res.data.list.data;
         this.count = res.data.list.total;
+      });
+    },
+    over(id) {
+      let params = {
+        // type: 3,
+        workorder_id: id.id,
+      };
+      workorderFinish(this.qs.stringify(params)).then((res) => {
+        if (res.state == 200) {
+          this.getList();
+        }
       });
     },
     golinkpage(page, obj) {
