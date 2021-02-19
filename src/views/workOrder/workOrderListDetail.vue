@@ -2,7 +2,9 @@
   <div class="body">
     <div class="top">
       <div class="topFont">
-        <span class="leftError">问题：{{ question.title }}</span>
+        <span class="leftError" :title="question.title"
+          >问题：{{ question.title }}</span
+        >
         <span
           class="rightStatus"
           v-if="question.state == 0 || question.state == 1"
@@ -227,14 +229,15 @@ export default {
       display: flex;
       justify-content: space-between;
       .leftError {
+        width: 730px;
         padding-right: 60px;
         line-height: 60px;
         text-overflow: -o-ellipsis-lastline;
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
         -webkit-box-orient: vertical;
       }
       .rightStatus {

@@ -79,7 +79,8 @@
               >待回复</span
             >
             <span class="code-name" v-if="scope.row.state == 2">已回复</span>
-            <span class="code-name" v-if="scope.row.state == 3">已解决</span>
+            <span class="code-name" v-if="scope.row.state == 3">已完结</span>
+            <!-- <span class="code-name" v-if="scope.row.state == 4">已解决</span> -->
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作" width="220">
@@ -95,11 +96,11 @@
                 >查看</el-link
               ></span
             >
-            <!-- <span class="el-link-btn"
+            <span class="el-link-btn"
               ><el-link type="primary" @click="over(scope.row)"
                 >完结</el-link
               ></span
-            > -->
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -130,8 +131,9 @@ export default {
       state: "-1", //筛选状态
       states: [
         { label: "全部", value: "-1" },
-        { label: "待回复", value: "0" },
-        { label: "已回复", value: "1" },
+        { label: "待回复", value: "1" },
+        { label: "已回复", value: "2" },
+        { label: "已完结", value: "3" },
       ],
     };
   },
@@ -164,9 +166,14 @@ export default {
       let params = {
         // type: 3,
         workorder_id: id.id,
+        type: 0,
       };
       workorderFinish(this.qs.stringify(params)).then((res) => {
-        if (res.state == 200) {
+        if (res.status == 200) {
+          this.$message({
+            message: "操作成功",
+            type: "success",
+          });
           this.getList();
         }
       });
