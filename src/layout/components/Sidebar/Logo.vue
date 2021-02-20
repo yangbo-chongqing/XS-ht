@@ -37,6 +37,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { museSwitch } from "@/api/user";
+import { getMenu } from "@/api/user";
 
 export default {
   name: "SidebarLogo",
@@ -71,22 +72,32 @@ export default {
       // 切换后 页面刷新
       this.id = id;
       await this.getId();
+
       await this.$store.dispatch("user/getInfo");
-      await this.$router.go(0);
+      // 切换商家后路由同步更新
       await this.getMenuList();
+
+      // await this.$router.go(0);
       // await this.reload();
     },
 
     async getMenuList() {
-      await getMenu().then((res) => {
+      localStorage.removeItem("router");
+      getMenu().then((res) => {
+        console.log(res);
         let list = res.data.menu;
         for (let i = 0; i < list.length; i++) {
           this.dataList.push(list[i].path);
-          for (let n = 0; n < list[i].children.length; n++) {
-            this.dataList.push(list[i].children[n].path);
+          if (list[i].children) {
+            for (let n = 0; n < list[i].children.length; n++) {
+              this.dataList.push(list[i].children[n].path);
+            }
           }
         }
-        sessionStorage.setItem("router", JSON.stringify(this.dataList));
+        localStorage.setItem("router", JSON.stringify(this.dataList));
+        console.log(JSON.stringify(this.dataList));
+        this.dataList = [];
+        this.$router.go(0);
       });
     },
     getId() {
