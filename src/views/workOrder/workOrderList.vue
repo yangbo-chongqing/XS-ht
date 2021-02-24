@@ -56,10 +56,16 @@
         fit
         highlight-current-row
       >
-        <el-table-column label="工单ID" width="150" align="center">
-          <template slot-scope="scope">
+        <el-table-column
+          label="工单ID"
+          prop="id"
+          sortable
+          width="150"
+          align="center"
+        >
+          <!-- <template slot-scope="scope">
             {{ scope.row.id }}
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column label="用户" align="center">
           <template slot-scope="scope">

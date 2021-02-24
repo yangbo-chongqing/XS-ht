@@ -125,6 +125,7 @@
 
 <script>
 import { postAccountSettings } from "@/api/user";
+import Bus from "../bus.js";
 import { getGetMuse, changeAdmin, edPD } from "@/api/settings";
 import { mapGetters } from "vuex";
 export default {
@@ -171,6 +172,7 @@ export default {
       getGetMuse().then((res) => {
         this.enterpriseInfo = res.data.muse_info;
         this.upOrDown = res.data.muse_info.state;
+        Bus.$emit("getisshow", this.enterpriseInfo);
       });
     },
     // 修改用户信息

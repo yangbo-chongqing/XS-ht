@@ -27,12 +27,12 @@
                   >
                   </el-option>
                 </el-select>
-                <el-button
+                <!-- <el-button
                   type="primary"
                   @click="createEntryTypeFlag = true"
                   :style="{ 'margin-left': '10px' }"
                   icon="el-icon-plus"
-                ></el-button>
+                ></el-button> -->
               </el-form-item>
               <el-form-item label="是否隐藏(主页列表不显示)">
                 <el-checkbox v-model="endtyshowflag" label="隐藏"></el-checkbox>

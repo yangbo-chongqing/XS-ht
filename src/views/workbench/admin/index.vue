@@ -8,12 +8,12 @@
             <p>{{ relicsCount }}</p>
           </div></el-col
         >
-        <!-- <el-col
-          :span="6"
-        ><div class="grid-content bg-purple">
-          <p>功能码</p>
-          <p>5</p>
-        </div></el-col> -->
+        <el-col :span="6" :offset="6"
+          ><div class="grid-content bg-purple">
+            <p>功能码</p>
+            <p>{{ product_count }}</p>
+          </div></el-col
+        >
       </el-row>
     </div>
     <div class="workbench-admin-code-body">
@@ -159,6 +159,10 @@ export default {
       default: {},
     },
     relicsCount: {
+      type: Number,
+      default: 0,
+    },
+    product_count: {
       type: Number,
       default: 0,
     },

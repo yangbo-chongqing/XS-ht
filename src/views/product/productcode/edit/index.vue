@@ -56,6 +56,9 @@
                 </div> -->
               </div>
             </el-form-item>
+            <el-form-item label="排序">
+              <el-input class="classInput" v-model="form.sort"></el-input>
+            </el-form-item>
             <el-form-item label="状态">
               <el-select v-model="form.state" placeholder="请选择">
                 <el-option
@@ -784,6 +787,7 @@ export default {
         factory: "",
         listed: "",
         state: 1,
+        sort: 0,
       },
       form2: {},
       form1: [],
@@ -912,6 +916,7 @@ export default {
         this.form.state = res.data.data.state;
         this.form.factory = res.data.data.factory;
         this.form.listed = res.data.data.listed;
+        this.form.sort = res.data.data.sort;
         this.picList = res.data.data.video;
         for (let i = 0; i < this.picList.length; i++) {
           this.picList[i].url = JSON.parse(
@@ -987,6 +992,7 @@ export default {
           factory: this.form.factory,
           state: this.form.state,
           listed: this.form.listed,
+          sort: this.form.sort,
           details: this.productDetail,
           manual: this.productState,
           picture: JSON.stringify(arry),
@@ -1014,6 +1020,7 @@ export default {
           unique: this.form.unique,
           name: this.form.name,
           // image: this.imgs,
+          sort: this.form.sort,
           image: this.form.dialogImageUrl,
           state: this.form.state,
           picture: JSON.stringify(arry),
@@ -1195,13 +1202,15 @@ export default {
     },
     videoUploadSuccess(obj, res, file) {
       // 视频上传成功
-      if (obj) {
+      if (obj.index || obj.index === 0) {
         this.form1[obj.index] = `http://voice.xunsheng.org.cn/${res.key}`;
         this.uploadLoading.close();
+        console.log(this.form2);
       } else {
         this.form2.url = `http://voice.xunsheng.org.cn/${res.key}`;
         let b = JSON.parse(JSON.stringify(file.name));
         this.form2.name = b.substring(0, b.indexOf("."));
+        console.log(this.form2);
       }
       this.uploadLoading.close();
       this.qiToken = JSON.parse(sessionStorage.qiToken);

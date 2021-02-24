@@ -47,11 +47,19 @@
         border
         fit
         highlight-current-row
+        @sort-change="changeTableSort"
       >
-        <el-table-column label="产品编号" width="150" align="center">
-          <template slot-scope="scope">
+        >
+        <el-table-column
+          label="产品编号"
+          prop="unique"
+          :sortable="'custom'"
+          width="150"
+          align="center"
+        >
+          <!-- <template slot-scope="scope">
             {{ scope.row.unique }}
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column label="产品名称" align="center">
           <template slot-scope="scope">
@@ -388,6 +396,9 @@ export default {
         }
       });
     },
+    changeTableSort(column) {
+      console.log(column);
+    },
     toggle() {
       this.codeDialog = !this.codeDialog;
       this.codeImg = "";
@@ -593,7 +604,6 @@ export default {
     },
     fetchData() {
       this.listLoading = true;
-
       let parmas = {
         page: this.page,
         keyword: this.keyword,

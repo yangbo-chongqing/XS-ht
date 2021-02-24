@@ -52,7 +52,7 @@ import { isExternal } from "@/utils/validate";
 import Item from "./Item";
 import AppLink from "./Link";
 import FixiOSBug from "./FixiOSBug";
-import { getMenu } from "@/api/user";
+// import { getMenu } from "@/api/user";
 export default {
   name: "SidebarItem",
   components: { Item, AppLink },

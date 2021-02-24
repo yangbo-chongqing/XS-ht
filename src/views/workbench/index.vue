@@ -3,6 +3,7 @@
     <div class="workbench-left">
       <adminContent
         :relics-count="relicsCount"
+        :product_count="product_count"
         :readList="readList"
         :relics-list="relicsList"
       />
@@ -29,6 +30,7 @@ export default {
   data() {
     return {
       relicsCount: 0,
+      product_count: 0,
       relicsList: [],
       codeObj: {},
       chartData: [],
@@ -53,6 +55,7 @@ export default {
     getWorkbenchInfo() {
       workbench().then((res) => {
         this.relicsCount = res.data.relics_count;
+        this.product_count = res.data.product_count;
         this.relicsList = res.data.relics_list;
         this.readList = res.data.log_data;
         this.codeObj = {
