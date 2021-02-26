@@ -1037,11 +1037,9 @@ export default {
         });
       }
     },
-    handleRemove(file) {},
     handlePictureCardPreview(file) {
       this.dialogVisible = true;
     },
-    handleDownload(file) {},
     uploadProgress() {
       this.uploadLoading = Loading.service({
         text: "上传中...",

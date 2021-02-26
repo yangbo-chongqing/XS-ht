@@ -352,6 +352,7 @@ export default {
       addinstruFromFlag: false,
       addInspectionFlag: false,
       type: "",
+      order: 1,
       productId: 0,
       form: {
         manual_name: "",
@@ -397,7 +398,12 @@ export default {
       });
     },
     changeTableSort(column) {
-      console.log(column);
+      if (column.order == "ascending") {
+        this.order = 0;
+      } else {
+        this.order = 1;
+      }
+      this.fetchData();
     },
     toggle() {
       this.codeDialog = !this.codeDialog;
@@ -607,6 +613,7 @@ export default {
       let parmas = {
         page: this.page,
         keyword: this.keyword,
+        order: this.order,
       };
       productList(this.qs.stringify(parmas)).then((res) => {
         this.count = res.data.total;

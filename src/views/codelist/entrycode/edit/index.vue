@@ -33,12 +33,12 @@
                   >
                   </el-option>
                 </el-select>
-                <el-button
+                <!-- <el-button //   添加分类
                   @click="createEntryTypeFlag = true"
                   type="primary"
                   :style="{ 'margin-left': '10px' }"
                   icon="el-icon-plus"
-                ></el-button>
+                ></el-button> -->
               </el-form-item>
             </div>
             <!-- <div class="create-code-body-title">

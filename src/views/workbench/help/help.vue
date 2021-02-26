@@ -122,7 +122,6 @@ export default {
     position: relative;
     background: #fff;
     box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
-
     .hamburger-container {
       line-height: 46px;
       height: 100%;
@@ -156,7 +155,7 @@ export default {
         display: inline-block;
         padding: 0 8px;
         height: 100%;
-        font-size: 18px;
+        font-size: 18 px;
         color: #5a5e66;
         vertical-align: text-bottom;
 
@@ -208,7 +207,7 @@ export default {
     }
     .right {
       margin-left: 20px;
-      width: 100%;
+      width: 1150px;
       background: #fff;
       padding: 15px 30px;
     }

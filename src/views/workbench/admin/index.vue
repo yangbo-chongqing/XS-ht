@@ -10,7 +10,7 @@
         >
         <el-col :span="6" :offset="6"
           ><div class="grid-content bg-purple">
-            <p>功能码</p>
+            <p>产品码</p>
             <p>{{ product_count }}</p>
           </div></el-col
         >
