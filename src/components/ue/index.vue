@@ -522,13 +522,7 @@ export default {
     },
     //添加联系方式到富文本
     addInformation() {
-      let aStr = `
-        <ul style='background: #f5f5f5;width:100%;border-radius: 10px;padding: 10px;box-sizing: border-box;'>
-          <li style="text-align:center"><span style='font-size:18px;font-weight: bold;'>基本信息</span></li>
-          <li style="text-align:center;color:#333"><span style='color:#999;margin-right:20px'>联系电话：</span>023-123456</li>
-          <li style="text-align:center;color:#333"><span style='color:#999;margin-right:20px'>联系手机：</span>12345678911</li>
-          <li style="text-align:center;color:#333"><span style='color:#999;margin-right:20px'>联系地址：</span>某某市某某区某某街道</li>
-        </ul>`;
+      let aStr = `<ul style='background: #f5f5f5;width:100%;border-radius: 10px;padding: 10px;box-sizing: border-box;'><li style="text-align:center"><span style='font-size:18px;font-weight: bold;'>基本信息</span></li><li style="text-align:center;color:#333"><span style='color:#999;margin-right:20px'>联系电话：</span>023-123456</li><li style="text-align:center;color:#333"><span style='color:#999;margin-right:20px'>联系手机：</span>12345678911</li><li style="text-align:center;color:#333"><span style='color:#999;margin-right:20px'>联系地址：</span>某某市某某区某某街道</li></ul>`;
       this.editor.execCommand("inserthtml", aStr);
     },
     //添加相关链接到富文本

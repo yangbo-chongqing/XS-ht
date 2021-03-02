@@ -186,7 +186,7 @@
           :data="qiToken"
           :before-upload="uploadVideo"
           :headers="headers"
-          accept=".MPEG,.baiAVI,.nAVI,.ASF,.MOV,.3GP,.mp4"
+          accept=".mp4"
           :show-file-list="false"
           :on-success="videoUploadSuccess"
           :on-progress="uploadProgress"

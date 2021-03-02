@@ -2,12 +2,12 @@
   <div class="fun-code">
     <div class="fun-code-head">
       <el-row>
-        <el-col :span="14"
+        <el-col :span="16"
           ><div class="entry-title" @click="back">
             <i class="el-icon-arrow-left"></i>返回产品码
-          </div></el-col
-        >
-        <el-col :span="10">
+          </div>
+        </el-col>
+        <el-col :span="8">
           <el-row :gutter="20">
             <el-col :span="18">
               <div class="entry-search">
@@ -22,7 +22,7 @@
                 </el-input>
               </div>
             </el-col>
-            <el-col :span="4" v-if="userinfo.purview.flowing.add">
+            <!-- <el-col :span="4" v-if="userinfo.purview.flowing.add">
               <div class="entry-search">
                 <el-button
                   type="primary"
@@ -30,7 +30,7 @@
                   >新增流水码</el-button
                 >
               </div>
-            </el-col>
+            </el-col> -->
           </el-row>
         </el-col>
       </el-row>
@@ -87,7 +87,7 @@
                 >下载二维码</el-link
               ></span
             >
-            <span class="el-link-btn" v-if="userinfo.purview.flowing.edit"
+            <!-- <span class="el-link-btn" v-if="userinfo.purview.flowing.edit"
               ><el-link
                 type="primary"
                 @click="
@@ -100,15 +100,15 @@
               ><el-link type="primary" @click="delFow(scope.row.id, scope)"
                 >删除</el-link
               ></span
-            >
+            > -->
           </template>
         </el-table-column>
       </el-table>
-      <div class="entry-pagination" v-if="showPage">
+      <div class="entry-pagination">
         <el-pagination
           background
           :current-page.sync="page"
-          layout="prev, pager, next"
+          layout="total,prev, pager, next"
           :total="count"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -223,6 +223,7 @@ export default {
         this.listLoading = false;
         this.showPage = res.data.data.last_page > 1 ? true : false;
         let pageNo = this.page - 1;
+        console.log(pageNo);
         if (pageNo * 10 >= res.data.data.total) {
           this.page -= 1;
           this.fetchData();

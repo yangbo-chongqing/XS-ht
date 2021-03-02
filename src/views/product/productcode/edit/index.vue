@@ -60,7 +60,7 @@
               <el-input class="classInput" v-model="form.sort"></el-input>
             </el-form-item>
             <el-form-item label="状态">
-              <el-select v-model="form.state" placeholder="请选择">
+              <el-select v-model="form.show" placeholder="请选择">
                 <el-option
                   v-for="(item, index) of editState"
                   :key="index"
@@ -718,7 +718,7 @@
           :data="qiToken"
           :before-upload="uploadVideo"
           :headers="headers"
-          accept=".MPEG,.baiAVI,.nAVI,.ASF,.MOV,.3GP,.mp4"
+          accept=".mp4"
           :show-file-list="false"
           :on-success="videoUploadSuccess.bind(null, {})"
           :on-progress="uploadProgress"
@@ -786,7 +786,7 @@ export default {
         dialogImageUrl: "",
         factory: "",
         listed: "",
-        state: 1,
+        show: 1,
         sort: 0,
       },
       form2: {},
@@ -913,7 +913,7 @@ export default {
         this.form.name = res.data.data.name;
         this.form.unique = res.data.data.unique;
         // this.form.dialogImageUrl = res.data.data.image;
-        this.form.state = res.data.data.state;
+        this.form.show = res.data.data.show;
         this.form.factory = res.data.data.factory;
         this.form.listed = res.data.data.listed;
         this.form.sort = res.data.data.sort;
@@ -990,7 +990,7 @@ export default {
           image: this.imgs,
           // image: this.form.dialogImageUrl,
           factory: this.form.factory,
-          state: this.form.state,
+          show: this.form.show,
           listed: this.form.listed,
           sort: this.form.sort,
           details: this.productDetail,
@@ -1022,7 +1022,7 @@ export default {
           // image: this.imgs,
           sort: this.form.sort,
           image: this.form.dialogImageUrl,
-          state: this.form.state,
+          show: this.form.show,
           picture: JSON.stringify(arry),
         };
         productCreate(this.qs.stringify(params), { meta: 1 }).then((res) => {

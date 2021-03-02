@@ -11,13 +11,13 @@
 
 <script>
 export default {
-  name: 'AppMain',
+  name: "AppMain",
   computed: {
     key() {
-      return this.$route.path
-    }
-  }
-}
+      return this.$route.path;
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -25,7 +25,8 @@ export default {
   /*50 = navbar  */
   min-height: calc(100vh - 90px);
   width: 100%;
-  padding: 20px;
+  /* padding: 20px; */
+  padding: 20px 20px 0 20px;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;

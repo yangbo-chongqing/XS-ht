@@ -58,6 +58,7 @@
               <el-col :span="4">
                 <el-upload
                   class="upload-demo"
+                  accept=".mp4"
                   action="/api/store/upload"
                   :show-file-list="false"
                   :headers="headers"

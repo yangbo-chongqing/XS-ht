@@ -66,7 +66,14 @@
             <span class="code-name">{{ scope.row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="产品封面图片" align="center">
+        <el-table-column label="产品状态" align="center">
+          <template slot-scope="scope">
+            <span class="code-name">{{
+              scope.row.show ? "开启" : "关闭"
+            }}</span>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="产品封面图片" align="center">
           <template slot-scope="scope">
             <div
               style="
@@ -83,7 +90,7 @@
               </el-image>
             </div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <!--       <el-table-column label="装潢视频" align="center">
           <template slot-scope="scope">
             <el-button type="text" size="mini" v-if="scope.row.video"
@@ -145,8 +152,20 @@
             </el-switch>
           </template>
         </el-table-column> -->
-        <el-table-column align="center" label="操作" width="220">
+        <el-table-column align="center" label="操作" width="320">
           <template slot-scope="scope">
+            <!-- <span class="el-link-btn"
+              ><el-link
+                type="primary"
+                @click="
+                  openPopover(
+                    'http://xsdt.xunsheng.org.cn/api/web/code?type=4&id=' +
+                      scope.row.id
+                  )
+                "
+                >下载二维码</el-link
+              ></span
+            > -->
             <span class="el-link-btn" v-if="userinfo.purview.flowing.select"
               ><el-link
                 type="primary"
@@ -159,12 +178,12 @@
                 >查看流水码</el-link
               ></span
             >
-            <!-- <span class="el-link-btn"
+            <span class="el-link-btn"
               ><el-link
                 type="primary"
                 @click="
                   openPopover(
-                    'http://xsdt.xunsheng.org.cn/api/web/code?type=3&id=' +
+                    'http://xsdt.xunsheng.org.cn/api/web/code?type=4&id=' +
                       scope.row.id +
                       '&muse_id=' +
                       userinfo.user_info.muse_id
@@ -172,7 +191,7 @@
                 "
                 >下载二维码</el-link
               ></span
-            > -->
+            >
             <span class="el-link-btn" v-if="userinfo.purview.product.edit"
               ><el-link
                 type="primary"
@@ -191,12 +210,13 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="entry-pagination" v-if="showPage">
+      <div class="entry-pagination">
         <el-pagination
-          background
-          :current-page.sync="page"
-          layout="prev, pager, next"
+          :current-page="page"
+          layout="total, sizes, prev, pager, next, jumper"
           :total="count"
+          :page-size="pagesize"
+          :page-sizes="[20, 50, 70, 100]"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
         />
@@ -347,11 +367,12 @@ export default {
       loading: false,
       showPage: false,
       headers: { Authorization: "Bearer " + getToken() },
-      tableHeight: document.body.clientHeight - 230,
+      tableHeight: document.body.clientHeight - 200,
       addInstruFlag: false,
       addinstruFromFlag: false,
       addInspectionFlag: false,
       type: "",
+      pagesize: 20,
       order: 1,
       productId: 0,
       form: {
@@ -581,7 +602,8 @@ export default {
       });
     },
     handleSizeChange(size) {
-      this.page = size;
+      this.pagesize = size;
+      this.page = 1;
       this.fetchData();
     },
     handleCurrentChange(size) {
@@ -614,6 +636,7 @@ export default {
         page: this.page,
         keyword: this.keyword,
         order: this.order,
+        page_size: this.pagesize,
       };
       productList(this.qs.stringify(parmas)).then((res) => {
         this.count = res.data.total;
@@ -641,7 +664,7 @@ export default {
     box-sizing: border-box;
   }
   .entry-pagination {
-    margin: 20px 0;
+    margin: 20px 0 0 0;
     text-align: center;
   }
   .fun-table {
