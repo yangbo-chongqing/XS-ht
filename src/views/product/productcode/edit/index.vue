@@ -36,6 +36,7 @@
                   :data="qiToken"
                   action="http://upload.qiniup.com"
                   :headers="headers"
+                  multiple
                   accept=".jpg,.png"
                   :on-error="uploadToken"
                   :before-upload="uploadPic"

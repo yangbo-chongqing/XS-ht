@@ -81,7 +81,8 @@
                     'http://xsdt.xunsheng.org.cn/api/web/code?type=3&id=' +
                       scope.row.id +
                       '&muse_id=' +
-                      userinfo.user_info.muse_id
+                      userinfo.user_info.muse_id,
+                    scope.row.pkid
                   )
                 "
                 >下载二维码</el-link
@@ -117,6 +118,7 @@
     </div>
     <codedown
       :dialogVisible="codeDialog"
+      :titleName="titleName"
       :codeImg="codeImg"
       @toggleDialog="toggle"
     />
@@ -146,15 +148,17 @@ export default {
       tableHeight: document.body.clientHeight - 220,
       codeDialog: false,
       codeImg: "",
+      titleName: "",
     };
   },
   created() {
     this.fetchData();
   },
   methods: {
-    openPopover(code) {
+    openPopover(code, name) {
       // 打开二维码
       this.codeImg = code;
+      this.titleName = name;
       this.codeDialog = true;
     },
     toggle() {

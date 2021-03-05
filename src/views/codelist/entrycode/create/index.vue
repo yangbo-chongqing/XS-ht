@@ -239,7 +239,8 @@
                       'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id=' +
                         id +
                         '&muse_id=' +
-                        userinfo.user_info.muse_id
+                        userinfo.user_info.muse_id,
+                      codeTitle
                     )
                   "
                   >下载</el-link
@@ -640,6 +641,7 @@
     </el-dialog>
     <codedown
       :dialogVisible="dialogVisible"
+      :titleName="titleName"
       :codeImg="codeImg"
       @toggleDialog="toggle"
     />
@@ -818,6 +820,7 @@ export default {
       entryXFlag: false,
       flag: false,
       entrySelData: [],
+      titleName: "",
       loadProgress: 0, // 动态显示进度条
       progressFlag: false, // 关闭进度条
       createEntryTypeFlag: false,
@@ -844,8 +847,9 @@ export default {
       this.dialogVisible = !this.dialogVisible;
       this.codeImg = "";
     },
-    openPopover(code) {
+    openPopover(code, name) {
       this.codeImg = code;
+      this.titleName = name;
       this.dialogVisible = true;
     },
     //模态窗确定

@@ -171,6 +171,7 @@
         userinfo.user_info.muse_id
       "
       @toggleDialog="toggle"
+      :titleName="info.muse_name"
     />
   </div>
 </template>
@@ -207,6 +208,7 @@ export default {
       enterpriseVideo: "",
       enterpriseLogo: "",
       isEditFlag: false,
+      titleName: "",
       loading: "",
       loadProgress: 0, // 动态显示进度条
       progressFlag: false, // 关闭进度条

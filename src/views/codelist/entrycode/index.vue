@@ -171,7 +171,8 @@
                     'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id=' +
                       scope.row.id +
                       '&muse_id=' +
-                      userinfo.user_info.muse_id
+                      userinfo.user_info.muse_id,
+                    scope.row.name
                   )
                 "
                 class="code-img"
@@ -228,7 +229,8 @@
                       'http://xsdt.xunsheng.org.cn/api/web/code?type=1&id=' +
                         scope.row.id +
                         '&muse_id=' +
-                        userinfo.user_info.muse_id
+                        userinfo.user_info.muse_id,
+                      scope.row.name
                     )
                   "
                   >下载</el-link
@@ -328,6 +330,7 @@
     <codedown
       :dialogVisible="codeDialog"
       :codeImg="codeImg"
+      :titleName="titleName"
       @toggleDialog="toggle"
     />
     <EntryQuery
@@ -400,6 +403,7 @@ export default {
       treeCount: 0,
       type_id: 0,
       scopeLabel: "",
+      titleName: "",
     };
   },
   // beforeRouteEnter(to, from, next) {
@@ -411,14 +415,7 @@ export default {
   // },
   // activated() {
   //   if (!this.$route.meta.isBack) {
-  //     getQiToken({}).then((res) => {
-  //       let str = res.data.data;
-  //       str.token = JSON.parse(JSON.stringify(str.upToken));
-  //       str.key = JSON.parse(JSON.stringify(str.path));
-  //       delete str.path;
-  //       delete str.upToken;
-  //       sessionStorage.setItem("qiToken", JSON.stringify(str));
-  //     });
+
   //     this.page = 1;
   //     // 如果isBack是false，表明需要获取新数据，否则就不再请求，直接使用缓存的数据
   //     this.fetchData();
@@ -436,6 +433,14 @@ export default {
     this.fetchData();
     this.GetMuse();
     this.typeList();
+    getQiToken({}).then((res) => {
+      let str = res.data.data;
+      str.token = JSON.parse(JSON.stringify(str.upToken));
+      str.key = JSON.parse(JSON.stringify(str.path));
+      delete str.path;
+      delete str.upToken;
+      sessionStorage.setItem("qiToken", JSON.stringify(str));
+    });
   },
   // updated() {
   //   this.fetchData();
@@ -571,9 +576,11 @@ export default {
     toggle() {
       this.codeDialog = !this.codeDialog;
     },
-    openPopover(code) {
+    openPopover(code, name) {
       this.codeImg = code;
       this.codeDialog = true;
+      console.log(name);
+      this.titleName = name;
     },
     //标签管理按钮
     cascaderClick() {

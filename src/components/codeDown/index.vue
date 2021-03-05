@@ -53,15 +53,22 @@ import html2canvas from "html2canvas";
 import { downloadIamge } from "@/utils/utils";
 export default {
   name: "InstructionsCreate",
-  props: ["dialogVisible", "codeImg"],
+  props: ["dialogVisible", "codeImg", "titleName"],
   data() {
     return {
       activeName: "second",
       input: "",
     };
   },
-  created() {},
-  watch: {},
+  created() {
+    // console.log(this.titleName);
+    this.input = this.titleName;
+  },
+  watch: {
+    titleName(val) {
+      this.input = val;
+    },
+  },
   methods: {
     handleClose(done) {
       this.$emit("toggleDialog");

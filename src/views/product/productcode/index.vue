@@ -186,7 +186,8 @@
                     'http://xsdt.xunsheng.org.cn/api/web/code?type=4&id=' +
                       scope.row.id +
                       '&muse_id=' +
-                      userinfo.user_info.muse_id
+                      userinfo.user_info.muse_id,
+                    scope.row.name
                   )
                 "
                 >下载二维码</el-link
@@ -327,6 +328,7 @@
         </span>
       </el-dialog> -->
       <codedown
+        :titleName="titleName"
         :dialogVisible="codeDialog"
         :codeImg="codeImg"
         @toggleDialog="toggle"
@@ -381,6 +383,7 @@ export default {
       },
       codeDialog: false,
       codeImg: "",
+      titleName: "",
     };
   },
   computed: {
@@ -430,8 +433,9 @@ export default {
       this.codeDialog = !this.codeDialog;
       this.codeImg = "";
     },
-    openPopover(code) {
+    openPopover(code, name) {
       this.codeImg = code;
+      this.titleName = name;
       this.codeDialog = true;
     },
     //添加质检报告

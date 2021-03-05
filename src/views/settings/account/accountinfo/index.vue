@@ -60,7 +60,7 @@
         ><div class="AccountInfo-item">
           <label>企业信息:</label> <span>{{ enterpriseInfo.muse_name }}</span>
           <span
-            ><el-link type="primary" @click="golinkpage('/settings')"
+            ><el-link type="primary" @click="golinkpage('/codelist/homepage')"
               >修改</el-link
             ></span
           >
@@ -186,7 +186,7 @@ export default {
       postAccountSettings(this.qs.stringify(params)).then((res) => {
         loading.close();
         this.isShowUserName = false;
-        this.isShowUserName = false;
+        this.isShowUserTel = false;
       });
     },
     golinkpage(page, obj) {
