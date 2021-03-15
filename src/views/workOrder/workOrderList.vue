@@ -114,8 +114,10 @@
         <el-pagination
           background
           :current-page.sync="page"
-          layout="prev, pager, next"
+          layout="total, sizes, prev, pager, next, jumper"
           :total="count"
+          :page-size="pageSize"
+          :page-sizes="[20, 50, 70, 100]"
           @current-change="handleCurrentChange"
           @size-change="handleSizeChange"
         />
@@ -133,6 +135,7 @@ export default {
       list: [], //工单列表
       tableHeight: document.body.clientHeight - 230,
       page: 1, //页码
+      pageSize: 20,
       count: 0, //总条数
       state: "-1", //筛选状态
       states: [
@@ -144,13 +147,15 @@ export default {
     };
   },
   methods: {
-    onSearch() {},
-    handleCurrentChange(size) {
+    // onSearch() {},
+    handleSizeChange(size) {
       // 换页
-      this.page = size;
+      this.pageSize = size;
+      sessionStorage.setItem("pageSize", this.pageSize);
+      this.page = 1;
       this.getList();
     },
-    handleSizeChange(size) {
+    handleCurrentChange(size) {
       this.page = size;
       this.getList();
     },
@@ -162,6 +167,7 @@ export default {
       let parasm = {
         page: this.page,
         state: this.state,
+        page_size: this.pageSize,
       };
       workorderList(this.qs.stringify(parasm)).then((res) => {
         this.list = res.data.list.data;
@@ -195,7 +201,15 @@ export default {
     },
   },
   created() {
-    this.getList();
+    if (sessionStorage.getItem("pageSize") != null) {
+      // console.log(sessionStorage.getItem("pageSize"));
+      this.pageSize = sessionStorage.getItem("pageSize") * 1;
+      this.getList();
+    } else {
+      sessionStorage.setItem("pageSize", 20);
+      this.pageSize = 20;
+      this.getList();
+    }
   },
 };
 </script>

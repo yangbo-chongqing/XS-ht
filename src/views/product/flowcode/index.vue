@@ -46,17 +46,17 @@
         fit
         highlight-current-row
       >
-        <el-table-column label="流水号">
+        <el-table-column label="流水号" align="center">
           <template slot-scope="scope">
             <span class="code-name">{{ scope.row.pkid }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="合格编号">
+        <el-table-column label="合格编号" align="center">
           <template slot-scope="scope">
             <span class="code-name">{{ scope.row.certificate_id }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="车架号">
+        <el-table-column label="车架号" align="center">
           <template slot-scope="scope">
             <span class="code-name">{{ scope.row.clsbdh }}</span>
           </template>
@@ -65,12 +65,16 @@
           <template slot-scope="scope">
             <span class="code-name">{{ scope.row.certificate_id }}</span>
           </template>
-        </el-table-column>
-        <el-table-column label="合格证证芯">
+        </el-table-column>-->
+        <el-table-column label="流水码统计" align="center">
           <template slot-scope="scope">
-            <span class="code-name">{{ scope.row.certificate_core }}</span>
+            <span class="code-name">
+              扫码人数:{{ scope.row.scan_code_number }}; 浏览次数:{{
+                scope.row.watch_number
+              }};</span
+            >
           </template>
-        </el-table-column> -->
+        </el-table-column>
         <el-table-column align="center" label="操作" width="220">
           <template slot-scope="scope">
             <span class="el-link-btn"
@@ -109,8 +113,10 @@
         <el-pagination
           background
           :current-page.sync="page"
-          layout="total,prev, pager, next"
+          layout="total, sizes, prev, pager, next, jumper"
           :total="count"
+          :page-size="pageSize"
+          :page-sizes="[20, 50, 70, 100]"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
         />
@@ -143,6 +149,7 @@ export default {
       keyword: "",
       page: 1,
       count: 0,
+      pageSize: 20,
       showPage: false,
       pageed: this.$route.query.page,
       tableHeight: document.body.clientHeight - 220,
@@ -152,7 +159,15 @@ export default {
     };
   },
   created() {
-    this.fetchData();
+    if (sessionStorage.getItem("pageSize") != null) {
+      // console.log(sessionStorage.getItem("pageSize"));
+      this.pageSize = sessionStorage.getItem("pageSize") * 1;
+      this.fetchData();
+    } else {
+      sessionStorage.setItem("pageSize", 20);
+      this.pageSize = 20;
+      this.fetchData();
+    }
   },
   methods: {
     openPopover(code, name) {
@@ -207,7 +222,9 @@ export default {
       });
     },
     handleSizeChange(size) {
-      this.page = size;
+      this.page = 1;
+      this.pageSize = size;
+      sessionStorage.setItem("pageSize", this.pageSize);
       this.fetchData();
     },
     handleCurrentChange(size) {
@@ -219,6 +236,7 @@ export default {
       let parmas = {
         product_id: this.id,
         page: this.page,
+        page_size: this.pageSize,
         keyword: this.keyword,
       };
       floWingList(this.qs.stringify(parmas)).then((res) => {
@@ -315,7 +333,8 @@ export default {
     float: left;
   }
   .code-name {
-    float: left;
+    text-align: center;
+    // float: left;
     line-height: 30px;
     margin-left: 5px;
   }

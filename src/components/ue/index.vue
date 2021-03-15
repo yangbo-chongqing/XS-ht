@@ -444,7 +444,7 @@ export default {
     VueUeditorWrap,
     drag,
   },
-  props: ["value", "ueConfig"],
+  props: ["value", "ueConfig", "mobHtml1"],
 
   mounted: function () {
     this.$nextTick(() => {
@@ -874,6 +874,7 @@ export default {
   },
   created() {
     this.qiToken = JSON.parse(sessionStorage.qiToken);
+    console.log(this.mobHtml1);
   },
   watch: {
     // 监听prop的变化，更新ckeditor中的值
@@ -890,7 +891,13 @@ export default {
       this.$emit("input", this.ueData);
     },
     mobHtml: function (val) {
+      console.log(val);
       this.editor.execCommand("inserthtml", val);
+    },
+    mobHtml1: function (val) {
+      console.log(val);
+      // this.editor.execCommand("inserthtml", val);
+      this.ueData = val;
     },
   },
   // 销毁组件前，销毁编辑器

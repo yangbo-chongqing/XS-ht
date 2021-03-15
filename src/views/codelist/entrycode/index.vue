@@ -265,8 +265,10 @@
           <el-pagination
             background
             :current-page.sync="page"
-            layout="prev, pager, next"
+            layout="total, sizes, prev, pager, next, jumper"
             :total="count"
+            :page-size="pageSize"
+            :page-sizes="[20, 50, 70, 100]"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
           />
@@ -383,8 +385,8 @@ export default {
       filename: "",
       page: 1,
       pages: 0,
+      pageSize: 20,
       count: 0,
-      page_size: 10,
       keyword: this.$route.query.keyword || "",
       popoverFlag: false,
       checked1: false,
@@ -430,7 +432,15 @@ export default {
     if (this.$route.params.page) {
       this.page = this.$route.params.page * 1;
     }
-    this.fetchData();
+    if (sessionStorage.getItem("pageSize") != null) {
+      // console.log(sessionStorage.getItem("pageSize"));
+      this.pageSize = sessionStorage.getItem("pageSize") * 1;
+      this.fetchData();
+    } else {
+      sessionStorage.setItem("pageSize", 20);
+      this.pageSize = 20;
+      this.fetchData();
+    }
     this.GetMuse();
     this.typeList();
     getQiToken({}).then((res) => {
@@ -816,7 +826,8 @@ export default {
       this.fetchData();
     },
     handleSizeChange(size) {
-      this.page = size;
+      this.pageSize = size;
+      sessionStorage.setItem("pageSize", this.pageSize);
       this.fetchData();
     },
     handleCurrentChange(size) {
@@ -836,7 +847,7 @@ export default {
       this.listLoading = true;
       const params = {
         page: this.page,
-        page_size: this.page_size,
+        page_size: this.pageSize,
         keyword: this.keyword,
         label: this.tipValue == "标签" ? "" : this.tipValue,
         draft: this.draft,

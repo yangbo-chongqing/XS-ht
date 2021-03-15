@@ -73,7 +73,7 @@
             }}</span>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="产品封面图片" align="center">
+        <el-table-column label="产品码统计" align="center">
           <template slot-scope="scope">
             <div
               style="
@@ -82,15 +82,12 @@
                 display: inline-block;
               "
             >
-              <el-image
-                style="width: 60px; height: 60px"
-                :src="scope.row.image"
-                :preview-src-list="[scope.row.image]"
-              >
-              </el-image>
+              订阅人数:{{ scope.row.subscribe_number }}; 扫码人数:{{
+                scope.row.scan_code_number
+              }}; 浏览次数:{{ scope.row.watch_number }};
             </div>
           </template>
-        </el-table-column> -->
+        </el-table-column>
         <!--       <el-table-column label="装潢视频" align="center">
           <template slot-scope="scope">
             <el-button type="text" size="mini" v-if="scope.row.video"
@@ -216,7 +213,7 @@
           :current-page="page"
           layout="total, sizes, prev, pager, next, jumper"
           :total="count"
-          :page-size="pagesize"
+          :page-size="pageSize"
           :page-sizes="[20, 50, 70, 100]"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -374,7 +371,7 @@ export default {
       addinstruFromFlag: false,
       addInspectionFlag: false,
       type: "",
-      pagesize: 20,
+      pageSize: 20,
       order: 1,
       productId: 0,
       form: {
@@ -394,8 +391,16 @@ export default {
     if (this.$route.params.page) {
       this.page = this.$route.params.page * 1;
     }
+    if (sessionStorage.getItem("pageSize") != null) {
+      // console.log(sessionStorage.getItem("pageSize"));
+      this.pageSize = sessionStorage.getItem("pageSize") * 1;
+      this.fetchData();
+    } else {
+      sessionStorage.setItem("pageSize", 20);
+      this.pageSize = 20;
+      this.fetchData();
+    }
 
-    this.fetchData();
     // 获取七牛token
     getQiToken().then((res) => {
       let str = res.data.data;
@@ -606,7 +611,9 @@ export default {
       });
     },
     handleSizeChange(size) {
-      this.pagesize = size;
+      this.pageSize = size;
+      sessionStorage.setItem("pageSize", this.pageSize);
+
       this.page = 1;
       this.fetchData();
     },
@@ -640,7 +647,7 @@ export default {
         page: this.page,
         keyword: this.keyword,
         order: this.order,
-        page_size: this.pagesize,
+        page_size: this.pageSize,
       };
       productList(this.qs.stringify(parmas)).then((res) => {
         this.count = res.data.total;

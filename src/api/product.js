@@ -80,14 +80,6 @@ export function productEdit(data) {
     data
   })
 }
-///说明书列表
-export function manualList(data) {
-  return request({
-    url: '/api/store/manual/list',
-    method: 'post',
-    data
-  })
-}
 //添加说明书
 export function manualCreate(data) {
   return request({
@@ -99,7 +91,7 @@ export function manualCreate(data) {
 //查询说明书
 export function manualDetails(data) {
   return request({
-    url: '/api/store/manual/details',
+    url: '/api/store/manual/detail',
     method: 'post',
     data
   })
@@ -181,6 +173,54 @@ export function relatedEdit(data) {
 export function relatedDel(data) {
   return request({
     url: '/api/store/related/del',
+    method: 'post',
+    data
+  })
+}
+// 创建说明书
+export function addManual(data) {
+  return request({
+    url: '/api/store/manual/add',
+    method: 'post',
+    data
+  })
+}
+// 删除说明书
+export function delManual(data) {
+  return request({
+    url: '/api/store/manual/del',
+    method: 'post',
+    data
+  })
+}
+// 说明书模板列表
+export function manualList(data) {
+  return request({
+    url: '/api/store/manual/list',
+    method: 'post',
+    data
+  })
+}
+// 说明书分类列表
+export function editType(data) {
+  return request({
+    url: '/api/store/manual/type/edit',
+    method: 'post',
+    data
+  })
+}
+// 说明书分类列表
+export function contentDetail(data) {
+  return request({
+    url: '/api/store/manual/content/detail',
+    method: 'post',
+    data
+  })
+}
+// 说明书分类列表
+export function contentEdit(data) {
+  return request({
+    url: '/api/store/manual/content/edit',
     method: 'post',
     data
   })
