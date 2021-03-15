@@ -72,7 +72,6 @@ export default {
       // 切换后 页面刷新
       this.id = id;
       await this.getId();
-
       await this.$store.dispatch("user/getInfo");
       // 切换商家后路由同步更新
       await this.getMenuList();
@@ -83,6 +82,7 @@ export default {
 
     async getMenuList() {
       localStorage.removeItem("router");
+
       getMenu().then((res) => {
         console.log(res);
         let list = res.data.menu;
@@ -96,7 +96,9 @@ export default {
         }
         localStorage.setItem("router", JSON.stringify(this.dataList));
         console.log(JSON.stringify(this.dataList));
+
         this.dataList = [];
+        this.$router.push("/workbench");
         this.$router.go(0);
       });
     },

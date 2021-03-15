@@ -86,7 +86,17 @@ export default {
       });
     },
     select(key, keyPath) {
+      // console.log(window.location.search);
       this.id = key;
+      this.$router.push({
+        path: "/help",
+        query: { id: this.id },
+      });
+      // window.history.pushState(
+      //   null,
+      //   null,
+      //   window.location.origin + `/help?id=${this.id}`
+      // );
       this.getDetail();
     },
     getDetail() {

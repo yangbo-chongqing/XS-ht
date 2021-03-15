@@ -22,7 +22,7 @@
         >
         </el-option>
       </el-select> -->
-      <router-link target="_blank" :to="{ name: 'help' }">
+      <router-link target="_blank" :to="{ name: 'help', query: { id: 1 } }">
         <div class="avatar-hlpe"><i class="el-icon-question" />帮助</div>
       </router-link>
 
