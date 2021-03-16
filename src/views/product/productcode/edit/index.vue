@@ -875,7 +875,7 @@
         <el-button type="primary" @click="addState('add')">确 定</el-button>
       </span>
     </el-dialog>
-    <!-- <management /> -->
+    <management />
   </div>
 </template>
 
@@ -1699,7 +1699,7 @@ export default {
         this.qs.stringify({
           id: this.form.id,
           type_json: JSON.stringify(this.data),
-          ids: data.id,
+          del_ids: data.id,
           name: this.stateName,
           type: this.form.type,
         })
@@ -1708,6 +1708,8 @@ export default {
           message: "删除成功",
           type: "success",
         });
+        this.showEd = false;
+        this.productState = "";
       });
     },
   },

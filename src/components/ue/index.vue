@@ -1174,7 +1174,7 @@ export default {
   }
   .shadow {
     position: absolute;
-    bottom: -4px;
+    bottom: 1px;
     right: -2px;
     transition: opacity 0.3s;
     color: #fff;
