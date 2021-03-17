@@ -1,30 +1,54 @@
 <template>
   <div class="all">
     <el-dialog :title="title" :visible.sync="dialogTableVisible" width="770px">
+      <!-- 整体弹窗 -->
       <div>
         <div class="topBtn"><el-button>新 增</el-button></div>
         <div class="content">
           <div class="leftTit">
             <div class="centerFont">
               <div
-                :class="{ titleFont: true, ativeTab: index == selectNum }"
-                @click="selectTab(index, 1)"
-                v-for="(item, index) of 5"
+                :class="{ titleFont: true, ativeTab: item.id == selectNum }"
+                @click="selectTab(item.id, 1)"
+                v-for="(item, index) of typeList"
                 :key="index"
               >
-                最近使用 <span class="miniFont">(51)</span>
+                {{ item.name }}
+                <span class="miniFont">({{ item.count }})</span>
               </div>
             </div>
-            <div class="bottomFont">新建分组</div>
+            <div class="bottomFont">
+              <span @click="addNewState()">新增分组</span>
+              <el-dropdown @command="handleCommand">
+                <span
+                  class="el-dropdown-link"
+                  style="color: #409eff; margin-left: 15px"
+                >
+                  编辑
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="delete">删除</el-dropdown-item>
+                  <el-dropdown-item command="rename">重命名</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
           </div>
           <div class="rightContent">
             <template v-if="type == 1">
               <!-- 图片类型 -->
-              <div class="oneImg" v-for="(item, index) of 20" :key="index">
+              <div
+                @click="selectTab(index, 2)"
+                class="oneImg"
+                v-for="(item, index) of 20"
+                :key="index"
+              >
                 <img
                   src="http://voice.xunsheng.org.cn/sydt/muse_12/1615270671150.png"
                   alt=""
                 />
+                <div v-if="selectClass[index] == 1" class="shadow">
+                  <img src="../../assets/icon/success.png" alt="" />
+                </div>
               </div>
             </template>
             <template v-if="type == 2">
@@ -55,7 +79,7 @@
                 </div>
               </div>
             </template>
-            <template v-if="type == 3">
+            <template v-if="type == 0">
               <div
                 class="templateContent"
                 v-for="(item, index) of 10"
@@ -73,18 +97,29 @@
                   <div>http://www.baidu.com</div>
                   <div>http://www.baidu.com</div>
                   <div>古代书籍和桃花</div>
-
                   <div>百度</div>
                   <div>1</div>
                 </div>
                 <div class="editBlock">
-                  <span>选择</span>
+                  <span>编辑</span>
                 </div>
               </div>
             </template>
           </div>
         </div>
       </div>
+    </el-dialog>
+    <el-dialog title="添加分类" :visible.sync="stateDialog" width="300px">
+      <span>类型名：</span>
+      <el-input
+        placeholder="请输入类型名"
+        style="margin-top: 20px"
+        v-model="newState"
+      ></el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="stateDialog = false">取 消</el-button>
+        <el-button type="primary" @click="addState">确 定</el-button>
+      </span>
     </el-dialog>
     <div v-if="videoUrl" class="videoIndex">
       <div class="el-image-viewer__mask"></div>
@@ -101,6 +136,7 @@
   </div>
 </template>
 <script>
+import { createType, TypeList, delType } from "@/api/myApi";
 export default {
   name: "management",
   //   资源管理器
@@ -108,7 +144,7 @@ export default {
     // 图片数据(图片url组成的数组) 通过v-model传递
     type: {
       type: Number,
-      default: 3,
+      default: 0,
     },
     title: {
       tpye: String,
@@ -121,11 +157,15 @@ export default {
       selectNum: 0,
       videoUrl: "",
       selectClass: [],
+      typeList: [],
+      newState: "",
+      stateDialog: false,
     };
   },
   methods: {
     selectTab(n, type) {
       //   选择标签
+
       if (type == 1) {
         // 分类选择
         this.selectNum = n;
@@ -139,6 +179,74 @@ export default {
       }
       this.$forceUpdate();
     },
+    handleCommand(command) {
+      // 类型编辑
+      if (command == "delete") {
+        this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+          .then(() => {
+            if (this.selectNum == null) {
+              this.$message({
+                message: "请先选择删除项",
+                type: "warning",
+              });
+              return;
+            }
+            delType(
+              this.qs.stringify({
+                id: this.selectNum,
+              })
+            ).then((res) => {
+              if (res.status == 200) {
+                this.$message({
+                  message: "删除成功",
+                  type: "success",
+                });
+                this.getStateList();
+              }
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消删除",
+            });
+          });
+      }
+    },
+    createStateList() {
+      // 创建分类
+      createType();
+    },
+    getStateList() {
+      // 获取分类列表
+      TypeList().then((res) => {
+        this.typeList = res.data.type_list;
+      });
+    },
+    addNewState() {
+      // 打开新增分类
+      this.stateDialog = true;
+    },
+    addState() {
+      // 创建分类
+      let parasm = {
+        name: this.newState,
+        species: this.type,
+      };
+      createType(this.qs.stringify(parasm)).then((res) => {
+        if (res.status == 200) {
+          this.getStateList();
+          this.stateDialog = false;
+        }
+      });
+    },
+  },
+  created() {
+    this.getStateList();
   },
 };
 </script>
@@ -189,14 +297,26 @@ export default {
         overflow-x: hidden;
         .oneImg {
           display: inline-block;
-          width: 110px;
-          height: 110px;
+          width: 140px;
+          height: 140px;
           margin: 10px 0 0 10px;
+          position: relative;
           overflow: hidden;
           img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+          }
+          .shadow {
+            position: absolute;
+            bottom: -5px;
+            right: -2px;
+            transition: opacity 0.3s;
+            color: #fff;
+            font-size: 20px;
+            line-height: 20px;
+            padding: 2px;
+            cursor: pointer;
           }
         }
         .oneVideo {

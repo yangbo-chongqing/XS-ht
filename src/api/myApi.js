@@ -72,3 +72,28 @@ export function workorderFinish(data) {
         data
     })
 }
+
+// 素材管理-创建素材分类
+export function createType(data) {
+    return request({
+        url: '/api/store/material/type/create',
+        method: 'post',
+        data
+    })
+}
+// 素材管理-素材分类列表
+export function TypeList(data) {
+    return request({
+        url: '/api/store/material/type/list',
+        method: 'post',
+        data
+    })
+}
+// 素材管理-素材分类列表
+export function delType(data) {
+    return request({
+        url: '/api/store/material/type/del',
+        method: 'post',
+        data
+    })
+}

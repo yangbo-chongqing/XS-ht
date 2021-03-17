@@ -14,7 +14,7 @@
               <el-input class="classInput" v-model="form.unique"></el-input>
             </el-form-item>
             <el-form-item label="产品封面图">
-              <div style="display: flex">
+              <div style="display: flex; flex-flow: wrap">
                 <template v-if="imgs[0]">
                   <div
                     @click.stop="selectPic(index)"
@@ -93,6 +93,13 @@
                 style="margin-bottom: 12px"
                 @click="append('add')"
                 >添加</el-button
+              >
+              <el-button
+                size="mini"
+                type="danger"
+                @click="addState('delete')"
+                class="delteBtn"
+                >删除</el-button
               >
               <el-tree
                 :data="data"
@@ -188,9 +195,9 @@
                 >保存模板</el-button
               >
 
-              <el-button type="danger" @click="addState('delete')"
+              <!-- <el-button type="danger" @click="addState('delete')"
                 >删除所有说明书</el-button
-              >
+              > -->
               <el-button @click="back">取消</el-button>
             </el-form-item>
           </el-form>
@@ -363,13 +370,25 @@
               >视频<i class="el-icon-upload el-icon--right"
             /></el-button>
           </div>
-          <template v-for="(item, index) of picList">
-            <div v-if="item.is_del != 1" :key="index" class="itemPic">
-              <video height="150px" controls :src="item.url" />
-              <span>{{ item.name }}</span>
-              <el-button class="detelePic" type="warning" @click="deleTP(index)"
-                >删 除</el-button
-              >
+          <template style="display: flex; flex-flow: wrap">
+            <div v-for="(item, index) of picList" :key="index" class="itemPic">
+              <template v-if="item.is_del != 1">
+                <video height="150px" controls :src="item.url" />
+                <span>{{ item.name }}</span>
+                <el-button
+                  class="detelePic"
+                  type="warning"
+                  @click="deleTP(index)"
+                  >删 除</el-button
+                >
+              </template>
+            </div>
+            <div v-if="videoFlag" class="upload-box1 plot">
+              <el-progress
+                type="circle"
+                :width="148"
+                :percentage="videoUploadPercent"
+              ></el-progress>
             </div>
           </template>
           <div style="text-align: center">
@@ -748,6 +767,13 @@
               ><i class="el-icon-close"></i
             ></span>
           </div>
+          <div v-else-if="videoFlag" class="upload-box plot">
+            <el-progress
+              :width="167"
+              type="circle"
+              :percentage="videoUploadPercent"
+            ></el-progress>
+          </div>
           <el-upload
             class="upload-demo"
             :data="qiToken"
@@ -812,6 +838,7 @@
           :before-upload="uploadVideo"
           :headers="headers"
           accept=".mp4"
+          :multiple="true"
           :show-file-list="false"
           :on-success="videoUploadSuccess.bind(null, {})"
           :on-progress="uploadProgress"
@@ -1469,6 +1496,7 @@ export default {
     },
     activityAdd() {
       // 确认增加或修改
+      console.log(this.form3);
       if (this.form3.id) {
         // 修改
         if (!this.form3.title || !this.form3.image) {
@@ -1500,6 +1528,13 @@ export default {
         });
       } else {
         // 添加
+        if (!this.form3.title || !this.form3.image) {
+          this.$message({
+            message: "请完善数据后提交",
+            type: "warning",
+          });
+          return;
+        }
         let parasm = {
           product_id: this.id,
           title: this.form3.title,
@@ -1523,7 +1558,8 @@ export default {
       this.form3 = {};
       this.activity = false;
     },
-    uploadVideo() {
+    uploadVideo(file) {
+      // console.log(file);
       let newTime = new Date().getTime();
       this.qiToken.key = `${this.qiToken.key}${newTime}.mp4`;
     },
@@ -1550,6 +1586,8 @@ export default {
         let b = JSON.parse(JSON.stringify(file.name));
         this.form2.name = b.substring(0, b.indexOf("."));
         // console.log(this.form2);
+        this.picList = this.picList.concat(this.form2);
+        this.form2 = {};
       }
       this.videoFlag = false;
       this.qiToken = JSON.parse(sessionStorage.qiToken);
@@ -1890,5 +1928,50 @@ export default {
 }
 .el-tree-node__content {
   height: 30px;
+}
+.delteBtn {
+  float: right;
+  margin-right: 10px;
+
+  ::before {
+    clear: both;
+    content: "";
+  }
+}
+.upload-box1 {
+  // 视频上传进度条
+  width: 150px;
+  height: 150px;
+  margin-right: 10px;
+  vertical-align: top;
+  display: inline-block;
+  border: 1px solid #ccc;
+  position: relative;
+  span {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #999;
+    display: flex;
+    cursor: pointer;
+    i {
+      font-size: 15px;
+      margin: auto;
+      color: white;
+    }
+  }
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  i {
+    color: #ccc;
+    margin: auto;
+    font-size: 30px;
+  }
 }
 </style>
