@@ -39,6 +39,7 @@
                     ></el-progress>
                   </div>
                 </template>
+                <!-- 素材组件调用上传 -->
                 <el-upload
                   class="upload-demo"
                   :data="qiToken"
@@ -52,11 +53,27 @@
                   :on-progress="uploadProgress"
                   :show-file-list="false"
                 >
-                  <div class="upload-box relaFa">
-                    <i class="el-icon-plus"></i>
-                    <div class="absChild">建议尺寸750*421</div>
-                  </div>
+                  <span ref="uploadPng"></span>
                 </el-upload>
+                <el-upload
+                  class="upload-demo"
+                  :on-error="uploadToken"
+                  action="http://upload.qiniup.com"
+                  :data="qiToken"
+                  :before-upload="uploadVideo"
+                  :headers="headers"
+                  accept=".mp4"
+                  :multiple="true"
+                  :show-file-list="false"
+                  :on-success="videoUploadSuccess.bind(null, {})"
+                  :on-progress="uploadProgress"
+                >
+                  <span ref="videoUpload"></span>
+                </el-upload>
+                <div class="upload-box relaFa" @click="upload(1)">
+                  <i class="el-icon-plus"></i>
+                  <div class="absChild">建议尺寸750*421</div>
+                </div>
                 <!-- <div class="upload-box plot" v-else>
                   <img :src="form.dialogImageUrl" alt="" /><span
                     @click="form.dialogImageUrl = ''"
@@ -208,7 +225,7 @@
               class="marBot"
               size="small"
               type="primary"
-              @click="add(0, 2)"
+              @click="upload(3, '添加集锦')"
               >添加集锦<i class="el-icon-upload el-icon--right"
             /></el-button>
             <el-table :data="tableData" border style="width: 100%">
@@ -247,7 +264,7 @@
             class="marBot"
             size="small"
             type="primary"
-            @click="add(1, 2)"
+            @click="upload(4, '添加评测')"
             >添加评测<i class="el-icon-upload el-icon--right"
           /></el-button>
           <el-table :data="tableData1" border style="width: 100%">
@@ -285,7 +302,7 @@
             class="marBot"
             size="small"
             type="primary"
-            @click="add(2, 2)"
+            @click="upload(5, '添加问题')"
             >添加问题<i class="el-icon-upload el-icon--right"
           /></el-button>
           <el-table :data="tableData2" border style="width: 100%">
@@ -323,7 +340,7 @@
               class="marBot"
               size="small"
               type="primary"
-              @click="add(3, 2)"
+              @click="upload(6, '添加商城')"
               >添加商城<i class="el-icon-upload el-icon--right"
             /></el-button>
             <el-table :data="tableData3" border style="width: 100%">
@@ -366,7 +383,7 @@
               class="marBot"
               size="small"
               type="primary"
-              @click="VisiblePic = true"
+              @click="upload(2)"
               >视频<i class="el-icon-upload el-icon--right"
             /></el-button>
           </div>
@@ -815,6 +832,17 @@
         <el-form-item :label="titName + '排序'">
           <el-input v-model="form3.sort"></el-input>
         </el-form-item>
+        <el-form-item :label="titName + '分类'">
+          <el-select v-model="stateDetail" placeholder="请选择">
+            <el-option
+              v-for="item in typeState"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="activityClose">取 消</el-button>
@@ -843,13 +871,14 @@
           :on-success="videoUploadSuccess.bind(null, {})"
           :on-progress="uploadProgress"
         >
-          <el-button
+          <span ref="videoUpload"></span>
+        </el-upload>
+        <!-- <el-button
             size="small"
             type="primary"
             style="margin-left: 18px; margin-bottom: 20px"
             >视频上传<i class="el-icon-upload el-icon--right"
-          /></el-button>
-        </el-upload>
+          /></el-button> -->
       </div>
       <el-form ref="form" :model="form" label-width="100px">
         <el-form-item label="视频名称：">
@@ -902,7 +931,14 @@
         <el-button type="primary" @click="addState('add')">确 定</el-button>
       </span>
     </el-dialog>
-    <management />
+    <management
+      :type="typeStu"
+      :title="titleName"
+      :dialogTableVisible="openUpload"
+      @event1="changeChild($event)"
+      @addEvent="uploadAll($event)"
+      @getEvent="pushList($event)"
+    />
   </div>
 </template>
 
@@ -925,6 +961,8 @@ import {
   manualEdit,
   contentEdit,
 } from "@/api/product";
+import { TypeList, createMater } from "@/api/myApi";
+
 import { mapGetters } from "vuex";
 import management from "@/components/management/management";
 import { getQiToken } from "@/api/user";
@@ -944,15 +982,21 @@ export default {
       headers: { Authorization: "Bearer " + getToken() },
       id: this.$route.query.id,
       showEd: false,
+      typeStu: 0,
+      titleName: "",
       activeName: "first",
       addList: [], //扩展字段列表
       ids: this.$route.query.id,
       pageed: this.$route.query.page,
+      openUpload: false,
       nIndex: 0, //默认封面图
       haveState: false, //是否有说明书
       stateName: "",
       videoUploadPercent: 0,
       videoFlag: false,
+      typeState: [],
+      stateType: "",
+      stateDetail: "",
       editState: [
         { label: "开启", value: 1 },
         { label: "关闭", value: 0 },
@@ -1248,6 +1292,7 @@ export default {
         }
       );
     },
+
     handleNodeClick(data) {
       // 点击树状图
       // this.productState = data.label;
@@ -1571,6 +1616,15 @@ export default {
         this.form3.image = `http://voice.xunsheng.org.cn/${res.key}`;
       } else {
         this.imgs.push(`http://voice.xunsheng.org.cn/${res.key}`);
+        if (this.stateType) {
+          createMater(
+            this.qs.stringify({
+              type_id: this.stateType,
+              file_type: "png",
+              file_path: `http://voice.xunsheng.org.cn/${res.key}`,
+            })
+          );
+        }
       }
       this.videoFlag = false;
       this.qiToken = JSON.parse(sessionStorage.qiToken);
@@ -1588,6 +1642,15 @@ export default {
         // console.log(this.form2);
         this.picList = this.picList.concat(this.form2);
         this.form2 = {};
+        if (this.stateType) {
+          createMater(
+            this.qs.stringify({
+              type_id: this.stateType,
+              file_type: "png",
+              file_path: `http://voice.xunsheng.org.cn/${res.key}`,
+            })
+          );
+        }
       }
       this.videoFlag = false;
       this.qiToken = JSON.parse(sessionStorage.qiToken);
@@ -1631,6 +1694,7 @@ export default {
     add(n, m) {
       this.dialogType = m;
       this.typeNum = n;
+
       // 添加相关内容，实现弹窗
       // 类型 0 活动集锦 1 产品评测 2 常见问题 3 网络商城
       if (n == 0) {
@@ -1653,6 +1717,66 @@ export default {
         this.form3 = {};
       }
       none();
+    },
+    upload(index, name) {
+      if (index == 1) {
+        this.titleName = "图片上传";
+        this.typeStu = 1;
+        this.openUpload = true;
+        // this.$refs.uploadPng.click();
+      } else if (index == 2) {
+        this.titleName = "视频上传";
+        this.typeStu = 2;
+        this.openUpload = true;
+      } else {
+        this.titleName = name;
+        this.typeStu = index;
+        this.openUpload = true;
+      }
+    },
+    pushList(val) {
+      if (val[1] == 1) {
+        // 选择照片
+        this.imgs = this.imgs.concat(val[0]);
+      } else if (val[1] == 2) {
+        // 选择视频
+        this.picList = this.picList.concat(val[0]);
+      }
+    },
+    uploadAll(val) {
+      console.log(val);
+      this.stateType = val[2];
+      if (val[2]) {
+      }
+      TypeList(
+        this.qs.stringify({
+          species: val[1],
+        })
+      ).then((res) => {
+        this.typeState = res.data.type_list;
+      });
+      this.stateDetail = "";
+      if (val[0] == "图片上传") {
+        this.openUpload = false;
+
+        this.$refs.uploadPng.click();
+      } else if (val[0] == "视频上传") {
+        // console.log(this.$refs.videoUpload);
+        this.openUpload = false;
+        this.$refs.videoUpload.click();
+      } else if (val[0] == "添加集锦") {
+        this.add(0, 0);
+      } else if (val[0] == "添加评测") {
+        this.add(1, 0);
+      } else if (val[0] == "添加问题") {
+        this.add(2, 0);
+      } else {
+        this.add(3, 0);
+      }
+    },
+    changeChild(val) {
+      // console.log(val);
+      this.openUpload = val;
     },
     async append(data) {
       // 新增说明书分类

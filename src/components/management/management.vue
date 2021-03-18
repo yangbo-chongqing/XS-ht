@@ -3,13 +3,15 @@
     <el-dialog :title="title" :visible.sync="dialogTableVisible" width="770px">
       <!-- 整体弹窗 -->
       <div>
-        <div class="topBtn"><el-button>新 增</el-button></div>
+        <div class="topBtn">
+          <el-button @click="addDetail(1)">新 增</el-button>
+        </div>
         <div class="content">
           <div class="leftTit">
             <div class="centerFont">
               <div
-                :class="{ titleFont: true, ativeTab: item.id == selectNum }"
-                @click="selectTab(item.id, 1)"
+                :class="{ titleFont: true, ativeTab: item.id == selectNum.id }"
+                @click="selectTab(item, 1)"
                 v-for="(item, index) of typeList"
                 :key="index"
               >
@@ -18,7 +20,7 @@
               </div>
             </div>
             <div class="bottomFont">
-              <span @click="addNewState()">新增分组</span>
+              <span @click="addNewState(1)">新增分组</span>
               <el-dropdown @command="handleCommand">
                 <span
                   class="el-dropdown-link"
@@ -37,49 +39,42 @@
             <template v-if="type == 1">
               <!-- 图片类型 -->
               <div
-                @click="selectTab(index, 2)"
+                @click="selectTab(index, 2, item)"
                 class="oneImg"
-                v-for="(item, index) of 20"
+                v-for="(item, index) of detailList"
                 :key="index"
               >
-                <img
-                  src="http://voice.xunsheng.org.cn/sydt/muse_12/1615270671150.png"
-                  alt=""
-                />
+                <img :src="item.file_path" alt="" />
                 <div v-if="selectClass[index] == 1" class="shadow">
                   <img src="../../assets/icon/success.png" alt="" />
                 </div>
               </div>
             </template>
-            <template v-if="type == 2">
+            <template v-else-if="type == 2">
               <!-- 视频类型 -->
-              <div class="oneVideo" v-for="(item, index) of 20" :key="index">
-                <div class="videoCl" @click="selectTab(index, 2)">
-                  <video
-                    style="width: 100%"
-                    src="http://voice.xunsheng.org.cn/sydt/muse_12/1614663668981.mp4"
-                  />
+              <div
+                class="oneVideo"
+                v-for="(item, index) of detailList"
+                :key="index"
+              >
+                <div class="videoCl" @click="selectTab(index, 2, item)">
+                  <video style="width: 100%" :src="item.file_path" />
                   <div v-if="selectClass[index] == 1" class="shadow">
                     <img src="../../assets/icon/success.png" alt="" />
                   </div>
                 </div>
 
                 <div class="handleBtn">
-                  <el-button
-                    type="mini"
-                    @click="
-                      videoUrl =
-                        'http://voice.xunsheng.org.cn/sydt/muse_12/1614663668981.mp4'
-                    "
+                  <el-button type="mini" @click="videoUrl = item.file_path"
                     >播放</el-button
                   >
-                  <el-button type="mini" @click="selectTab(index, 2)"
+                  <el-button type="mini" @click="selectTab(index, 2, item)"
                     >选择</el-button
                   >
                 </div>
               </div>
             </template>
-            <template v-if="type == 0">
+            <template v-else>
               <div
                 class="templateContent"
                 v-for="(item, index) of 10"
@@ -108,17 +103,46 @@
           </div>
         </div>
       </div>
+      <span slot="footer" class="dialog-footer">
+        <span style="float: left; color: #b1b2b3; font-size: 14px"
+          >已选择{{ selectDetail.length }}/50</span
+        >
+        <el-button @click="dialogTableVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addDetail(2)">确 定</el-button>
+      </span>
     </el-dialog>
-    <el-dialog title="添加分类" :visible.sync="stateDialog" width="300px">
-      <span>类型名：</span>
+    <el-dialog :title="titleBar" :visible.sync="stateDialog" width="300px">
+      <span>{{ titleName }}</span>
       <el-input
-        placeholder="请输入类型名"
+        placeholder="请输入"
         style="margin-top: 20px"
         v-model="newState"
       ></el-input>
       <span slot="footer" class="dialog-footer">
         <el-button @click="stateDialog = false">取 消</el-button>
         <el-button type="primary" @click="addState">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="选择分类" :visible.sync="stateTit" width="250px">
+      <el-select
+        style="margin-top: 20px"
+        v-model="stateNum"
+        placeholder="请选择"
+      >
+        <el-option
+          v-for="item in typeList"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+        >
+        </el-option>
+      </el-select>
+      <div style="padding-top: 10px; color: #f56c6c">
+        注：如不存入素材库，则不需选择分类
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="stateTit = false">取 消</el-button>
+        <el-button type="primary" @click="addDetail()">确 定</el-button>
       </span>
     </el-dialog>
     <div v-if="videoUrl" class="videoIndex">
@@ -136,7 +160,13 @@
   </div>
 </template>
 <script>
-import { createType, TypeList, delType } from "@/api/myApi";
+import {
+  createType,
+  TypeList,
+  delType,
+  editType,
+  materList,
+} from "@/api/myApi";
 export default {
   name: "management",
   //   资源管理器
@@ -144,37 +174,66 @@ export default {
     // 图片数据(图片url组成的数组) 通过v-model传递
     type: {
       type: Number,
-      default: 0,
+      default: 999,
     },
     title: {
       tpye: String,
       default: "选择图片",
     },
+    dialogTableVisible: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
-      dialogTableVisible: true,
-      selectNum: 0,
+      // dialogTableVisible: true,
+      selectNum: {},
       videoUrl: "",
       selectClass: [],
       typeList: [],
       newState: "",
       stateDialog: false,
+      titleName: "",
+      titleBar: "",
+      stateTit: false,
+      stateNum: "",
+      detailList: [],
+      selectDetail: [],
     };
   },
   methods: {
-    selectTab(n, type) {
+    selectTab(n, type, item) {
       //   选择标签
 
       if (type == 1) {
         // 分类选择
         this.selectNum = n;
+        materList(
+          this.qs.stringify({
+            type: this.selectNum.id,
+            page_size: 50,
+            page: 1,
+          })
+        ).then((res) => {
+          this.detailList = res.data.data.data;
+        });
       } else if (type == 2) {
         // 视频选择
         if (this.selectClass[n]) {
           this.selectClass[n] = 0;
+          let m = this.selectDetail.indexOf(item);
+          this.selectDetail.splice(m, 1);
+          console.log(this.selectDetail);
+          console.log(0);
+          console.log(this.selectClass);
+          console.log(n);
         } else {
           this.selectClass[n] = 1;
+          this.selectDetail = this.selectDetail.concat(item.file_path);
+          console.log(this.selectDetail);
+          console.log(this.selectClass);
+          console.log(n);
         }
       }
       this.$forceUpdate();
@@ -197,7 +256,7 @@ export default {
             }
             delType(
               this.qs.stringify({
-                id: this.selectNum,
+                id: this.selectNum.id,
               })
             ).then((res) => {
               if (res.status == 200) {
@@ -215,38 +274,93 @@ export default {
               message: "已取消删除",
             });
           });
+      } else if (command == "rename") {
+        this.addNewState(2);
       }
-    },
-    createStateList() {
-      // 创建分类
-      createType();
     },
     getStateList() {
       // 获取分类列表
-      TypeList().then((res) => {
+      TypeList(
+        this.qs.stringify({
+          species: this.type,
+        })
+      ).then((res) => {
         this.typeList = res.data.type_list;
+        this.selectNum = res.data.type_list[0];
+        materList(
+          this.qs.stringify({
+            type: this.selectNum.id,
+            page_size: 50,
+            page: 1,
+          })
+        ).then((res) => {
+          this.detailList = res.data.data.data;
+        });
       });
     },
-    addNewState() {
+    addNewState(index) {
       // 打开新增分类
+      if (index == 1) {
+        this.titleBar = "添加分类";
+        this.titleName = "类型名";
+        this.newState = "";
+      } else {
+        this.titleName = "类型名";
+        this.titleBar = "分类重命名";
+        this.newState = this.selectNum.name;
+      }
       this.stateDialog = true;
     },
     addState() {
-      // 创建分类
-      let parasm = {
-        name: this.newState,
-        species: this.type,
-      };
-      createType(this.qs.stringify(parasm)).then((res) => {
-        if (res.status == 200) {
-          this.getStateList();
-          this.stateDialog = false;
-        }
-      });
+      if (this.titleBar == "添加分类") {
+        // 创建分类
+        let parasm = {
+          name: this.newState,
+          species: this.type,
+        };
+        createType(this.qs.stringify(parasm)).then((res) => {
+          if (res.status == 200) {
+            this.getStateList();
+            this.stateDialog = false;
+          }
+        });
+      } else if (this.titleBar == "分类重命名") {
+        editType(
+          this.qs.stringify({
+            id: this.selectNum.id,
+            species: this.selectNum.species,
+            name: this.newState,
+          })
+        ).then((res) => {
+          if (res.status == 200) {
+            this.getStateList();
+            this.stateDialog = false;
+          }
+        });
+      }
+    },
+    addDetail(index) {
+      if ((this.type == 1 || this.type == 2) && index == 1) {
+        this.stateTit = true;
+      } else if (index == 2) {
+        this.$emit("getEvent", [this.selectDetail, this.type]);
+        console.log(this.selectDetail, this.type);
+        this.stateTit = false;
+      } else {
+        this.stateTit = false;
+        this.$emit("addEvent", [this.title, this.type, this.stateNum]);
+      }
+      this.stateNum = "";
     },
   },
-  created() {
-    this.getStateList();
+  created() {},
+  watch: {
+    dialogTableVisible: function (newVal, oldVal) {
+      this.$emit("event1", newVal);
+      if (newVal) {
+        this.getStateList();
+      }
+    },
   },
 };
 </script>

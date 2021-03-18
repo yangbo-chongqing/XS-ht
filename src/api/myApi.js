@@ -89,10 +89,34 @@ export function TypeList(data) {
         data
     })
 }
-// 素材管理-素材分类列表
+// 素材管理-删除素材分类
 export function delType(data) {
     return request({
         url: '/api/store/material/type/del',
+        method: 'post',
+        data
+    })
+}
+// 素材管理-编辑素材分类
+export function editType(data) {
+    return request({
+        url: '/api/store/material/type/edit',
+        method: 'post',
+        data
+    })
+}
+// 素材管理-加入素材库
+export function createMater(data) {
+    return request({
+        url: '/api/store/material/create',
+        method: 'post',
+        data
+    })
+}
+// 素材管理-素材库列表
+export function materList(data) {
+    return request({
+        url: '/api/store/material/list',
         method: 'post',
         data
     })
