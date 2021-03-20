@@ -70,7 +70,11 @@
                 >
                   <span ref="videoUpload"></span>
                 </el-upload>
-                <div class="upload-box relaFa" @click="upload(1)">
+                <div
+                  style="cursor: pointer"
+                  class="upload-box relaFa"
+                  @click="upload(1)"
+                >
                   <i class="el-icon-plus"></i>
                   <div class="absChild">建议尺寸750*421</div>
                 </div>
@@ -105,6 +109,20 @@
         <el-tab-pane label="说明书" name="second" class="editor-scroll">
           <div class="itemContent" v-if="haveState">
             <div class="leftContent">
+              <div v-if="!reTitName" class="leftTitName">
+                <span class="nameFont"> {{ stateName }} </span>
+                <span class="reStateName" @click="reTitName = true"
+                  >重命名</span
+                >
+              </div>
+              <div v-else style="margin-bottom: 10px">
+                <el-input
+                  @blur="reName"
+                  v-model="stateName"
+                  type="mini"
+                  autofocus
+                ></el-input>
+              </div>
               <el-button
                 size="mini"
                 style="margin-bottom: 12px"
@@ -832,7 +850,7 @@
         <el-form-item :label="titName + '排序'">
           <el-input v-model="form3.sort"></el-input>
         </el-form-item>
-        <el-form-item :label="titName + '分类'">
+        <el-form-item label="素材分类">
           <el-select v-model="stateDetail" placeholder="请选择">
             <el-option
               v-for="item in typeState"
@@ -844,6 +862,9 @@
           </el-select>
         </el-form-item>
       </el-form>
+      <div style="padding-top: 10px; margin-left: 35px; color: #f56c6c">
+        注：如不存入素材库，则不需选择分类.
+      </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="activityClose">取 消</el-button>
         <el-button type="primary" @click="activityAdd">确 定</el-button>
@@ -938,6 +959,7 @@
       @event1="changeChild($event)"
       @addEvent="uploadAll($event)"
       @getEvent="pushList($event)"
+      @getform="gettableList($event)"
     />
   </div>
 </template>
@@ -984,6 +1006,7 @@ export default {
       showEd: false,
       typeStu: 0,
       titleName: "",
+      reTitName: false,
       activeName: "first",
       addList: [], //扩展字段列表
       ids: this.$route.query.id,
@@ -1019,6 +1042,7 @@ export default {
       },
       form2: {},
       form1: [],
+      bookName: "",
       stateList: [], //说明书模板列表
       imgs: [], //基础信息封面图集
       dialogType: 1, //打开弹窗的方式
@@ -1187,6 +1211,10 @@ export default {
             });
           });
       }
+    },
+    reName() {
+      this.saveState("save");
+      this.reTitName = false;
     },
     saveState(data) {
       // 保存说明书
@@ -1542,6 +1570,7 @@ export default {
     activityAdd() {
       // 确认增加或修改
       console.log(this.form3);
+      let parasm = {};
       if (this.form3.id) {
         // 修改
         if (!this.form3.title || !this.form3.image) {
@@ -1551,7 +1580,7 @@ export default {
           });
           return;
         }
-        let parasm = {
+        parasm = {
           product_id: this.id,
           title: this.form3.title,
           type: this.typeNum,
@@ -1580,7 +1609,7 @@ export default {
           });
           return;
         }
-        let parasm = {
+        parasm = {
           product_id: this.id,
           title: this.form3.title,
           type: this.typeNum,
@@ -1600,7 +1629,18 @@ export default {
           }
         });
       }
+      if (this.stateDetail) {
+        createMater(
+          this.qs.stringify({
+            type_id: this.stateDetail,
+            file_type: "png",
+            file_path: this.form3.image,
+            expand: JSON.stringify({ parasm }),
+          })
+        );
+      }
       this.form3 = {};
+      this.stateDetail = "";
       this.activity = false;
     },
     uploadVideo(file) {
@@ -1646,7 +1686,7 @@ export default {
           createMater(
             this.qs.stringify({
               type_id: this.stateType,
-              file_type: "png",
+              file_type: "mp4",
               file_path: `http://voice.xunsheng.org.cn/${res.key}`,
             })
           );
@@ -1678,6 +1718,7 @@ export default {
     activityClose() {
       this.activity = false;
       this.form3 = {};
+      this.stateDetail = "";
     },
     deletImg(index) {
       // 删除产品封面图;
@@ -1740,10 +1781,29 @@ export default {
         this.imgs = this.imgs.concat(val[0]);
       } else if (val[1] == 2) {
         // 选择视频
-        this.picList = this.picList.concat(val[0]);
+        let videoList = [];
+        console.log(val[0]);
+        videoList = val[0].map((item) => ({ url: item }));
+        this.picList = this.picList.concat(videoList);
+      }
+    },
+    gettableList(val) {
+      // 给组件表单传参
+      console.log(val);
+      this.form3 = val[0];
+
+      if (val[1] == 3) {
+        this.add(0, 0);
+      } else if (val[1] == 4) {
+        this.add(1, 0);
+      } else if (val[1] == 5) {
+        this.add(2, 0);
+      } else if (val[1] == 6) {
+        this.add(3, 0);
       }
     },
     uploadAll(val) {
+      // 素材库组件内新增
       console.log(val);
       this.stateType = val[2];
       if (val[2]) {
@@ -1755,6 +1815,7 @@ export default {
       ).then((res) => {
         this.typeState = res.data.type_list;
       });
+      this.form3 = {};
       this.stateDetail = "";
       if (val[0] == "图片上传") {
         this.openUpload = false;
@@ -1775,6 +1836,7 @@ export default {
       }
     },
     changeChild(val) {
+      // 组件弹窗是否关闭
       // console.log(val);
       this.openUpload = val;
     },
@@ -2096,6 +2158,19 @@ export default {
     color: #ccc;
     margin: auto;
     font-size: 30px;
+  }
+}
+.leftTitName {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  .nameFont {
+    font-size: 20px;
+    font-weight: 500;
+  }
+  .reStateName {
+    cursor: pointer;
+    color: #409eff;
   }
 }
 </style>

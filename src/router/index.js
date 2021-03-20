@@ -229,6 +229,22 @@ export const constantRoutes = [
       },
     ]
   },
+  // 用户管理模块
+  {
+    path: '/user',
+    component: Layout,
+    redirect: 'userList',
+    name: 'workOrder',
+    meta: { title: '用户管理', icon: 'el-icon-s-opportunity', noCache: true },
+    children: [
+      {
+        path: 'userList',
+        name: 'userList',
+        component: () => import('@/views/user/user'),
+        meta: { title: '用户管理', icon: 'el-icon-s-opportunity', noCache: true },
+      },
+    ]
+  },
   {
     path: '/settings',
     component: Layout,

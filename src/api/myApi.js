@@ -121,3 +121,12 @@ export function materList(data) {
         data
     })
 }
+
+// 用户管理-用户信息列表
+export function userList(data) {
+    return request({
+        url: '/api/store/user/list',
+        method: 'post',
+        data
+    })
+}

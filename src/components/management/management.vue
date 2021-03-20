@@ -77,26 +77,35 @@
             <template v-else>
               <div
                 class="templateContent"
-                v-for="(item, index) of 10"
+                v-for="(item, index) of detailList"
                 :key="index"
               >
                 <div class="imgBlock">
                   <img
                     style="width: 100%; max-height: 120px; object-fit: cover"
-                    src="https://voice.xunsheng.org.cn/sydt/muse_12/1615884514205.png"
+                    :src="JSON.parse(item.expand).parasm.image"
                     alt=""
                   />
                 </div>
                 <div class="contentBlock">
-                  <div>古代书籍和桃花</div>
-                  <div>http://www.baidu.com</div>
-                  <div>http://www.baidu.com</div>
-                  <div>古代书籍和桃花</div>
-                  <div>百度</div>
-                  <div>1</div>
+                  <div>{{ JSON.parse(item.expand).parasm.title }}</div>
+                  <div v-if="JSON.parse(item.expand).parasm.jump_url">
+                    {{ JSON.parse(item.expand).parasm.jump_url }}
+                  </div>
+                  <div v-if="JSON.parse(item.expand).parasm.summary">
+                    {{ JSON.parse(item.expand).parasm.summary }}
+                  </div>
+                  <div v-if="JSON.parse(item.expand).parasm.source">
+                    {{ JSON.parse(item.expand).parasm.source }}
+                  </div>
+                  <div v-if="JSON.parse(item.expand).parasm.sort">
+                    {{ JSON.parse(item.expand).parasm.sort }}
+                  </div>
                 </div>
                 <div class="editBlock">
-                  <span>编辑</span>
+                  <span @click="addDetail(3, JSON.parse(item.expand).parasm)"
+                    >编辑</span
+                  >
                 </div>
               </div>
             </template>
@@ -107,7 +116,7 @@
         <span style="float: left; color: #b1b2b3; font-size: 14px"
           >已选择{{ selectDetail.length }}/50</span
         >
-        <el-button @click="dialogTableVisible = false">取 消</el-button>
+        <el-button @click="Visible = false">取 消</el-button>
         <el-button type="primary" @click="addDetail(2)">确 定</el-button>
       </span>
     </el-dialog>
@@ -187,7 +196,7 @@ export default {
   },
   data() {
     return {
-      // dialogTableVisible: true,
+      Visible: false,
       selectNum: {},
       videoUrl: "",
       selectClass: [],
@@ -209,6 +218,7 @@ export default {
       if (type == 1) {
         // 分类选择
         this.selectNum = n;
+        this.selectClass = [];
         materList(
           this.qs.stringify({
             type: this.selectNum.id,
@@ -287,6 +297,10 @@ export default {
       ).then((res) => {
         this.typeList = res.data.type_list;
         this.selectNum = res.data.type_list[0];
+        if (!this.typeList.length) {
+          this.detailList = [];
+          return;
+        }
         materList(
           this.qs.stringify({
             type: this.selectNum.id,
@@ -339,26 +353,44 @@ export default {
         });
       }
     },
-    addDetail(index) {
+    addDetail(index, item) {
       if ((this.type == 1 || this.type == 2) && index == 1) {
+        // 新增图片或者视频
         this.stateTit = true;
       } else if (index == 2) {
+        // 确认提交
         this.$emit("getEvent", [this.selectDetail, this.type]);
-        console.log(this.selectDetail, this.type);
+        // console.log(this.selectDetail, this.type);
         this.stateTit = false;
+        this.Visible = false;
+      } else if (index == 3) {
+        this.$emit("getform", [item, this.type]);
+        this.stateTit = false;
+        this.Visible = false;
       } else {
+        // 新增组合内容
         this.stateTit = false;
         this.$emit("addEvent", [this.title, this.type, this.stateNum]);
+        this.Visible = false;
       }
       this.stateNum = "";
+      this.selectDetail = [];
+      this.selectNum = {};
+      this.detailList = [];
+      this.selectClass = [];
     },
   },
   created() {},
+  updated() {
+    this.Visible = this.dialogTableVisible;
+  },
   watch: {
-    dialogTableVisible: function (newVal, oldVal) {
+    Visible: function (newVal, oldVal) {
       this.$emit("event1", newVal);
       if (newVal) {
         this.getStateList();
+      } else {
+        this.detailList = [];
       }
     },
   },
