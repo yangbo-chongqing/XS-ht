@@ -8,7 +8,7 @@
             <el-col :span="18">
               <div class="entry-search">
                 <el-input
-                  v-model="keyword"
+                  v-model="pageList.keyword"
                   type="search"
                   clearable
                   placeholder="搜索产品码"
@@ -17,6 +17,7 @@
                 </el-input>
               </div>
             </el-col>
+
             <!-- <el-col :span="6">
               <div class="entry-search">
                 <el-button type="primary" @click="golinkpage('/customCode')"
@@ -57,9 +58,6 @@
           width="150"
           align="center"
         >
-          <!-- <template slot-scope="scope">
-            {{ scope.row.unique }}
-          </template> -->
         </el-table-column>
         <el-table-column label="产品名称" align="center">
           <template slot-scope="scope">
@@ -88,67 +86,6 @@
             </div>
           </template>
         </el-table-column>
-        <!--       <el-table-column label="装潢视频" align="center">
-          <template slot-scope="scope">
-            <el-button type="text" size="mini" v-if="scope.row.video"
-              >点击查看</el-button
-            >
-            <el-button
-              type="danger"
-              @click="addInspection(scope.row.id, 'video')"
-              size="mini"
-              v-else
-              plain
-              >添加装潢视频</el-button
-            >
-          </template>
-        </el-table-column>
-            <el-table-column label="质检报告" align="center">
-          <template slot-scope="scope">
-            <el-button type="text" size="mini" v-if="scope.row.inspection"
-              >点击查看</el-button
-            >
-            <el-button
-              type="danger"
-              size="mini"
-              @click="addInspection(scope.row.id, 'inspect')"
-              v-else
-              plain
-              >添加质检报告</el-button
-            >
-          </template>
-        </el-table-column> -->
-        <!-- <el-table-column label="说明书" width="220" align="center">
-          <template slot-scope="scope">
-            <el-tag v-if="scope.row.manual">{{
-              scope.row.manual.manual_name
-            }}</el-tag>
-            <el-button
-              type="danger"
-              size="mini"
-              @click="addManual(scope.row.id)"
-              v-else
-              plain
-              >关联说明书</el-button
-            >
-          </template>
-        </el-table-column> -->
-        <!-- <el-table-column label="上市时间" align="center">
-          <template slot-scope="scope">
-            {{ scope.row.listed }}
-          </template>
-        </el-table-column> -->
-        <!-- <el-table-column label="是否上架" width="120" align="center">
-          <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.showFlag"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              @change="toggleShow(scope.row.id, scope.row.showFlag)"
-            >
-            </el-switch>
-          </template>
-        </el-table-column> -->
         <el-table-column align="center" label="操作" width="320">
           <template slot-scope="scope">
             <!-- <span class="el-link-btn"
@@ -210,120 +147,15 @@
       </el-table>
       <div class="entry-pagination">
         <el-pagination
-          :current-page="page"
+          :current-page="pageList.page * 1"
           layout="total, sizes, prev, pager, next, jumper"
           :total="count"
-          :page-size="pageSize"
+          :page-size="pageList.page_size * 1"
           :page-sizes="[20, 50, 70, 100]"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
         />
       </div>
-      <!-- <el-dialog
-        :title="addinstruFromFlag ? '新增说明书' : '关联说明书'"
-        :visible.sync="addInstruFlag"
-        width="30%"
-      >
-        <div>
-          {{ addinstruFromFlag ? "已有说明书,点击" : "没有说明书？点击"
-          }}<el-button
-            @click="addinstruFromFlag = !addinstruFromFlag"
-            type="text"
-            >{{ addinstruFromFlag ? "关联" : "新增" }}</el-button
-          >
-        </div>
-        <el-form
-          ref="form"
-          :model="form"
-          label-width="90px"
-          v-if="addinstruFromFlag"
-        >
-          <el-form-item label="说明书名称">
-            <el-input
-              v-model="form.manual_name"
-              placeholder="请输入说明书名称"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="说明书">
-            <el-upload
-              class="upload-demo"
-              action="/api/store/upload"
-              :headers="headers"
-              accept=".pdf"
-              :limit="1"
-              :on-success="imageUploadSuccess"
-              :on-progress="uploadProgress"
-              :on-remove="handleRemove"
-              :file-list="form.fileList"
-            >
-              <el-button size="small" type="primary">点击上传</el-button>
-              <div slot="tip" class="el-upload__tip">只能上传PDF文件</div>
-            </el-upload>
-          </el-form-item>
-        </el-form>
-        <el-form ref="form" :model="form" label-width="90px" v-else>
-          <el-form-item label="说明书名称">
-             <el-input
-              v-model="form.manual_name"
-              placeholder="请输入说明书名称"
-            ></el-input> 
-            <el-select
-              v-model="value"
-              filterable
-              remote
-              reserve-keyword
-              placeholder="请输入关键词"
-              :remote-method="remoteMethod"
-              :loading="loading"
-            >
-              <el-option
-                v-for="item in options"
-                :key="item.id"
-                :label="item.manual_name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer" v-if="addinstruFromFlag">
-          <el-button @click="addInstruFlag = false">取 消</el-button>
-          <el-button type="primary" @click="onSubmit">立即创建</el-button>
-        </span>
-        <span slot="footer" class="dialog-footer" v-else>
-          <el-button @click="addInstruFlag = false">取 消</el-button>
-          <el-button type="primary" @click="onEdit(value)">立即关联</el-button>
-        </span>
-      </el-dialog> -->
-      <!-- <el-dialog
-        :title="type == 'video' ? '添加装潢视频' : '添加质检报告'"
-        :visible.sync="addInspectionFlag"
-        width="30%"
-      >
-        <el-form ref="form" :model="form" label-width="90px">
-          <el-form-item :label="type == 'video' ? '装潢视频' : '质检报告'">
-            <el-upload
-              class="upload-demo"
-              action="/api/store/upload"
-              :headers="headers"
-              :limit="1"
-              :on-success="imageUploadSuccess"
-              :on-progress="uploadProgress"
-              :on-remove="handleRemove"
-              :file-list="form.fileList"
-            >
-              <el-button size="small" type="primary">点击上传</el-button>
-               <div slot="tip" class="el-upload__tip">只能上传PDF文件</div> 
-            </el-upload>
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="addInspectionFlag = false">取 消</el-button>
-          <el-button type="primary" @click="inspectionCreate"
-            >立即创建</el-button
-          >
-        </span>
-      </el-dialog> -->
       <codedown
         :titleName="titleName"
         :dialogVisible="codeDialog"
@@ -358,7 +190,6 @@ export default {
     return {
       list: null,
       listLoading: true,
-      keyword: "",
       page: 1,
       count: 0,
       options: [],
@@ -371,7 +202,6 @@ export default {
       addinstruFromFlag: false,
       addInspectionFlag: false,
       type: "",
-      pageSize: 20,
       order: 1,
       productId: 0,
       form: {
@@ -381,25 +211,19 @@ export default {
       codeDialog: false,
       codeImg: "",
       titleName: "",
+      pageList: {
+        keyword: this.$route.query.keyword || "",
+        page: this.$route.query.page || 1,
+        order: this.$route.query.order || 1,
+        page_size: this.$route.query.page_size || 20,
+      },
     };
   },
   computed: {
     ...mapGetters(["userinfo"]),
   },
   created() {
-    console.log(this.$route);
-    if (this.$route.params.page) {
-      this.page = this.$route.params.page * 1;
-    }
-    if (sessionStorage.getItem("pageSize") != null) {
-      // console.log(sessionStorage.getItem("pageSize"));
-      this.pageSize = sessionStorage.getItem("pageSize") * 1;
-      this.fetchData();
-    } else {
-      sessionStorage.setItem("pageSize", 20);
-      this.pageSize = 20;
-      this.fetchData();
-    }
+    this.fetchData();
 
     // 获取七牛token
     getQiToken().then((res) => {
@@ -428,9 +252,9 @@ export default {
     },
     changeTableSort(column) {
       if (column.order == "ascending") {
-        this.order = 0;
+        this.pageList.order = 0;
       } else {
-        this.order = 1;
+        this.pageList.order = 1;
       }
       this.fetchData();
     },
@@ -442,138 +266,6 @@ export default {
       this.codeImg = code;
       this.titleName = name;
       this.codeDialog = true;
-    },
-    //添加质检报告
-    inspectionCreate() {
-      let parmas = {
-        id: this.productId,
-      };
-      if (this.type == "video") {
-        if (this.form.fileList.length == 0) {
-          this.$message({
-            message: "请上装潢视频",
-            type: "error",
-          });
-          return false;
-        }
-        parmas.video = this.form.fileList[0].response.data.file_path;
-      } else {
-        if (this.form.fileList.length == 0) {
-          this.$message({
-            message: "请上质检报告",
-            type: "error",
-          });
-          return false;
-        }
-        parmas.inspection = this.form.fileList[0].response.data.file_path;
-      }
-      let loading = this.$loading({
-        text: "关联中...",
-      });
-      productEdit(this.qs.stringify(parmas)).then((res) => {
-        loading.close();
-        if (res.status == 200) {
-          this.fetchData();
-          this.$message({
-            message: "关联成功",
-            type: "success",
-          });
-          this.form.manual_name = "";
-          this.form.fileList = [];
-          this.options = [];
-          this.addInspectionFlag = false;
-        }
-      });
-    },
-    //显示质检报告模态窗
-    addInspection(id, type) {
-      this.type = type;
-      this.addInspectionFlag = true;
-      this.productId = id;
-    },
-    //关联说明书
-    onEdit(id) {
-      if (id == "") {
-        this.$message({
-          message: "请选择关联的说明书",
-          type: "error",
-        });
-        return false;
-      }
-      let loading = this.$loading({
-        text: "修改中...",
-      });
-      let parmas = {
-        id: this.productId,
-        manual_id: id,
-      };
-      productEdit(this.qs.stringify(parmas)).then((res) => {
-        loading.close();
-        if (res.status == 200) {
-          this.fetchData();
-          this.$message({
-            message: "关联成功",
-            type: "success",
-          });
-          this.form.manual_name = "";
-          this.form.fileList = [];
-          this.options = [];
-          this.addInstruFlag = false;
-        }
-      });
-    },
-    //修改说明书
-    editManual(id) {
-      this.editInstruFlag = true;
-      this.productId = id;
-    },
-    //新增说明书
-    addManual(id) {
-      this.addInstruFlag = true;
-      this.productId = id;
-    },
-    onSubmit() {
-      if (!this.form.manual_name) {
-        this.$message({
-          message: "请填写说明说名称",
-          type: "error",
-        });
-        return false;
-      }
-      if (this.form.fileList.length == 0) {
-        this.$message({
-          message: "请上传说明书",
-          type: "error",
-        });
-        return false;
-      }
-      let loading = this.$loading({
-        text: "保存中",
-      });
-      let params = {
-        manual_name: this.form.manual_name,
-        file: this.form.fileList[0].response.data.file_path,
-      };
-      manualCreate(this.qs.stringify(params)).then((res) => {
-        loading.close();
-        if (res.status == 200) {
-          this.onEdit(res.data.manual_id);
-        }
-      });
-    },
-    remoteMethod(query) {
-      if (query !== "") {
-        this.loading = true;
-        let parmas = {
-          keyword: query,
-        };
-        manualList(this.qs.stringify(parmas)).then((res) => {
-          this.loading = false;
-          this.options = res.data.data;
-        });
-      } else {
-        this.options = [];
-      }
     },
     handleRemove(file, fileList) {
       this.form.fileList = fileList;
@@ -598,7 +290,7 @@ export default {
       });
     },
     onSearch() {
-      this.page = 1;
+      this.pageList.page = 1;
       this.fetchData();
     },
     golinkpage(page, obj) {
@@ -611,15 +303,14 @@ export default {
       });
     },
     handleSizeChange(size) {
-      this.pageSize = size;
-      sessionStorage.setItem("pageSize", this.pageSize);
+      this.pageList.page_size = size;
+      sessionStorage.setItem("pageSize", this.pageList.page_size * 1);
 
-      this.page = 1;
+      this.pageList.page = 1;
       this.fetchData();
     },
     handleCurrentChange(size) {
-      this.page = size;
-      console.log(size);
+      this.pageList.page = size;
       this.fetchData();
     },
     //是否上架
@@ -643,22 +334,17 @@ export default {
     },
     fetchData() {
       this.listLoading = true;
-      let parmas = {
-        page: this.page,
-        keyword: this.keyword,
-        order: this.order,
-        page_size: this.pageSize,
-      };
-      productList(this.qs.stringify(parmas)).then((res) => {
+      productList(this.qs.stringify(this.pageList)).then((res) => {
         this.count = res.data.total;
         if (res.data.data.length > 0) {
           res.data.data.map((item, index) => {
-            item.showFlag = item.show == 1 ? true : false;
+            item.showFlag = item.show == 1;
           });
         }
         this.list = res.data.data;
         this.listLoading = false;
-        this.showPage = res.data.last_page > 1 ? true : false;
+        this.showPage = res.data.last_page > 1;
+        this.$router.push({ path: "productcode", query: this.pageList });
       });
     },
   },

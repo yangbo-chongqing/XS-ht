@@ -61,11 +61,6 @@
             <span class="code-name">{{ scope.row.clsbdh }}</span>
           </template>
         </el-table-column>
-        <!--    <el-table-column label="合格证编号">
-          <template slot-scope="scope">
-            <span class="code-name">{{ scope.row.certificate_id }}</span>
-          </template>
-        </el-table-column>-->
         <el-table-column label="流水码统计" align="center">
           <template slot-scope="scope">
             <span class="code-name">
@@ -92,26 +87,13 @@
                 >下载二维码</el-link
               ></span
             >
-            <!-- <span class="el-link-btn" v-if="userinfo.purview.flowing.edit"
-              ><el-link
-                type="primary"
-                @click="
-                  golinkpage('/codelist/flowcodeedit', { id: scope.row.id })
-                "
-                >编辑</el-link
-              ></span
-            >
-            <span class="el-link-btn" v-if="userinfo.purview.flowing.del"
-              ><el-link type="primary" @click="delFow(scope.row.id, scope)"
-                >删除</el-link
-              ></span
-            > -->
           </template>
         </el-table-column>
       </el-table>
       <div class="entry-pagination">
         <el-pagination
           background
+          hide-on-single-page
           :current-page.sync="page"
           layout="total, sizes, prev, pager, next, jumper"
           :total="count"

@@ -1488,13 +1488,7 @@ export default {
       this.videoUploadPercent = file.percentage.toFixed(0) * 1;
     },
     back() {
-      // this.$router.go(-1);
-      this.$router.push({
-        name: "ProductCode",
-        params: {
-          page: this.pageed,
-        },
-      });
+      this.$router.go(-1);
     },
     uploadPic(file) {
       let newTime = new Date().getTime();
