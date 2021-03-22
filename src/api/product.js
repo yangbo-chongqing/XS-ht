@@ -225,3 +225,51 @@ export function contentEdit(data) {
     data
   })
 }
+// 产品码分类列表
+export function structure(data) {
+  return request({
+    url: '/api/store/product/structure',
+    method: 'post',
+    data
+  })
+}
+// 产品码创建分类
+export function createType(data) {
+  return request({
+    url: '/api/store/product/type/create',
+    method: 'post',
+    data
+  })
+}
+// 产品码分类排序
+export function postTypeSort(data) {
+  return request({
+    url: '/api/store/product/type/sort',
+    method: 'post',
+    data
+  })
+}
+// 产品码分类排序
+export function postTypeEdit(data) {
+  return request({
+    url: '/api/store/product/type/edit',
+    method: 'post',
+    data
+  })
+}
+// 产品码分类排序
+export function postTypeDel(data) {
+  return request({
+    url: '/api/store/product/type/del',
+    method: 'post',
+    data
+  })
+}
+// 产品码分类同级列表
+export function typeList(data) {
+  return request({
+    url: '/api/store/product/type/list',
+    method: 'post',
+    data
+  })
+}

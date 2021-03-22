@@ -39,112 +39,171 @@
       </el-row>
     </div>
     <div class="fun-table">
-      <el-table
-        ref="multipleTable"
-        v-loading="listLoading"
-        :data="list"
-        element-loading-text="拼命加载中"
-        :height="tableHeight"
-        border
-        fit
-        highlight-current-row
-        @sort-change="changeTableSort"
-      >
-        >
-        <el-table-column
-          label="产品编号"
-          prop="unique"
-          :sortable="'custom'"
-          width="150"
-          align="center"
-        >
-        </el-table-column>
-        <el-table-column label="产品名称" align="center">
-          <template slot-scope="scope">
-            <span class="code-name">{{ scope.row.name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="产品状态" align="center">
-          <template slot-scope="scope">
-            <span class="code-name">{{
-              scope.row.show ? "开启" : "关闭"
-            }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="产品码统计" align="center">
-          <template slot-scope="scope">
-            <div
-              style="
-                text-align: center;
-                overflow: hidden;
-                display: inline-block;
-              "
-            >
-              订阅人数:{{ scope.row.subscribe_number }}; 扫码人数:{{
-                scope.row.scan_code_number
-              }}; 浏览次数:{{ scope.row.watch_number }};
+      <el-row>
+        <!-- 分类板块 -->
+        <el-col :span="5">
+          <div class="entry-type-menu" style="padding-top: 10px">
+            <div class="entry-type-menu-title">
+              分类<span v-if="treeCount">共{{ treeCount }}个码</span>
             </div>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="操作" width="320">
-          <template slot-scope="scope">
-            <!-- <span class="el-link-btn"
-              ><el-link
-                type="primary"
-                @click="
-                  openPopover(
-                    'http://xsdt.xunsheng.org.cn/api/web/code?type=4&id=' +
-                      scope.row.id
-                  )
-                "
-                >下载二维码</el-link
-              ></span
-            > -->
-            <span class="el-link-btn" v-if="userinfo.purview.flowing.select"
-              ><el-link
-                type="primary"
-                @click="
-                  golinkpage('/codelist/flowcode', {
-                    id: scope.row.id,
-                    page: page,
-                  })
-                "
-                >查看流水码</el-link
-              ></span
+            <el-tree
+              v-if="tree"
+              :data="tree"
+              node-key="id"
+              @node-click="entryTypeToggle"
+              draggable
+              ref="entryTypeList"
+              @node-drop="node_drop"
+              :allow-drop="allowDrop"
             >
-            <span class="el-link-btn"
-              ><el-link
-                type="primary"
-                @click="
-                  openPopover(
-                    'http://xsdt.xunsheng.org.cn/api/web/code?type=4&id=' +
-                      scope.row.id +
-                      '&muse_id=' +
-                      userinfo.user_info.muse_id,
-                    scope.row.name
-                  )
-                "
-                >下载二维码</el-link
-              ></span
+              <span class="custom-tree-node" slot-scope="{ noed, data }">
+                <span v-if="!data.edit">{{ data.type_name }}</span>
+                <span v-else
+                  ><input
+                    class="entry-type-input"
+                    autofocus
+                    @focus="selectText($event)"
+                    @keyup.enter="$event.target.blur"
+                    @blur="entryTypeEdit(data)"
+                    type="text"
+                    v-model="data.type_name"
+                /></span>
+                <span @click.stop="return false;">
+                  <el-button class="code-num" type="text" size="mini">
+                    {{ data.count }}
+                  </el-button>
+                  <el-dropdown trigger="click">
+                    <span class="el-dropdown-link">
+                      <el-button
+                        type="text"
+                        size="mini"
+                        icon="el-icon-more"
+                        class="down-btn"
+                      >
+                      </el-button>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item
+                        icon="el-icon-plus"
+                        v-if="!data.top_id"
+                        @click.native="() => addChildType(noed, data)"
+                        >创建子分类</el-dropdown-item
+                      >
+                      <el-dropdown-item
+                        icon="el-icon-edit"
+                        @click.native="() => editFlagToggle(noed, data)"
+                        >重命名</el-dropdown-item
+                      >
+                      <el-dropdown-item
+                        icon="el-icon-delete"
+                        @click.native="delType(data.id)"
+                        >删除</el-dropdown-item
+                      >
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </span>
+              </span>
+            </el-tree>
+            <div class="add-entry-type">
+              <el-button size="small" @click="addEntryType" icon="el-icon-plus"
+                >新建分类</el-button
+              >
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="19">
+          <!-- 表格展示模块 -->
+          <el-table
+            ref="multipleTable"
+            v-loading="listLoading"
+            :data="list"
+            element-loading-text="拼命加载中"
+            :height="tableHeight"
+            border
+            fit
+            highlight-current-row
+            @sort-change="changeTableSort"
+          >
             >
-            <span class="el-link-btn" v-if="userinfo.purview.product.edit"
-              ><el-link
-                type="primary"
-                @click="
-                  golinkpage('/codelist/productedit', {
-                    id: scope.row.id,
-                    page: page,
-                  })
-                "
-                >编辑</el-link
-              ></span
+            <el-table-column
+              label="产品编号"
+              prop="unique"
+              :sortable="'custom'"
+              width="150"
+              align="center"
             >
-            <span class="el-link-btn" v-if="userinfo.purview.product.del">
-              <el-link type="primary" @click="dele(scope.row)">删除</el-link>
-            </span>
-          </template>
-        </el-table-column>
-      </el-table>
+            </el-table-column>
+            <el-table-column label="产品名称" align="center">
+              <template slot-scope="scope">
+                <span class="code-name">{{ scope.row.name }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="产品码统计" align="center">
+              <template slot-scope="scope">
+                <div
+                  style="
+                    text-align: center;
+                    overflow: hidden;
+                    display: inline-block;
+                  "
+                >
+                  订阅人数:{{ scope.row.subscribe_number }}; 扫码人数:{{
+                    scope.row.scan_code_number
+                  }}; 浏览次数:{{ scope.row.watch_number }};
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="操作" width="320">
+              <template slot-scope="scope">
+                <span class="el-link-btn" v-if="userinfo.purview.flowing.select"
+                  ><el-link
+                    type="primary"
+                    @click="
+                      golinkpage('/codelist/flowcode', {
+                        id: scope.row.id,
+                        page: page,
+                      })
+                    "
+                    >查看流水码</el-link
+                  ></span
+                >
+                <span class="el-link-btn"
+                  ><el-link
+                    type="primary"
+                    @click="
+                      openPopover(
+                        'http://xsdt.xunsheng.org.cn/api/web/code?type=4&id=' +
+                          scope.row.id +
+                          '&muse_id=' +
+                          userinfo.user_info.muse_id,
+                        scope.row.name
+                      )
+                    "
+                    >下载二维码</el-link
+                  ></span
+                >
+                <span class="el-link-btn" v-if="userinfo.purview.product.edit"
+                  ><el-link
+                    type="primary"
+                    @click="
+                      golinkpage('/codelist/productedit', {
+                        id: scope.row.id,
+                        page: page,
+                      })
+                    "
+                    >编辑</el-link
+                  ></span
+                >
+                <span class="el-link-btn" v-if="userinfo.purview.product.del">
+                  <el-link type="primary" @click="dele(scope.row)"
+                    >删除</el-link
+                  >
+                </span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
       <div class="entry-pagination">
         <el-pagination
           :current-page="pageList.page * 1"
@@ -174,6 +233,11 @@ import {
   manualList,
   manualCreate,
   productDel,
+  createType,
+  structure,
+  postTypeSort,
+  postTypeEdit,
+  postTypeDel,
 } from "@/api/product";
 import { downloadIamge } from "@/utils/utils";
 import { getToken } from "@/utils/auth";
@@ -202,7 +266,9 @@ export default {
       addinstruFromFlag: false,
       addInspectionFlag: false,
       type: "",
+      treeCount: 0,
       order: 1,
+      tree: [],
       productId: 0,
       form: {
         manual_name: "",
@@ -216,6 +282,7 @@ export default {
         page: this.$route.query.page || 1,
         order: this.$route.query.order || 1,
         page_size: this.$route.query.page_size || 20,
+        type_id: this.$route.query.type_id || 0,
       },
     };
   },
@@ -234,7 +301,7 @@ export default {
       delete str.upToken;
       sessionStorage.setItem("qiToken", JSON.stringify(str));
     });
-    console.log(this.userinfo);
+    this.getstructure();
   },
   methods: {
     dele(id) {
@@ -247,6 +314,77 @@ export default {
             type: "success",
           });
           this.fetchData();
+        }
+      });
+    },
+    getstructure() {
+      structure().then((res) => {
+        if (res.status == 200) {
+          this.tree = res.data.data.list;
+          this.treeCount = res.data.data.count;
+        }
+      });
+    },
+    //切换分类数据
+    entryTypeToggle(data, node) {
+      this.pageList.type_id = data.id;
+      this.keyword = "";
+      this.fetchData();
+    },
+    //自动选中文本值
+    selectText(e) {
+      e.currentTarget.select();
+    },
+    //修改分类名称
+    entryTypeEdit(data) {
+      let params = {
+        id: data.id,
+        name: data.type_name,
+      };
+      postTypeEdit(this.qs.stringify(params)).then((res) => {
+        if (res.status == 200) {
+          this.$set(data, "edit", false);
+          this.$message({
+            message: res.message,
+            type: "success",
+          });
+        }
+      });
+    },
+    //拖动判断
+    allowDrop(draggingNode, dropNode, type) {
+      if (dropNode.level == 2) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    node_drop() {
+      //拖动完成提交数据
+
+      console.log(this.tree);
+      postTypeSort(
+        this.qs.stringify({ type_json: JSON.stringify(this.tree) })
+      ).then((res) => {
+        if (res.status == 200) {
+          this.getstructure();
+        }
+      });
+    },
+    //添加分类
+    addEntryType() {
+      let params = {
+        name: "未命名分类",
+      };
+      createType(this.qs.stringify(params)).then((res) => {
+        if (res.status == 200) {
+          res.data.data.edit = true;
+          let addData = res.data.data;
+          this.tree.push(addData);
+          this.$message({
+            message: res.message,
+            type: "success",
+          });
         }
       });
     },
@@ -301,6 +439,57 @@ export default {
           ...obj,
         },
       });
+    },
+    //添加子分类
+    addChildType(node, data) {
+      this.$refs.entryTypeList.store.nodesMap[data.id].expanded = true;
+      let params = {
+        name: "未命名分类",
+        top_id: data.id,
+      };
+      createType(this.qs.stringify(params)).then((res) => {
+        if (res.status == 200) {
+          res.data.data.edit = true;
+          let addData = res.data.data;
+          data.children.push(addData);
+          this.$message({
+            message: res.message,
+            type: "success",
+          });
+        }
+      });
+    },
+    //切换重命名输入
+    editFlagToggle(noeds, data) {
+      this.$set(data, "edit", true);
+    },
+    //分类删除
+    delType(id) {
+      this.$confirm("此操作将删除该分类, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          const parmas = {
+            id: id,
+          };
+          postTypeDel(this.qs.stringify(parmas)).then((res) => {
+            if (res.status == 200) {
+              this.$message({
+                type: "success",
+                message: "删除成功!",
+              });
+              this.getstructure();
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
     handleSizeChange(size) {
       this.pageList.page_size = size;
@@ -365,6 +554,50 @@ export default {
     text-align: center;
   }
   .fun-table {
+    .entry-type-menu {
+      width: 260px;
+      flex-shrink: 0;
+      border-right: 1px solid #e0e1e3;
+      .entry-type-input {
+        border: 1px solid #66b1ff;
+        border-radius: 5px;
+        padding: 4px;
+        box-sizing: border-box;
+      }
+      .add-entry-type {
+        text-align: center;
+        margin-top: 15px;
+      }
+      .el-tree-node__content {
+        height: 35px;
+      }
+      .code-num {
+        color: #333;
+      }
+      .down-btn {
+        display: none;
+      }
+      .custom-tree-node {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 14px;
+        padding-right: 8px;
+      }
+      .entry-type-menu-title {
+        font-size: 16px;
+        color: #333;
+        padding-left: 20px;
+        box-sizing: border-box;
+        margin-bottom: 15px;
+        span {
+          font-size: 14px;
+          color: #999;
+          margin-left: 10px;
+        }
+      }
+    }
     .fun-table-body {
       width: 100%;
       height: 100px;
@@ -426,6 +659,19 @@ export default {
   .fun-pagination {
     margin-top: 20px;
     text-align: right;
+  }
+}
+.entry-type-menu {
+  .el-tree-node__content {
+    height: 35px;
+    &:hover {
+      .down-btn {
+        display: inline-block;
+      }
+      .code-num {
+        display: none;
+      }
+    }
   }
 }
 </style>

@@ -452,11 +452,6 @@ export default {
       sessionStorage.setItem("qiToken", JSON.stringify(str));
     });
   },
-  // updated() {
-  //   this.fetchData();
-  //   this.GetMuse();
-  //   this.typeList();
-  // },
   methods: {
     //拖动完成提交数据
     node_drop() {

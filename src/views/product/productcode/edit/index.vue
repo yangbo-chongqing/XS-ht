@@ -86,6 +86,17 @@
                 </div> -->
               </div>
             </el-form-item>
+            <el-form-item label="分类">
+              <el-select v-model="form.classify" placeholder="请选择">
+                <el-option
+                  v-for="(item, index) of classifyList"
+                  :key="index"
+                  :label="item.type_name"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
             <el-form-item label="排序">
               <el-input class="classInput" v-model="form.sort"></el-input>
             </el-form-item>
@@ -982,6 +993,7 @@ import {
   contentDetail,
   manualEdit,
   contentEdit,
+  typeList,
 } from "@/api/product";
 import { TypeList, createMater } from "@/api/myApi";
 
@@ -1005,6 +1017,7 @@ export default {
       id: this.$route.query.id,
       showEd: false,
       typeStu: 0,
+      classifyList: [], //分类列表
       titleName: "",
       reTitName: false,
       activeName: "first",
@@ -1039,6 +1052,7 @@ export default {
         sort: 0,
         id: "",
         manual_id: 0,
+        classify: "",
       },
       form2: {},
       form1: [],
@@ -1140,6 +1154,7 @@ export default {
     this.qiToken = JSON.parse(sessionStorage.qiToken);
     // 显示扩展字段
     this.geList();
+    this.getTypeList();
   },
   computed: {
     ...mapGetters(["userinfo"]),
@@ -1277,7 +1292,9 @@ export default {
             this.nIndex = i;
           }
         }
+        console.log(this.form);
         this.form.name = res.data.data.name;
+        this.form.classify = res.data.data.type_id;
         this.form.unique = res.data.data.unique;
         // this.form.dialogImageUrl = res.data.data.image;
         this.form.show = res.data.data.show;
@@ -1323,8 +1340,6 @@ export default {
 
     handleNodeClick(data) {
       // 点击树状图
-      // this.productState = data.label;
-      // console.log(this.productState);
       console.log(data.id);
       let showMe = data.id.toString();
       console.log(showMe.indexOf("-"));
@@ -1420,6 +1435,7 @@ export default {
             videos: JSON.stringify(this.picList),
             expand: expand,
             manual_id: state,
+            type_id: this.form.classify,
           };
         } else {
           params = {
@@ -1436,6 +1452,7 @@ export default {
             picture: JSON.stringify(arry),
             videos: JSON.stringify(this.picList),
             expand: expand,
+            type_id: this.form.classify,
           };
         }
         setTimeout(() => {}, 5000);
@@ -1475,6 +1492,11 @@ export default {
           }
         });
       }
+    },
+    getTypeList() {
+      typeList(this.qs.stringify({ type: 1 })).then((res) => {
+        this.classifyList = res.data.data;
+      });
     },
     handlePictureCardPreview(file) {
       this.dialogVisible = true;

@@ -117,13 +117,26 @@
           </el-input>
         </div>
         <div style="text-align: right">
-          <el-button
+          <!-- <el-button
             type="primary"
             style="margin: 8px 5px 0 0"
             size="mini"
             @click="add()"
             >发 送</el-button
+          > -->
+          <el-dropdown
+            style="margin: 8px 5px 0 0"
+            size="medium"
+            split-button
+            type="primary"
+            @click="add()"
+            @command="handleCommand"
           >
+            发 送
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="item">item</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </div>
       </div>
     </div>
@@ -194,6 +207,10 @@ export default {
         this.question = res.data.info;
         this.contentList = res.data.list.data;
       });
+    },
+    handleCommand(val) {
+      // 快速回复
+      this.textarea = val;
     },
   },
   watch: {
