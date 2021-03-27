@@ -18,7 +18,7 @@
                 状态：
                 <el-select
                   style="width: 140px"
-                  v-model="state"
+                  v-model="pageData.state"
                   placeholder="请选择"
                   @change="selectState"
                 >
@@ -113,10 +113,10 @@
       <div class="entry-pagination">
         <el-pagination
           background
-          :current-page.sync="page"
+          :current-page.sync="pageData.page"
           layout="total, sizes, prev, pager, next, jumper"
           :total="count"
-          :page-size="pageSize"
+          :page-size="pageData.pageSize"
           :page-sizes="[20, 50, 70, 100]"
           @current-change="handleCurrentChange"
           @size-change="handleSizeChange"
@@ -134,44 +134,50 @@ export default {
       listLoading: false,
       list: [], //工单列表
       tableHeight: document.body.clientHeight - 230,
-      page: 1, //页码
-      pageSize: 20,
       count: 0, //总条数
-      state: "-1", //筛选状态
       states: [
         { label: "全部", value: "-1" },
         { label: "待回复", value: "1" },
         { label: "已回复", value: "2" },
         { label: "已完结", value: "3" },
       ],
+      pageData: {
+        state: this.$route.query.state || "-1", //筛选状态
+        page: this.$route.query.page * 1 || 1, //页码
+        pageSize: this.$route.query.pageSize * 1 || 20,
+      },
     };
   },
   methods: {
     // onSearch() {},
     handleSizeChange(size) {
       // 换页
-      this.pageSize = size;
+      this.pageData.pageSize = size;
       sessionStorage.setItem("pageSize", this.pageSize);
-      this.page = 1;
+      this.pageData.page = 1;
       this.getList();
     },
     handleCurrentChange(size) {
-      this.page = size;
+      this.pageData.page = size;
       this.getList();
     },
     selectState() {
-      this.page = 1;
+      this.pageData.page = 1;
       this.getList();
     },
     getList() {
-      let parasm = {
-        page: this.page,
-        state: this.state,
-        page_size: this.pageSize,
-      };
-      workorderList(this.qs.stringify(parasm)).then((res) => {
+      // let parasm = {
+      //   page: this.page,
+      //   state: this.state,
+      //   page_size: this.pageSize,
+      // };
+      workorderList(this.qs.stringify(this.pageData)).then((res) => {
         this.list = res.data.list.data;
         this.count = res.data.list.total;
+        this.$router.push({
+          path: "/workOrder/workOrderList",
+          query: this.pageData,
+        });
       });
     },
     over(id) {
@@ -201,15 +207,8 @@ export default {
     },
   },
   created() {
-    if (sessionStorage.getItem("pageSize") != null) {
-      // console.log(sessionStorage.getItem("pageSize"));
-      this.pageSize = sessionStorage.getItem("pageSize") * 1;
-      this.getList();
-    } else {
-      sessionStorage.setItem("pageSize", 20);
-      this.pageSize = 20;
-      this.getList();
-    }
+    this.getList();
+    console.log(this.pageData);
   },
 };
 </script>

@@ -134,7 +134,12 @@
           >
             发 送
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="item">item</el-dropdown-item>
+              <el-dropdown-item
+                v-for="(item, index) of replyList"
+                :key="index"
+                :command="item"
+                >{{ item }}</el-dropdown-item
+              >
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -145,7 +150,7 @@
 <script>
 import { getQiToken } from "@/api/user";
 import { getToken } from "@/utils/auth";
-import { workorderDetails, workorderReply } from "@/api/myApi";
+import { workorderDetails, workorderReply, templateReply } from "@/api/myApi";
 export default {
   data() {
     return {
@@ -155,6 +160,7 @@ export default {
       id: this.$route.query.id,
       contentList: [],
       question: {},
+      replyList: [],
     };
   },
   methods: {
@@ -212,6 +218,11 @@ export default {
       // 快速回复
       this.textarea = val;
     },
+    getReply() {
+      templateReply().then((res) => {
+        this.replyList = res.data.list;
+      });
+    },
   },
   watch: {
     contentList: function () {
@@ -227,6 +238,7 @@ export default {
   created() {
     this.qiToken = JSON.parse(sessionStorage.qiToken);
     this.getDetail();
+    this.getReply();
   },
 };
 </script>

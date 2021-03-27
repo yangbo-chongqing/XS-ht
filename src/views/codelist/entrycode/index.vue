@@ -77,7 +77,7 @@
               <div class="entry-search">
                 <el-input
                   placeholder="请输入"
-                  v-model="keyword"
+                  v-model="pageData.keyword"
                   clearable
                   class="input-with-select"
                   @keyup.enter.native="onSearch"
@@ -116,7 +116,7 @@
           </div>
           <div class="entry-table-tips-item">
             <el-select
-              v-model="tipValue"
+              v-model="pageData.label"
               @visible-change="
                 (v) => visibleChange(v, 'cascader', cascaderClick)
               "
@@ -264,10 +264,10 @@
         <div class="entry-pagination">
           <el-pagination
             background
-            :current-page.sync="page"
+            :current-page.sync="pageData.page"
             layout="total, sizes, prev, pager, next, jumper"
             :total="count"
-            :page-size="pageSize"
+            :page-size="pageData.pageSize"
             :page-sizes="[20, 50, 70, 100]"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -383,16 +383,10 @@ export default {
       dialogTableVisible: false,
       tableHeight: document.body.clientHeight - 300,
       filename: "",
-      page: 1,
       pages: 0,
-      pageSize: 20,
       count: 0,
-      keyword: this.$route.query.keyword || "",
       popoverFlag: false,
       checked1: false,
-      draft: 0,
-      entryselect: "1",
-      tipValue: "",
       entryTipVal: "",
       entryId: "",
       tag_id: "",
@@ -403,44 +397,26 @@ export default {
       codeDialog: false,
       tree: "",
       treeCount: 0,
-      type_id: 0,
       scopeLabel: "",
       titleName: "",
+      pageData: {
+        page: this.$route.query.page * 1 || 1,
+        page_size: this.$route.query.pageSize * 1 || 20,
+        keyword: this.$route.query.keyword || "",
+        label: this.$route.query.label
+          ? this.$route.query.label == "标签"
+            ? ""
+            : this.$route.query.label
+          : "",
+        draft: this.$route.query.draft || 0,
+        type: this.$route.query.entryselect || "1",
+        type_id: this.$route.query.type_id || 0,
+      },
     };
   },
-  // beforeRouteEnter(to, from, next) {
-  //   if (from.name === "EntryEdit" || from.name === "CreateArticle") {
-  //     //判断是从哪个路由过来的，若是detail页面不需要刷新获取新数据，直接用之前缓存的数据即可
-  //     to.meta.isBack = true;
-  //   }
-  //   next();
-  // },
-  // activated() {
-  //   if (!this.$route.meta.isBack) {
-
-  //     this.page = 1;
-  //     // 如果isBack是false，表明需要获取新数据，否则就不再请求，直接使用缓存的数据
-  //     this.fetchData();
-  //     this.GetMuse();
-  //     this.typeList();
-  //   }
-  //   // 恢复成默认的false，避免isBack一直是true，导致下次无法获取数据
-  //   this.$route.meta.isBack = false;
-  // },
   created() {
-    console.log(this.$route);
-    if (this.$route.params.page) {
-      this.page = this.$route.params.page * 1;
-    }
-    if (sessionStorage.getItem("pageSize") != null) {
-      // console.log(sessionStorage.getItem("pageSize"));
-      this.pageSize = sessionStorage.getItem("pageSize") * 1;
-      this.fetchData();
-    } else {
-      sessionStorage.setItem("pageSize", 20);
-      this.pageSize = 20;
-      this.fetchData();
-    }
+    this.fetchData();
+
     this.GetMuse();
     this.typeList();
     getQiToken({}).then((res) => {
@@ -562,8 +538,9 @@ export default {
     },
     //切换分类数据
     entryTypeToggle(data, node) {
-      this.type_id = data.id;
-      this.keyword = "";
+      this.pageData.type_id = data.id;
+      this.pageData.keyword = "";
+      this.pageData.page = 1;
       this.fetchData();
     },
     //分类列表查询
@@ -811,27 +788,26 @@ export default {
       });
     },
     onSearch() {
-      this.page = 1;
+      this.pageData.page = 1;
       this.checked1 = false;
-      this.draft = 0;
-      this.type_id = 0;
-      this.tipValue = "标签";
-      console.log(this.keyword);
-      localStorage.setItem("entrykeyword", this.keyword);
+      this.pageData.draft = 0;
+      this.pageData.type_id = 0;
+      this.pageData.label = "标签";
+      localStorage.setItem("entrykeyword", this.pageData.keyword);
       this.fetchData();
     },
     handleSizeChange(size) {
-      this.pageSize = size;
-      sessionStorage.setItem("pageSize", this.pageSize);
+      this.pageData.pageSize = size;
+      sessionStorage.setItem("pageSize", this.pageData.pageSize);
       this.fetchData();
     },
     handleCurrentChange(size) {
-      this.page = size;
+      this.pageData.page = size;
       this.fetchData();
     },
     //草稿查询切换
     ctypeChange() {
-      this.draft = this.checked1 ? 1 : 0;
+      this.pageData.draft = this.checked1 ? 1 : 0;
       this.fetchData();
     },
     //分组切换查询
@@ -840,20 +816,16 @@ export default {
     },
     fetchData() {
       this.listLoading = true;
-      const params = {
-        page: this.page,
-        page_size: this.pageSize,
-        keyword: this.keyword,
-        label: this.tipValue == "标签" ? "" : this.tipValue,
-        draft: this.draft,
-        type: this.entryselect,
-        type_id: this.type_id,
-      };
-      entryCodeList(this.qs.stringify(params)).then((res) => {
+      console.log(this.pageData.label);
+      entryCodeList(this.qs.stringify(this.pageData)).then((res) => {
         this.pages = res.data.relics_list.last_page;
         this.count = res.data.relics_list.total;
         this.list = res.data.relics_list.data;
         this.listLoading = false;
+        this.$router.push({
+          path: "/codelist/entrycode",
+          query: this.pageData,
+        });
       });
     },
     handleSelectionChange(val) {

@@ -72,7 +72,14 @@ export function workorderFinish(data) {
         data
     })
 }
-
+// 工单管理-工单完结
+export function templateReply(data) {
+    return request({
+        url: '/api/store/workorder/reply/template',
+        method: 'post',
+        data
+    })
+}
 // 素材管理-创建素材分类
 export function createType(data) {
     return request({

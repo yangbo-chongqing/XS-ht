@@ -125,31 +125,24 @@ export default {
   name: "FlowCode",
   data() {
     return {
-      id: this.$route.query.id,
       list: null,
       listLoading: true,
-      keyword: "",
-      page: 1,
       count: 0,
-      pageSize: 20,
       showPage: false,
-      pageed: this.$route.query.page,
       tableHeight: document.body.clientHeight - 220,
       codeDialog: false,
       codeImg: "",
       titleName: "",
+      pageData: {
+        pageSize: this.$route.query.pageSize * 1 || 20,
+        page: this.$route.query.page * 1 || 1,
+        keyword: this.$route.query.keyword || "",
+        id: this.$route.query.id,
+      },
     };
   },
   created() {
-    if (sessionStorage.getItem("pageSize") != null) {
-      // console.log(sessionStorage.getItem("pageSize"));
-      this.pageSize = sessionStorage.getItem("pageSize") * 1;
-      this.fetchData();
-    } else {
-      sessionStorage.setItem("pageSize", 20);
-      this.pageSize = 20;
-      this.fetchData();
-    }
+    this.fetchData();
   },
   methods: {
     openPopover(code, name) {
@@ -192,7 +185,7 @@ export default {
         });
     },
     onSearch() {
-      this.page = 1;
+      this.pageData.page = 1;
       this.fetchData();
     },
     golinkpage(page, obj) {
@@ -204,44 +197,29 @@ export default {
       });
     },
     handleSizeChange(size) {
-      this.page = 1;
-      this.pageSize = size;
-      sessionStorage.setItem("pageSize", this.pageSize);
+      this.pageData.page = 1;
+      this.pageData.pageSize = size;
       this.fetchData();
     },
     handleCurrentChange(size) {
-      this.page = size;
+      this.pageData.page = size;
       this.fetchData();
     },
     fetchData() {
       this.listLoading = true;
-      let parmas = {
-        product_id: this.id,
-        page: this.page,
-        page_size: this.pageSize,
-        keyword: this.keyword,
-      };
-      floWingList(this.qs.stringify(parmas)).then((res) => {
+
+      floWingList(this.qs.stringify(this.pageData)).then((res) => {
         this.count = res.data.data.total;
         this.list = res.data.data.data;
         this.listLoading = false;
-        this.showPage = res.data.data.last_page > 1 ? true : false;
-        let pageNo = this.page - 1;
-        console.log(pageNo);
-        if (pageNo * 10 >= res.data.data.total) {
-          this.page -= 1;
-          this.fetchData();
-        }
+        this.$router.push({
+          path: "/codelist/flowcode",
+          query: this.pageData,
+        });
       });
     },
     back() {
-      // this.$router.go(-1);
-      this.$router.push({
-        name: "ProductCode",
-        params: {
-          page: this.pageed,
-        },
-      });
+      this.$router.go(-1);
     },
   },
   computed: {

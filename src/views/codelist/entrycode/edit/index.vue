@@ -999,13 +999,7 @@ export default {
     // 返回
     goback() {
       console.log(this.$route);
-      // this.$router.go(-1);
-      this.$router.push({
-        name: "EntryCode",
-        params: {
-          page: this.pageed,
-        },
-      });
+      this.$router.go(-1);
     },
     // 编辑
     entryEdit(state) {

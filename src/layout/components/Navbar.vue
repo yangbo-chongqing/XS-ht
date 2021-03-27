@@ -5,7 +5,6 @@
       class="hamburger-container"
       @toggleClick="toggleSideBar"
     />
-
     <breadcrumb class="breadcrumb-container" />
     <div class="right-menu">
       <!-- <el-select
@@ -53,7 +52,6 @@ import { mapGetters } from "vuex";
 import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
 import { museSwitch } from "@/api/user";
-
 import { getGetMuse } from "@/api/settings";
 export default {
   inject: ["reload"],
@@ -106,7 +104,6 @@ export default {
       this.$store.dispatch("app/toggleSideBar");
     },
     settings() {
-      console.log(111111111);
       this.$router.push("/settings/account");
     },
     async logout() {
@@ -116,7 +113,6 @@ export default {
     },
   },
   created() {
-    console.log("bbbbbbbbb");
     // this.getMenuList();
     this.userinfo.muse_list.map((item) => {
       if (item.select == 1) {
