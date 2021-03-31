@@ -1052,7 +1052,7 @@ export default {
         sort: 0,
         id: "",
         manual_id: 0,
-        classify: "",
+        classify: 0,
       },
       form2: {},
       form1: [],
@@ -2183,6 +2183,7 @@ export default {
   .nameFont {
     font-size: 20px;
     font-weight: 500;
+    width: 200px;
   }
   .reStateName {
     cursor: pointer;

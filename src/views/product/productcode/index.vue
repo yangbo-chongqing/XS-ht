@@ -307,15 +307,28 @@ export default {
     dele(id) {
       // 删除产品码
       console.log(id);
-      productDel(this.qs.stringify({ id: id.id })).then((res) => {
-        if (res.status == 200) {
-          this.$message({
-            message: res.message,
-            type: "success",
+      this.$confirm("此操作将删除该产品码, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          productDel(this.qs.stringify({ id: id.id })).then((res) => {
+            if (res.status == 200) {
+              this.$message({
+                message: res.message,
+                type: "success",
+              });
+              this.fetchData();
+            }
           });
-          this.fetchData();
-        }
-      });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
     getstructure() {
       structure().then((res) => {
