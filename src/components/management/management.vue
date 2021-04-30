@@ -62,6 +62,10 @@
                   <div v-if="selectClass[index] == 1" class="shadow">
                     <img src="../../assets/icon/success.png" alt="" />
                   </div>
+                  <span class="nameFloat">
+                    {{ item.name }}
+                    <!-- 111212121 -->
+                  </span>
                 </div>
 
                 <div class="handleBtn">
@@ -240,7 +244,8 @@ export default {
           console.log(n);
         } else {
           this.selectClass[n] = 1;
-          this.selectDetail = this.selectDetail.concat(item.file_path);
+          this.selectDetail = this.selectDetail.concat(item);
+          console.log(item);
           console.log(this.selectDetail);
           console.log(this.selectClass);
           console.log(n);
@@ -354,9 +359,13 @@ export default {
       }
     },
     addDetail(index, item) {
-      if ((this.type == 1 || this.type == 2) && index == 1) {
+      if (this.type == 1 && index == 1) {
         // 新增图片或者视频
         this.stateTit = true;
+      } else if (this.type == 2 && index == 1) {
+        this.$emit("getClassify", [this.typeList]);
+        this.stateTit = false;
+        this.Visible = false;
       } else if (index == 2) {
         // 确认提交
         this.$emit("getEvent", [this.selectDetail, this.type]);
@@ -448,6 +457,7 @@ export default {
           margin: 10px 0 0 10px;
           position: relative;
           overflow: hidden;
+          cursor: pointer;
           img {
             width: 100%;
             height: 100%;
@@ -484,6 +494,17 @@ export default {
               line-height: 20px;
               padding: 2px;
               cursor: pointer;
+            }
+            .nameFloat {
+              bottom: 5px;
+              left: 0px;
+              position: absolute;
+              z-index: 222;
+              width: 100%;
+              padding: 0.16rem 0.26667rem;
+              background-color: rgba(0, 0, 0, 0.5);
+              font-size: 16px;
+              color: #ffffff;
             }
           }
           .handleBtn {

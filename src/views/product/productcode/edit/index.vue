@@ -24,7 +24,7 @@
                   >
                     <img :src="item" alt="" />
 
-                    <span @click.stop="deletImg(index)"
+                    <span @click.stop="deletImg(index, 1)"
                       ><i class="el-icon-close"></i
                     ></span>
                     <div class="imgLeft" v-show="nIndex == index">
@@ -55,25 +55,10 @@
                 >
                   <span ref="uploadPng"></span>
                 </el-upload>
-                <el-upload
-                  class="upload-demo"
-                  :on-error="uploadToken"
-                  action="http://upload.qiniup.com"
-                  :data="qiToken"
-                  :before-upload="uploadVideo"
-                  :headers="headers"
-                  accept=".mp4"
-                  :multiple="true"
-                  :show-file-list="false"
-                  :on-success="videoUploadSuccess.bind(null, {})"
-                  :on-progress="uploadProgress"
-                >
-                  <span ref="videoUpload"></span>
-                </el-upload>
                 <div
                   style="cursor: pointer"
                   class="upload-box relaFa"
-                  @click="upload(1)"
+                  @click="upload(1, 1)"
                 >
                   <i class="el-icon-plus"></i>
                   <div class="absChild">建议尺寸750*421</div>
@@ -110,6 +95,111 @@
                 >
                 </el-option>
               </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="onSubmit">保存</el-button>
+              <el-button @click="back">取消</el-button>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
+        <el-tab-pane label="详情介绍" name="eight">
+          <el-form ref="form" :model="form" label-width="100px">
+            <el-form-item label="详情图片">
+              <div style="display: flex; flex-flow: wrap">
+                <div
+                  v-for="(item, index) of detailPng.detail_img"
+                  class="upload-box plot"
+                  :key="index"
+                >
+                  <img :src="item" alt="" />
+
+                  <span @click.stop="deletImg(index, 2)"
+                    ><i class="el-icon-close"></i
+                  ></span>
+                </div>
+                <div
+                  v-if="videoFlag && detailPng.numId == 2"
+                  class="upload-box plot"
+                >
+                  <el-progress
+                    :width="167"
+                    type="circle"
+                    :percentage="videoUploadPercent"
+                  ></el-progress>
+                </div>
+                <!-- 素材组件调用上传 -->
+                <el-upload
+                  class="upload-demo"
+                  :data="qiToken"
+                  action="http://upload.qiniup.com"
+                  :headers="headers"
+                  multiple
+                  accept=".jpg,.png"
+                  :on-error="uploadToken"
+                  :before-upload="uploadPic"
+                  :on-success="imageUploadSuccess.bind(null, {})"
+                  :on-progress="uploadProgress"
+                  :show-file-list="false"
+                >
+                  <span ref="uploadPng"></span>
+                </el-upload>
+                <div
+                  style="cursor: pointer"
+                  class="upload-box relaFa"
+                  @click="upload(1, 2)"
+                >
+                  <i class="el-icon-plus"></i>
+                  <div class="absChild">建议尺寸750*421</div>
+                </div>
+              </div>
+            </el-form-item>
+            <el-form-item label="参数图片">
+              <div style="display: flex; flex-flow: wrap">
+                <div
+                  v-for="(item, index) of detailPng.parameter_img"
+                  class="upload-box plot"
+                  :key="index"
+                >
+                  <img :src="item" alt="" />
+                  <span @click.stop="deletImg(index, 3)"
+                    ><i class="el-icon-close"></i
+                  ></span>
+                </div>
+                <div
+                  v-if="videoFlag && detailPng.numId == 3"
+                  class="upload-box plot"
+                >
+                  <el-progress
+                    :width="167"
+                    type="circle"
+                    :percentage="videoUploadPercent"
+                  ></el-progress>
+                </div>
+                <!-- 素材组件调用上传 -->
+                <el-upload
+                  class="upload-demo"
+                  :data="qiToken"
+                  action="http://upload.qiniup.com"
+                  :headers="headers"
+                  multiple
+                  accept=".jpg,.png"
+                  :on-error="uploadToken"
+                  :before-upload="uploadPic"
+                  :on-success="imageUploadSuccess.bind(null, {})"
+                  :on-progress="uploadProgress"
+                  :show-file-list="false"
+                >
+                  <span ref="uploadPng"></span>
+                </el-upload>
+                <div
+                  style="cursor: pointer"
+                  class="upload-box relaFa"
+                  @click="upload(1, 3)"
+                >
+                  <i class="el-icon-plus"></i>
+                  <div class="absChild">建议尺寸750*421</div>
+                </div>
+              </div>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="onSubmit">保存</el-button>
@@ -422,6 +512,12 @@
                 <video height="150px" controls :src="item.url" />
                 <span>{{ item.name }}</span>
                 <el-button
+                  class="editPic"
+                  type="warning"
+                  @click="editPic(index)"
+                  >编 辑</el-button
+                >
+                <el-button
                   class="detelePic"
                   type="warning"
                   @click="deleTP(index)"
@@ -441,6 +537,45 @@
             <el-button type="primary" @click="onSubmit">保存</el-button>
             <el-button @click="back">取消</el-button>
           </div>
+        </el-tab-pane>
+        <el-tab-pane label="圈子" name="nine">
+          <el-button
+            class="marBot"
+            size="small"
+            type="primary"
+            @click="upload(7, '添加圈子')"
+            >添加圈子<i class="el-icon-upload el-icon--right"
+          /></el-button>
+          <el-table :data="tableData4" border style="width: 100%">
+            <el-table-column prop="title" label="圈子标题"> </el-table-column>
+            <el-table-column label="圈子封面图" width="180">
+              <template slot-scope="scope">
+                <img
+                  :src="scope.row.image"
+                  alt=""
+                  style="width: 100%; height: 100px; object-fit: cover"
+                />
+              </template>
+            </el-table-column>
+            <el-table-column prop="summary" label="圈子副标题">
+            </el-table-column>
+            <el-table-column prop="jump_url" label="圈子链接">
+            </el-table-column>
+            <el-table-column prop="sort" label="排序"> </el-table-column>
+            <el-table-column prop="address" label="操作">
+              <template slot-scope="scope">
+                <i
+                  class="el-icon-edit"
+                  @click="editActivity(scope.row, 4, 1)"
+                ></i>
+                <i
+                  style="margin-left: 10px"
+                  class="el-icon-delete"
+                  @click="deleteActivity(scope.row, 4)"
+                ></i>
+              </template>
+            </el-table-column>
+          </el-table>
         </el-tab-pane>
         <el-tab-pane
           label="扩展字段"
@@ -846,6 +981,9 @@
         <el-form-item :label="titName + '标题'">
           <el-input v-model="form3.title"></el-input>
         </el-form-item>
+        <el-form-item v-if="typeNum == 4" :label="titName + '副标题'">
+          <el-input v-model="form3.summary"></el-input>
+        </el-form-item>
         <el-form-item :label="titName + '链接'">
           <el-input v-model="form3.jump_url"></el-input>
         </el-form-item>
@@ -901,23 +1039,35 @@
           :multiple="true"
           :show-file-list="false"
           :on-success="videoUploadSuccess.bind(null, {})"
-          :on-progress="uploadProgress"
         >
-          <span ref="videoUpload"></span>
-        </el-upload>
-        <!-- <el-button
+          <el-button
             size="small"
             type="primary"
             style="margin-left: 18px; margin-bottom: 20px"
             >视频上传<i class="el-icon-upload el-icon--right"
-          /></el-button> -->
+          /></el-button>
+        </el-upload>
       </div>
       <el-form ref="form" :model="form" label-width="100px">
         <el-form-item label="视频名称：">
           <el-input v-model="form2.name"></el-input>
         </el-form-item>
+        <el-form-item label="素材分类：">
+          <el-select v-model="stateNum" placeholder="请选择">
+            <el-option
+              v-for="item in typeList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
 
+      <div style="padding-top: 10px; margin-left: 20px; color: #f56c6c">
+        注：如不存入素材库，则不需选择分类
+      </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="closeAdd">取 消</el-button>
         <el-button type="primary" @click="addPic">确 定</el-button>
@@ -971,6 +1121,7 @@
       @addEvent="uploadAll($event)"
       @getEvent="pushList($event)"
       @getform="gettableList($event)"
+      @getClassify="getClassify($event)"
     />
   </div>
 </template>
@@ -1025,12 +1176,16 @@ export default {
       ids: this.$route.query.id,
       pageed: this.$route.query.page,
       openUpload: false,
+      stateNum: null, //选择的素材分类
+      typeList: [], //素材分类列表
       nIndex: 0, //默认封面图
       haveState: false, //是否有说明书
       stateName: "",
       videoUploadPercent: 0,
+      videoUploadPercent1: 0,
       videoFlag: false,
       typeState: [],
+      videoType: {}, //type  1：上传视频；2：修改视频
       stateType: "",
       stateDetail: "",
       editState: [
@@ -1056,6 +1211,7 @@ export default {
       },
       form2: {},
       form1: [],
+      showSelect: "",
       bookName: "",
       stateList: [], //说明书模板列表
       imgs: [], //基础信息封面图集
@@ -1064,8 +1220,10 @@ export default {
       tableData1: [], //产品评测
       tableData2: [], //常见问题
       tableData3: [], //网络商城
+      tableData4: [], //圈子
       dialogVisible: false,
       getproductDetail: "",
+      detailPng: { detail_img: [], parameter_img: [], numId: 0 }, //图文介绍
       typeNum: 0,
       activeTab: "first", //说明书默认选中的tab
       openState: false, //说明书弹窗开闭
@@ -1148,7 +1306,7 @@ export default {
   },
   created() {
     if (this.id) {
-      this.queryDetails();
+      this.queryDetails(); //查询产品码详情
       this.getRelated();
     }
     this.qiToken = JSON.parse(sessionStorage.qiToken);
@@ -1200,16 +1358,6 @@ export default {
           this.haveState = !this.haveState;
         }
       } else if (type == "delete") {
-        // 删除说明书
-        // delManual(this.qs.stringify({ id: this.form.id })).then((res) => {
-        //   if (res.status == 200) {
-        //     this.$message({
-        //       message: "删除成功",
-        //       type: "success",
-        //     });
-        //     this.haveState = !this.haveState;
-        //   }
-        // });
         this.$confirm("确认删除所有说明书, 是否继续?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
@@ -1300,6 +1448,8 @@ export default {
         this.form.show = res.data.data.show;
         this.form.factory = res.data.data.factory;
         this.form.listed = res.data.data.listed;
+        this.detailPng.detail_img = res.data.data.detail_img;
+        this.detailPng.parameter_img = res.data.data.parameter_img;
         this.form.sort = res.data.data.sort;
         this.picList = res.data.data.video;
         this.form.manual_id = res.data.data.manual_id;
@@ -1394,9 +1544,16 @@ export default {
         return false;
       }
     },
+    getClassify(val) {
+      console.log(val);
+      this.VisiblePic = true;
+      this.videoType.type = 1;
+      this.typeList = val[0];
+    },
     onSubmit(state) {
       let arry = [];
       for (let n = 0; n < this.imgs.length; n++) {
+        // 修改封面图数据格式
         if (this.nIndex == n) {
           let obj = { value: this.imgs[n], main: 1 };
           arry.push(obj);
@@ -1405,8 +1562,18 @@ export default {
           arry.push(obj);
         }
       }
+      let detail_img = "";
+      for (let n = 0; n < this.detailPng.detail_img.length; n++) {
+        detail_img = detail_img + this.detailPng.detail_img[n] + ",";
+      }
+      let parameter_img = "";
+      for (let n = 0; n < this.detailPng.parameter_img.length; n++) {
+        parameter_img = parameter_img + this.detailPng.parameter_img[n] + ",";
+      }
+      console.log(detail_img);
       // 提交保存
       if (this.id) {
+        // 修改
         let expand = [];
         for (let i = 0; i < this.addList.length; i++) {
           // expand[this.addList[i].id] = this.form1[i];
@@ -1420,6 +1587,7 @@ export default {
         });
         let params = {};
         if (typeof state == "number") {
+          // 操作说明书
           params = {
             id: this.id,
             name: this.form.name,
@@ -1427,6 +1595,8 @@ export default {
             // image: this.form.dialogImageUrl,
             factory: this.form.factory,
             show: this.form.show,
+            detail_img: detail_img,
+            parameter_img: parameter_img,
             listed: this.form.listed,
             sort: this.form.sort,
             details: this.productDetail,
@@ -1438,6 +1608,7 @@ export default {
             type_id: this.form.classify,
           };
         } else {
+          // 整体保存
           params = {
             id: this.id,
             name: this.form.name,
@@ -1447,6 +1618,8 @@ export default {
             show: this.form.show,
             listed: this.form.listed,
             sort: this.form.sort,
+            detail_img: detail_img,
+            parameter_img: parameter_img,
             details: this.productDetail,
             manual: this.productState,
             picture: JSON.stringify(arry),
@@ -1469,6 +1642,7 @@ export default {
           loading.close();
         }, 5000);
       } else {
+        // 新建
         let loading = this.$loading({
           text: "保存中",
         });
@@ -1533,12 +1707,39 @@ export default {
       });
     },
     addPic() {
+      if (this.videoType.type == 2) {
+        this.picList[this.videoType.index].url = this.form2.url;
+        this.picList[this.videoType.index].name = this.form2.name;
+
+        this.stateNum = null;
+        this.VisiblePic = false;
+        this.form2 = {
+          name: "",
+          url: "",
+          id: 0,
+        };
+        console.log(this.picList);
+        return;
+      }
       this.picList = this.picList.concat(this.form2);
-      this.form2 = {
-        name: "",
-        url: "",
-        id: 0,
-      };
+
+      if (this.stateNum) {
+        createMater(
+          this.qs.stringify({
+            type_id: this.stateNum,
+            name: this.form2.name,
+            file_type: "mp4",
+            file_path: this.form2.url,
+          })
+        ).then((res) => {
+          this.form2 = {
+            name: "",
+            url: "",
+            id: 0,
+          };
+          this.stateNum = null;
+        });
+      }
       this.VisiblePic = false;
     },
     getRelated() {
@@ -1552,6 +1753,7 @@ export default {
         this.tableData1 = res.data.list[1];
         this.tableData2 = res.data.list[2];
         this.tableData3 = res.data.list[3];
+        this.tableData4 = res.data.list[4];
       });
     },
     closeAdd() {
@@ -1560,9 +1762,11 @@ export default {
         url: "",
         id: 0,
       };
+      this.stateNum = null;
       this.VisiblePic = false;
     },
     editActivity(row, index, type) {
+      console.log(index, type);
       this.typeNum = JSON.parse(JSON.stringify(index));
       this.form3 = JSON.parse(JSON.stringify(row));
       this.activity = true;
@@ -1671,7 +1875,18 @@ export default {
       } else if (obj.type == "activity") {
         this.form3.image = `http://voice.xunsheng.org.cn/${res.key}`;
       } else {
-        this.imgs.push(`http://voice.xunsheng.org.cn/${res.key}`);
+        // 新建图片
+        if (this.detailPng.numId == 1) {
+          this.imgs.push(`http://voice.xunsheng.org.cn/${res.key}`);
+        } else if (this.detailPng.numId == 2) {
+          this.detailPng.detail_img.push(
+            `http://voice.xunsheng.org.cn/${res.key}`
+          );
+        } else {
+          this.detailPng.parameter_img.push(
+            `http://voice.xunsheng.org.cn/${res.key}`
+          );
+        }
         if (this.stateType) {
           createMater(
             this.qs.stringify({
@@ -1689,24 +1904,15 @@ export default {
       // 视频上传成功
       if (obj.index || obj.index === 0) {
         this.form1[obj.index] = `http://voice.xunsheng.org.cn/${res.key}`;
-        this.uploadLoading.close();
+        // this.uploadLoading.close();
         // console.log(this.form2);
       } else {
         this.form2.url = `http://voice.xunsheng.org.cn/${res.key}`;
         let b = JSON.parse(JSON.stringify(file.name));
         this.form2.name = b.substring(0, b.indexOf("."));
         // console.log(this.form2);
-        this.picList = this.picList.concat(this.form2);
-        this.form2 = {};
-        if (this.stateType) {
-          createMater(
-            this.qs.stringify({
-              type_id: this.stateType,
-              file_type: "mp4",
-              file_path: `http://voice.xunsheng.org.cn/${res.key}`,
-            })
-          );
-        }
+        // this.picList = this.picList.concat(this.form2);
+        // this.form2 = {};
       }
       this.videoFlag = false;
       this.qiToken = JSON.parse(sessionStorage.qiToken);
@@ -1726,6 +1932,14 @@ export default {
         this.form2.url = "";
       }
     },
+    editPic(index) {
+      this.VisiblePic = true;
+      this.videoType = { type: 2, index };
+      console.log(this.picList[index]);
+      this.form2.url = this.picList[index].url;
+      this.form2.name = this.picList[index].name;
+      this.typeList = [];
+    },
     deleTP(n) {
       let img = this.picList[n];
       img.is_del = 1;
@@ -1736,17 +1950,23 @@ export default {
       this.form3 = {};
       this.stateDetail = "";
     },
-    deletImg(index) {
+    deletImg(index, n) {
       // 删除产品封面图;
-      if (index == this.nIndex && index != 0) {
-        let n = this.nIndex - 1;
-        this.nIndex = n;
-      } else if (index == 0 && this.imgs.length == 1) {
-        this.nIndex = 0;
-      } else if (index < this.nIndex) {
-        this.nIndex -= 1;
+      if (n == 1) {
+        if (index == this.nIndex && index != 0) {
+          let n = this.nIndex - 1;
+          this.nIndex = n;
+        } else if (index == 0 && this.imgs.length == 1) {
+          this.nIndex = 0;
+        } else if (index < this.nIndex) {
+          this.nIndex -= 1;
+        }
+        this.imgs.splice(index, 1);
+      } else if (n == 2) {
+        this.detailPng.detail_img.splice(index, 1);
+      } else {
+        this.detailPng.parameter_img.splice(index, 1);
       }
-      this.imgs.splice(index, 1);
     },
     add(n, m) {
       this.dialogType = m;
@@ -1766,6 +1986,9 @@ export default {
       } else if (n == 3) {
         this.titName = "商城";
         this.activity = true;
+      } else if (n == 4) {
+        this.titName = "圈子";
+        this.activity = true;
       }
     },
     handleClose(none) {
@@ -1780,7 +2003,7 @@ export default {
         this.titleName = "图片上传";
         this.typeStu = 1;
         this.openUpload = true;
-        // this.$refs.uploadPng.click();
+        this.detailPng.numId = name;
       } else if (index == 2) {
         this.titleName = "视频上传";
         this.typeStu = 2;
@@ -1792,19 +2015,37 @@ export default {
       }
     },
     pushList(val) {
+      console.log(val);
       if (val[1] == 1) {
-        // 选择照片
-        this.imgs = this.imgs.concat(val[0]);
+        // 选择照片  判断添加图片的位置 1为封面图 2为详情图  3为参数图
+        if (this.detailPng.numId == 1) {
+          let picList = [];
+          picList = val[0].map((item) => item.file_path);
+          this.imgs = this.imgs.concat(picList);
+        } else if (this.detailPng.numId == 2) {
+          let picList = [];
+          picList = val[0].map((item) => item.file_path);
+          this.detailPng.detail_img = this.detailPng.detail_img.concat(picList);
+        } else {
+          let picList = [];
+          picList = val[0].map((item) => item.file_path);
+          this.detailPng.parameter_img = this.detailPng.parameter_img.concat(
+            picList
+          );
+        }
       } else if (val[1] == 2) {
         // 选择视频
         let videoList = [];
         console.log(val[0]);
-        videoList = val[0].map((item) => ({ url: item }));
+        videoList = val[0].map((item) => ({
+          url: item.file_path,
+          name: item.name,
+        }));
         this.picList = this.picList.concat(videoList);
       }
     },
     gettableList(val) {
-      // 给组件表单传参
+      // 给组件表单传参  唤出修改弹窗
       console.log(val);
       this.form3 = val[0];
 
@@ -1816,6 +2057,8 @@ export default {
         this.add(2, 0);
       } else if (val[1] == 6) {
         this.add(3, 0);
+      } else if (val[1] == 7) {
+        this.add(4, 0);
       }
     },
     uploadAll(val) {
@@ -1840,13 +2083,16 @@ export default {
       } else if (val[0] == "视频上传") {
         // console.log(this.$refs.videoUpload);
         this.openUpload = false;
-        this.$refs.videoUpload.click();
+        this.VisiblePic = true;
+        // this.$refs.videoUpload.click();
       } else if (val[0] == "添加集锦") {
         this.add(0, 0);
       } else if (val[0] == "添加评测") {
         this.add(1, 0);
       } else if (val[0] == "添加问题") {
         this.add(2, 0);
+      } else if (val[0] == "添加圈子") {
+        this.add(4, 0);
       } else {
         this.add(3, 0);
       }
@@ -2074,7 +2320,13 @@ export default {
     position: absolute;
     top: 0;
     right: 0;
-    padding: 10px;
+    padding: 5px 10px;
+  }
+  .editPic {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding: 5px 10px;
   }
 }
 .marBot {
