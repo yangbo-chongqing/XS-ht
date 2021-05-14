@@ -147,6 +147,10 @@
                   active-text-color="#333333"
                 >
                   <el-menu-item index="1" @click="headline">标题</el-menu-item>
+                  <el-menu-item index="8" @click="combinedHead"
+                    >组合标题</el-menu-item
+                  >
+
                   <el-menu-item index="3" @click="upload(3, '添加集锦')"
                     >活动集锦</el-menu-item
                   >
@@ -396,6 +400,54 @@
       :id="id"
       @popoverEven="togglePopover"
     />
+    <!-- 组合标题弹窗 -->
+    <el-dialog
+      title="组合标题"
+      :visible.sync="showTit"
+      width="600px"
+      :before-close="handleClose"
+    >
+      <el-tabs type="border-card">
+        <el-tab-pane label="详情图">
+          <div
+            v-for="(item, index) in form1.imgList"
+            :key="item + index"
+            class="draggable-item"
+            :style="{ width: width + 'px', height: height + 'px' }"
+          >
+            <el-image fit="cover" :src="item"></el-image>
+            <div class="shadow" @click="onRemoveHandler(index)">
+              <i class="el-icon-delete"></i>
+            </div>
+          </div>
+          <!-- 上传按钮 -->
+          <el-upload
+            class="draggable-item"
+            :data="qiToken"
+            action="http://upload.qiniup.com"
+            :headers="headers"
+            accept=".jpg,.png"
+            :style="{ width: width + 'px', height: height + 'px' }"
+            :on-error="uploadToken"
+            :before-upload="uploadPic"
+            :on-success="imageUploadSuccess.bind(null, { type: 'activity' })"
+            :on-progress="uploadProgressrauis"
+            :show-file-list="false"
+          >
+            <div class="el-uploadNew upload-box relaFa">
+              <i class="el-icon-plus"></i>
+            </div>
+          </el-upload>
+        </el-tab-pane>
+        <el-tab-pane label="参数图">参数图</el-tab-pane>
+        <el-tab-pane label="kv图">kv图</el-tab-pane>
+        <el-tab-pane label="方位图">方位图</el-tab-pane>
+      </el-tabs>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="activityClose">取 消</el-button>
+        <el-button type="primary" @click="activityAdd">确 定</el-button>
+      </span>
+    </el-dialog>
     <!-- 组合弹框 -->
     <el-dialog
       :title="titName + '编辑'"
@@ -428,7 +480,7 @@
             v-else
             :before-upload="uploadPic"
             :on-success="imageUploadSuccess.bind(null, { type: 'activity' })"
-            :on-progress="uploadProgress"
+            :on-progress="uploadProgressrauis"
             :show-file-list="false"
           >
             <div class="upload-box relaFa">
@@ -502,7 +554,7 @@
           accept=".mp4"
           :multiple="true"
           :show-file-list="false"
-          :on-success="videoUploadSuccess.bind(null, {})"
+          :on-success="videoUploadSuccess.bind(null, { index: 1 })"
         >
           <el-button
             size="small"
@@ -743,6 +795,16 @@ export default {
       form2: {}, //视频数据
       stateNum: "", //选择素材库类型
       videoType: {}, //type  1：上传视频；2：修改视频
+      form1: {
+        imgList: [
+          "http://voice.xunsheng.org.cn/sydt/muse_12/1620783565861.png",
+          "http://voice.xunsheng.org.cn/sydt/muse_12/1616137196142.png",
+        ],
+      }, //组合标题数据
+      showTit: false, //组合标题弹框
+      width: 100,
+      height: 100,
+      videoUploadPercent: 0, //上传进度
     };
   },
 
@@ -753,7 +815,7 @@ export default {
     },
     // 添加标题
     headline() {
-      let str = `<p style="text-align:center"><span style="color:rgba(0,0,0,0.87); line-height:1.4" class="titleFontSize"><strong>产品信息</strong> </span></p>`;
+      let str = `<p style="text-align:center"><span style="color:rgba(0,0,0,0.87); line-height:1.4" class="titleFontSize"><strong>产品信息</strong> </span></p><p><br></p>`;
       this.editor.execCommand("inserthtml", str);
     },
     // 关闭弹窗
@@ -770,7 +832,7 @@ export default {
       //  类型 0 活动集锦 1 产品评测 2 常见问题 3 网络商城
       if (this.typeNum == 0) {
         let parasm = this.form3;
-        let str = `<div id="group${parasm.sort}" contenteditable="false" data-id="${parasm.sort}" class="borderMy" style="margin-top: 0.53333rem; position: relative"><div class="showIcon${parasm.sort} delete" style="text-align: center; position: absolute; top: -5px; display: none; right: -5px; width: 120px;"><button data-updategroup="${parasm.sort}" class="updateBtn ckEditorToolbarBtn">修 改</button><button class="deleteBtn ckEditorToolbarBtn" data-deletegroup="${parasm.sort}">删 除</button></div><a contenteditable="false" data-id="${parasm.sort}" href="${parasm.jump_url}" target="_self" _href="${parasm.jump_url}" ><img  src="${parasm.image}" alt="" data-id="${parasm.sort}" style="width: 100%;border-radius: 0.26667rem;"><div data-id="${parasm.sort}" style="position: absolute;display: flex;align-items: center;left: 0;bottom: 0.21333rem;padding: 0.16rem 0.26667rem;background-color: rgba(0, 0, 0, 0.5);font-size: 0.42667rem;color: #ffffff;width: 100%;box-sizing: border-box;border-radius: 0 0 0.26667rem 0.26667rem;"><h6>${parasm.title}</h6><i  class="van-icon van-icon-arrow"></i></div></a></div><p><br></p>`;
+        let str = `<div id="group${parasm.sort}" contenteditable="false" data-id="${parasm.sort}"   class="product-activity-list borderMy"><div class="showIcon${parasm.sort} delete" style="text-align: center; position: absolute; top: -5px; display: none; right: -5px; width: 120px;"><button data-updategroup="${parasm.sort}" class="updateBtn ckEditorToolbarBtn">修 改</button><button class="deleteBtn ckEditorToolbarBtn" data-deletegroup="${parasm.sort}">删 除</button></div><a data-id="${parasm.sort}" href="${parasm.jump_url}" target="_blank"><img data-id="${parasm.sort}" src="${parasm.image}" alt=""><div class="product-activity-list-content"><h6 data-id="${parasm.sort}">扫码支付</h6><i class="van-icon van-icon-arrow"><!----></i></div></a></div><p><br></p>`;
         this.editor.execCommand("inserthtml", str);
       } else if (this.typeNum == 1) {
         let parasm = this.form3;
@@ -778,7 +840,7 @@ export default {
         this.editor.execCommand("inserthtml", str);
       } else if (this.typeNum == 3) {
         let parasm = this.form3;
-        let str = `<div data-id="${parasm.sort}" id="group${parasm.sort}" contenteditable="false" class="product-shopping-content-list borderMy"><div data-id="${parasm.sort}" class="product-shopping-content-img"><img data-id="${parasm.sort}" src="${parasm.image}" alt=""><p data-id="${parasm.sort}">长按识别小程序</p></div><div data-id="${parasm.sort}" class="product-shopping-content-right"><div class="showIcon${parasm.sort} delete" style="text-align: center; position: absolute; top: -15px; display: none; right: -5px; width: 120px;"><button data-updategroup="${parasm.sort}" class="updateBtn ckEditorToolbarBtn">修 改</button><button class="deleteBtn ckEditorToolbarBtn" data-deletegroup="${parasm.sort}">删 除</button></div><h5 data-id="${parasm.sort}">${parasm.title}</h5><h6 data-id="${parasm.sort}">${parasm.summary}</h6><p data-id="${parasm.sort}">${parasm.source}</p></div></div>`;
+        let str = `<div data-id="${parasm.sort}" id="group${parasm.sort}" contenteditable="false" class="product-shopping-content-list borderMy"><div data-id="${parasm.sort}" class="product-shopping-content-img"><img data-id="${parasm.sort}" src="${parasm.image}" alt=""><p data-id="${parasm.sort}">长按识别小程序</p></div><div data-id="${parasm.sort}" class="product-shopping-content-right"><div class="showIcon${parasm.sort} delete" style="text-align: center; position: absolute; top: -15px; display: none; right: -5px; width: 120px;"><button data-updategroup="${parasm.sort}" class="updateBtn ckEditorToolbarBtn">修 改</button><button class="deleteBtn ckEditorToolbarBtn" data-deletegroup="${parasm.sort}">删 除</button></div><h5 data-id="${parasm.sort}">${parasm.title}</h5><h6 data-id="${parasm.sort}">${parasm.summary}</h6><p data-id="${parasm.sort}">${parasm.source}</p></div></div><div><br></div>`;
         this.editor.execCommand("inserthtml", str);
       } else if (this.typeNum == 6) {
         console.log(this.form3);
@@ -952,8 +1014,10 @@ export default {
         console.log(this.picList);
         return;
       }
-      this.picList = this.picList.concat(this.form2);
-
+      let parasm = { sort: 2342 };
+      let str = `<div data-id="${parasm.sort}" id="group${parasm.sort}" contenteditable="false"  class="product-example-list borderMy"><a data-id="${parasm.sort}" href="${this.form2.url}"><div class="imgDiv"><img data-id="${parasm.sort}" src="${this.form2.url}?vframe/jpg/offset/0" alt="" srcset=""></div><div  class="video-play-body"><i  class="van-icon van-icon-play-circle-o" style="color: rgb(255, 255, 255);"><!----></i></div><div  class="product-activity-list-content"><p data-v-b4edb268="">${this.form2.name}</p><p>00:10</p></div></a></div><p><br></p>`;
+      this.editor.execCommand("inserthtml", str);
+      // this.picList = this.picList.concat(this.form2);
       if (this.stateNum) {
         createMater(
           this.qs.stringify({
@@ -1022,6 +1086,10 @@ export default {
       }
       this.closePopover();
     },
+    // 打开组合标题
+    combinedHead() {
+      this.showTit = true;
+    },
     //模态窗取消
     closePopover() {
       this.entryXFlag = false;
@@ -1081,8 +1149,10 @@ export default {
         console.log(this.picList);
       }
       let parasm = { sort: 234 };
-      let str = `<div data-id="${parasm.sort}" id="group${parasm.sort}" contenteditable="false"  class="product-example-list borderMy"><a data-id="${parasm.sort}" href="http://voice.xunsheng.org.cn/sydt/muse_12/1618646040535.mp4"><div class="imgDiv"><img data-id="${parasm.sort}" src="http://voice.xunsheng.org.cn/sydt/muse_12/1618646040535.mp4?vframe/jpg/offset/0" alt="" srcset=""></div><div  class="video-play-body"><i  class="van-icon van-icon-play-circle-o" style="color: rgb(255, 255, 255);"><!----></i></div><div  class="product-activity-list-content"><p data-v-b4edb268="">打劫</p><p>00:10</p></div></a></div>`;
-      this.editor.execCommand("inserthtml", str);
+      for (let i = 0; i < this.picList.length; i++) {
+        let str = `<div data-id="${parasm.sort}" id="group${parasm.sort}" contenteditable="false"  class="product-example-list borderMy"><a data-id="${parasm.sort}" href="${this.picList[i].url}"><div class="imgDiv"><img data-id="${parasm.sort}" src="${this.picList[i].url}?vframe/jpg/offset/0" alt="" srcset=""></div><div  class="video-play-body"><i  class="van-icon van-icon-play-circle-o" style="color: rgb(255, 255, 255);"><!----></i></div><div  class="product-activity-list-content"><p data-v-b4edb268="">${this.picList[i].name}</p><p>00:10</p></div></a></div><p><br/></p>`;
+        this.editor.execCommand("inserthtml", str);
+      }
     },
     uploadToken(err, file, fileList) {
       // 上传失败处理方式
@@ -1097,7 +1167,7 @@ export default {
       });
       // this.uploadLoading.close();
 
-      this.qiToken = JSON.parse(sessionStorage.qiToken);
+      this.qiToken = str;
       this.$message.error("Token失效，请重新上传");
     },
     getListGuan() {
@@ -1317,13 +1387,13 @@ export default {
       this.codeAudio = path;
       this.qiToken = JSON.parse(sessionStorage.qiToken);
     },
-    videoUploadSuccess(response, file, fileList) {
+    videoUploadSuccess(obj, res, file) {
       if (obj.index || obj.index === 0) {
-        this.form1[obj.index] = `http://voice.xunsheng.org.cn/${res.key}`;
-        // this.uploadLoading.close();
-        // console.log(this.form2);
+        this.form2.url = `http://voice.xunsheng.org.cn/${res.key}`;
+        let b = JSON.parse(JSON.stringify(file.name));
+        this.form2.name = b.substring(0, b.indexOf("."));
       } else {
-        let path = `http://voice.xunsheng.org.cn/${response.key}`;
+        let path = `http://voice.xunsheng.org.cn/${res.key}`;
         this.codeVideo = path;
       }
 
@@ -1331,6 +1401,14 @@ export default {
     },
     setCheditor(e) {
       this.mobHtml = e.target.innerHTML;
+    },
+    uploadProgressrauis(event, file, fileList) {
+      // this.uploadLoading = Loading.service({
+      //   text: "上传中...",
+      // });
+
+      this.videoFlag = true;
+      this.videoUploadPercent = file.percentage.toFixed(0) * 1;
     },
     uploadProgress(file, fileList) {
       if (file.status === "ready") {
@@ -1670,6 +1748,56 @@ export default {
     bottom: 2px;
     text-align: center;
     width: 100%;
+  }
+}
+.upload-info {
+  position: relative;
+  margin-bottom: 10px;
+  .code-img-tips {
+    position: absolute;
+    right: 0px;
+    z-index: 888;
+  }
+}
+.uploadBox {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  text-align: center;
+  width: 100%;
+}
+.el-uploadNew {
+  width: 100px !important;
+  height: 100px !important;
+}
+.draggable-item {
+  margin-right: 5px;
+  margin-bottom: 5px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  .el-image {
+    width: 100%;
+    height: 100%;
+  }
+  .shadow {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s;
+    color: #fff;
+    font-size: 20px;
+    line-height: 20px;
+    padding: 2px;
+    cursor: pointer;
+  }
+  &:hover {
+    .shadow {
+      opacity: 1;
+    }
   }
 }
 </style>
