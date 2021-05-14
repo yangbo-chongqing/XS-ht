@@ -359,6 +359,8 @@ export default {
       }
     },
     addDetail(index, item) {
+      console.log(index, item);
+      console.log(this.type);
       if (this.type == 1 && index == 1) {
         // 新增图片或者视频
         this.stateTit = true;
@@ -369,7 +371,7 @@ export default {
       } else if (index == 2) {
         // 确认提交
         this.$emit("getEvent", [this.selectDetail, this.type]);
-        // console.log(this.selectDetail, this.type);
+        console.log(this.selectDetail, this.type);
         this.stateTit = false;
         this.Visible = false;
       } else if (index == 3) {

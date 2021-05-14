@@ -891,7 +891,6 @@
           return null;
         }
       }
-
       return function (doc, obj, fn) {
         var item = getItem(doc, obj);
         if (item) {
@@ -12971,7 +12970,9 @@
     }
 
     UE.commands["unlink"] = {
+
       execCommand: function () {
+
         var range = this.selection.getRange(),
           bookmark;
         if (
@@ -18964,13 +18965,18 @@
       me.addListener("click", function (type, e) {
         // 判断是否是自定义模块，是就不允许拉伸缩放 杨波
         // alert('1122aa')
-        // console.log(e.target.dataset.id);
+        // console.log(e.target);
+        console.log(111)
+
         if (e.target.dataset.id) {
           console.log(e.target.dataset.id)
           let display = me.document.getElementsByClassName(`showIcon${e.target.dataset.id}`)
-          display[0].style.display = 'block'
-          let addBtn = me.document.getElementsByClassName(`update${e.target.dataset.id}`)
-          console.log(addBtn)
+          if (!display.length) { } else {
+            display[0].style.display = 'block'
+            let addBtn = me.document.getElementsByClassName(`update${e.target.dataset.id}`)
+            console.log(addBtn)
+          }
+
         } else {
           if (e.target.dataset.updateid || e.target.dataset.deleteid) {
 
@@ -28585,7 +28591,9 @@
         this.initUIBase();
         allPopups.push(this);
       },
+      // 点击弹窗操作 杨波
       getHtmlTpl: function () {
+        console.log(2345)
         return (
           '<div id="##" class="edui-popup %%" onmousedown="return false;">' +
           ' <div id="##_body" class="edui-popup-body">' +
@@ -31352,6 +31360,7 @@
       "deletetable",
       "drafts",
       "letterspacing",
+      "titlefont",//标题
     ];
 
     for (var i = 0, ci; (ci = btnCmds[i++]);) {
@@ -32585,6 +32594,7 @@
                 "</span>&nbsp;&nbsp;" +
                 "</nobr>"
               );
+              console.log(html)
               if (html) {
                 popup.getDom("content").innerHTML = html;
                 popup.anchorEl = el;
@@ -32695,23 +32705,29 @@
                 if (html) {
                   html += '<div style="height:5px;"></div>';
                 }
-                html += popup.formatHtml(
-                  "<nobr>" +
-                  editor.getLang("anthorMsg") +
-                  ': <a target="_blank" href="' +
-                  url +
-                  '" title="' +
-                  url +
-                  '" >' +
-                  txt +
-                  "</a>" +
-                  ' <span class="edui-clickable" onclick="$$._onEditButtonClick();">' +
-                  editor.getLang("modify") +
-                  "</span>" +
-                  ' <span class="edui-clickable" onclick="$$._onRemoveButtonClick(\'unlink\');"> ' +
-                  editor.getLang("clear") +
-                  "</span></nobr>"
-                );
+                // 自定义a标签 不弹出操作框   杨波
+                if (link.getAttribute('data-id')) {
+
+                } else {
+                  html += popup.formatHtml(
+                    "<nobr>" +
+                    editor.getLang("anthorMsg") +
+                    ': <a target="_blank" href="' +
+                    url +
+                    '" title="' +
+                    url +
+                    '" >' +
+                    txt +
+                    "</a>" +
+                    ' <span class="edui-clickable" onclick="$$._onEditButtonClick();">' +
+                    editor.getLang("modify") +
+                    "</span>" +
+                    ' <span class="edui-clickable" onclick="$$._onRemoveButtonClick(\'unlink\');"> ' +
+                    editor.getLang("clear") +
+                    "</span></nobr>"
+                  );
+                }
+
                 popup.showAnchor(link);
               }
             }

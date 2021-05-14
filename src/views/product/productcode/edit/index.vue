@@ -13,7 +13,185 @@
             <el-form-item label="产品编号">
               <el-input class="classInput" v-model="form.unique"></el-input>
             </el-form-item>
-            <el-form-item label="产品封面图">
+            <el-form-item label="分类">
+              <el-select v-model="form.classify" placeholder="请选择">
+                <el-option
+                  v-for="(item, index) of classifyList"
+                  :key="index"
+                  :label="item.type_name"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="排序">
+              <el-input class="classInput" v-model="form.sort"></el-input>
+            </el-form-item>
+            <el-form-item label="状态">
+              <el-select v-model="form.show" placeholder="请选择">
+                <el-option
+                  v-for="(item, index) of editState"
+                  :key="index"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="onSubmit">保存</el-button>
+              <el-button @click="back">取消</el-button>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
+        <el-tab-pane label="图片展示" name="ten">
+          <el-form ref="form" :model="form" label-width="100px">
+            <el-form-item label="KV图">
+              <div style="display: flex; flex-flow: wrap">
+                <div
+                  v-for="(item, index) of detailPng.kv"
+                  class="upload-box plot"
+                  :key="index"
+                >
+                  <img :src="item" alt="" />
+
+                  <span @click.stop="deletImg(index, 4)"
+                    ><i class="el-icon-close"></i
+                  ></span>
+                </div>
+                <div
+                  v-if="videoFlag && detailPng.numId == 2"
+                  class="upload-box plot"
+                >
+                  <el-progress
+                    :width="167"
+                    type="circle"
+                    :percentage="videoUploadPercent"
+                  ></el-progress>
+                </div>
+                <!-- 素材组件调用上传 -->
+                <el-upload
+                  class="upload-demo"
+                  :data="qiToken"
+                  action="http://upload.qiniup.com"
+                  :headers="headers"
+                  multiple
+                  accept=".jpg,.png"
+                  :on-error="uploadToken"
+                  :before-upload="uploadPic"
+                  :on-success="imageUploadSuccess.bind(null, {})"
+                  :on-progress="uploadProgress"
+                  :show-file-list="false"
+                >
+                  <span ref="uploadPng"></span>
+                </el-upload>
+                <div
+                  style="cursor: pointer"
+                  class="upload-box relaFa"
+                  @click="upload(1, 4)"
+                >
+                  <i class="el-icon-plus"></i>
+                  <div class="absChild">建议尺寸750*421</div>
+                </div>
+              </div>
+            </el-form-item>
+            <el-form-item label="方位图">
+              <div style="display: flex; flex-flow: wrap">
+                <div
+                  v-for="(item, index) of detailPng.orientation"
+                  class="upload-box plot"
+                  :key="index"
+                >
+                  <img :src="item" alt="" />
+                  <span @click.stop="deletImg(index, 5)"
+                    ><i class="el-icon-close"></i
+                  ></span>
+                </div>
+                <div
+                  v-if="videoFlag && detailPng.numId == 3"
+                  class="upload-box plot"
+                >
+                  <el-progress
+                    :width="167"
+                    type="circle"
+                    :percentage="videoUploadPercent"
+                  ></el-progress>
+                </div>
+                <!-- 素材组件调用上传 -->
+                <el-upload
+                  class="upload-demo"
+                  :data="qiToken"
+                  action="http://upload.qiniup.com"
+                  :headers="headers"
+                  multiple
+                  accept=".jpg,.png"
+                  :on-error="uploadToken"
+                  :before-upload="uploadPic"
+                  :on-success="imageUploadSuccess.bind(null, {})"
+                  :on-progress="uploadProgress"
+                  :show-file-list="false"
+                >
+                  <span ref="uploadPng"></span>
+                </el-upload>
+                <div
+                  style="cursor: pointer"
+                  class="upload-box relaFa"
+                  @click="upload(1, 5)"
+                >
+                  <i class="el-icon-plus"></i>
+                  <div class="absChild">建议尺寸750*421</div>
+                </div>
+              </div>
+            </el-form-item>
+            <el-form-item label="细节图">
+              <div style="display: flex; flex-flow: wrap">
+                <div
+                  v-for="(item, index) of detailPng.detail"
+                  class="upload-box plot"
+                  :key="index"
+                >
+                  <img :src="item" alt="" />
+                  <span @click.stop="deletImg(index, 6)"
+                    ><i class="el-icon-close"></i
+                  ></span>
+                </div>
+                <div
+                  v-if="videoFlag && detailPng.numId == 3"
+                  class="upload-box plot"
+                >
+                  <el-progress
+                    :width="167"
+                    type="circle"
+                    :percentage="videoUploadPercent"
+                  ></el-progress>
+                </div>
+                <!-- 素材组件调用上传 -->
+                <el-upload
+                  class="upload-demo"
+                  :data="qiToken"
+                  action="http://upload.qiniup.com"
+                  :headers="headers"
+                  multiple
+                  accept=".jpg,.png"
+                  :on-error="uploadToken"
+                  :before-upload="uploadPic"
+                  :on-success="imageUploadSuccess.bind(null, {})"
+                  :on-progress="uploadProgress"
+                  :show-file-list="false"
+                >
+                  <span ref="uploadPng"></span>
+                </el-upload>
+                <div
+                  style="cursor: pointer"
+                  class="upload-box relaFa"
+                  @click="upload(1, 6)"
+                >
+                  <i class="el-icon-plus"></i>
+                  <div class="absChild">建议尺寸750*421</div>
+                </div>
+              </div>
+            </el-form-item>
+            <el-form-item label="场景图">
               <div style="display: flex; flex-flow: wrap">
                 <template v-if="imgs[0]">
                   <div
@@ -70,31 +248,6 @@
                   ></span>
                 </div> -->
               </div>
-            </el-form-item>
-            <el-form-item label="分类">
-              <el-select v-model="form.classify" placeholder="请选择">
-                <el-option
-                  v-for="(item, index) of classifyList"
-                  :key="index"
-                  :label="item.type_name"
-                  :value="item.id"
-                >
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="排序">
-              <el-input class="classInput" v-model="form.sort"></el-input>
-            </el-form-item>
-            <el-form-item label="状态">
-              <el-select v-model="form.show" placeholder="请选择">
-                <el-option
-                  v-for="(item, index) of editState"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="onSubmit">保存</el-button>
@@ -245,7 +398,7 @@
                 :expand-on-click-node="false"
               >
                 <span class="custom-tree-node" slot-scope="{ node, data }">
-                  <span v-if="data.id != dataNum"
+                  <span class="custom-tree-list" v-if="data.id != dataNum"
                     ><i
                       v-if="
                         typeof data.id == 'number' || data.id.indexOf('-') == -1
@@ -1223,7 +1376,14 @@ export default {
       tableData4: [], //圈子
       dialogVisible: false,
       getproductDetail: "",
-      detailPng: { detail_img: [], parameter_img: [], numId: 0 }, //图文介绍
+      detailPng: {
+        detail_img: [],
+        parameter_img: [],
+        numId: 0,
+        kv: [],
+        orientation: [],
+        detail: [],
+      }, //图文介绍
       typeNum: 0,
       activeTab: "first", //说明书默认选中的tab
       openState: false, //说明书弹窗开闭
@@ -1434,11 +1594,28 @@ export default {
       };
       await productDetails(this.qs.stringify(params)).then((res) => {
         loading.close();
-        for (let i = 0; i < res.data.data.picture.length; i++) {
-          this.imgs.push(res.data.data.picture[i].value);
-          if (res.data.data.picture[i].main == 1) {
+        for (let i = 0; i < res.data.data.picture_array.scene.length; i++) {
+          this.imgs.push(res.data.data.picture_array.scene[i].value);
+          if (res.data.data.picture_array.scene[i].main == 1) {
             this.nIndex = i;
           }
+        }
+        for (let i = 0; i < res.data.data.picture_array.kv.length; i++) {
+          this.detailPng.kv.push(res.data.data.picture_array.kv[i].value);
+        }
+        for (let i = 0; i < res.data.data.picture_array.detail.length; i++) {
+          this.detailPng.detail.push(
+            res.data.data.picture_array.detail[i].value
+          );
+        }
+        for (
+          let i = 0;
+          i < res.data.data.picture_array.orientation.length;
+          i++
+        ) {
+          this.detailPng.orientation.push(
+            res.data.data.picture_array.orientation[i].value
+          );
         }
         console.log(this.form);
         this.form.name = res.data.data.name;
@@ -1562,6 +1739,24 @@ export default {
           arry.push(obj);
         }
       }
+      let arry1 = [];
+      // 修改kv图数据格式
+      for (let n = 0; n < this.detailPng.kv.length; n++) {
+        let obj = { value: this.detailPng.kv[n], main: 0 };
+        arry1.push(obj);
+      }
+      let arry2 = [];
+      // 修改方位图数据格式
+      for (let n = 0; n < this.detailPng.orientation.length; n++) {
+        let obj = { value: this.detailPng.orientation[n], main: 0 };
+        arry2.push(obj);
+      }
+      let arry3 = [];
+      // 修改细节图数据格式
+      for (let n = 0; n < this.detailPng.detail.length; n++) {
+        let obj = { value: this.detailPng.detail[n], main: 0 };
+        arry3.push(obj);
+      }
       let detail_img = "";
       for (let n = 0; n < this.detailPng.detail_img.length; n++) {
         detail_img = detail_img + this.detailPng.detail_img[n] + ",";
@@ -1601,7 +1796,12 @@ export default {
             sort: this.form.sort,
             details: this.productDetail,
             manual: this.productState,
-            picture: JSON.stringify(arry),
+            picture: JSON.stringify({
+              kv: arry1,
+              orientation: arry2,
+              detail: arry3,
+              scene: arry,
+            }),
             videos: JSON.stringify(this.picList),
             expand: expand,
             manual_id: state,
@@ -1622,7 +1822,12 @@ export default {
             parameter_img: parameter_img,
             details: this.productDetail,
             manual: this.productState,
-            picture: JSON.stringify(arry),
+            picture: JSON.stringify({
+              kv: arry1,
+              orientation: arry2,
+              detail: arry3,
+              scene: arry,
+            }),
             videos: JSON.stringify(this.picList),
             expand: expand,
             type_id: this.form.classify,
@@ -1653,7 +1858,12 @@ export default {
           sort: this.form.sort,
           image: this.form.dialogImageUrl,
           show: this.form.show,
-          picture: JSON.stringify(arry),
+          picture: JSON.stringify({
+            kv: arry1,
+            orientation: arry2,
+            detail: arry3,
+            scene: arry,
+          }),
         };
         productCreate(this.qs.stringify(params), { meta: 1 }).then((res) => {
           loading.close();
@@ -1882,10 +2092,19 @@ export default {
           this.detailPng.detail_img.push(
             `http://voice.xunsheng.org.cn/${res.key}`
           );
-        } else {
+        } else if (this.detailPng.numId == 4) {
+          console.log(444);
+          this.detailPng.kv.push(`http://voice.xunsheng.org.cn/${res.key}`);
+        } else if (this.detailPng.numId == 3) {
           this.detailPng.parameter_img.push(
             `http://voice.xunsheng.org.cn/${res.key}`
           );
+        } else if (this.detailPng.numId == 5) {
+          this.detailPng.orientation.push(
+            `http://voice.xunsheng.org.cn/${res.key}`
+          );
+        } else if (this.detailPng.numId == 6) {
+          this.detailPng.detail.push(`http://voice.xunsheng.org.cn/${res.key}`);
         }
         if (this.stateType) {
           createMater(
@@ -1964,8 +2183,17 @@ export default {
         this.imgs.splice(index, 1);
       } else if (n == 2) {
         this.detailPng.detail_img.splice(index, 1);
-      } else {
+      } else if (n == 3) {
         this.detailPng.parameter_img.splice(index, 1);
+      } else if (n == 4) {
+        //kv图
+        this.detailPng.kv.splice(index, 1);
+      } else if (n == 5) {
+        //方位图
+        this.detailPng.orientation.splice(index, 1);
+      } else if (n == 6) {
+        // 细节图
+        this.detailPng.detail.splice(index, 1);
       }
     },
     add(n, m) {
@@ -2017,7 +2245,7 @@ export default {
     pushList(val) {
       console.log(val);
       if (val[1] == 1) {
-        // 选择照片  判断添加图片的位置 1为封面图 2为详情图  3为参数图
+        // 选择照片  判断添加图片的位置 1为封面图 2为详情图  3为参数图 4为kv图 5为方位图
         if (this.detailPng.numId == 1) {
           let picList = [];
           picList = val[0].map((item) => item.file_path);
@@ -2026,6 +2254,20 @@ export default {
           let picList = [];
           picList = val[0].map((item) => item.file_path);
           this.detailPng.detail_img = this.detailPng.detail_img.concat(picList);
+        } else if (this.detailPng.numId == 4) {
+          let picList = [];
+          picList = val[0].map((item) => item.file_path);
+          this.detailPng.kv = this.detailPng.kv.concat(picList);
+        } else if (this.detailPng.numId == 5) {
+          let picList = [];
+          picList = val[0].map((item) => item.file_path);
+          this.detailPng.orientation = this.detailPng.orientation.concat(
+            picList
+          );
+        } else if (this.detailPng.numId == 6) {
+          let picList = [];
+          picList = val[0].map((item) => item.file_path);
+          this.detailPng.detail = this.detailPng.detail.concat(picList);
         } else {
           let picList = [];
           picList = val[0].map((item) => item.file_path);
@@ -2214,6 +2456,12 @@ export default {
   justify-content: space-between;
   font-size: 14px;
   padding-right: 8px;
+  .custom-tree-list {
+    width: 130px;
+    text-overflow: ellipsis; // 用省略号
+    overflow: hidden; // 超出部分隐藏
+    white-space: nowrap; // 文本不换行，这样超出一行的部分被截取，显示...
+  }
 }
 .fun-code {
   background: white;

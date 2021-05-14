@@ -61,6 +61,11 @@
             <span class="code-name">{{ scope.row.clsbdh }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="发动机号" align="center">
+          <template slot-scope="scope">
+            <span class="code-name">{{ scope.row.engine }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="流水码统计" align="center">
           <template slot-scope="scope">
             <span class="code-name">

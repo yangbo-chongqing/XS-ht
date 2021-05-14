@@ -276,6 +276,12 @@ export const constantRoutes = [
     name: 'help',
     meta: { title: '帮助' },
     component: () => import('@/views/workbench/help/help'),
+  },
+  {
+    path: '/entry',
+    name: 'entry',
+    meta: { title: '词条' },
+    component: () => import('@/views/entry/entry.vue'),
   }
 ]
 export const asyncRoutes = []

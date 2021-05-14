@@ -584,9 +584,12 @@ export default {
     ready(editorInstance) {
       this.ueData = this.value;
       this.editor = editorInstance;
+
+      this.$emit("transfereditor", { editor: this.editor });
       let entry = document.querySelector(".edui-for-entry");
       let contact = document.querySelector(".edui-for-contact");
       let information = document.querySelector(".edui-for-information");
+      let titlefont = document.querySelector(".edui-for-titlefont");
       // let updateBtn = document.querySelectorAll(".updateBtn");
       let update = document.querySelector(".edui-for-update");
       let allimage = document.querySelector(".edui-for-allimage");
@@ -858,17 +861,25 @@ export default {
         });
       }
     },
+    editGroup(n, index) {
+      if (n == 2) {
+        let box = this.fram.document.querySelector(`#group${index}`);
+        // console.log(box);
+        box.parentNode.removeChild(box);
+      }
+    },
     // 修改或者删除按钮
     updateOrDelete(e) {
+      console.log(e);
       // console.log(e.target);
+      // 图集操作
       if (e.target.dataset.deleteid) {
-        // console.log(
-        //   this.fram.document.querySelector(`#pic${e.target.dataset.deleteid}`)
-        // );
-
         this.addImageAll(2, e.target.dataset.deleteid);
       } else if (e.target.dataset.updateid) {
         this.addImageAll(1, e.target.dataset.updateid);
+      } else if (e.target.dataset.deletegroup) {
+        this.editGroup(2, e.target.dataset.deletegroup);
+      } else if (e.target.dataset.updategroup) {
       }
     },
   },
@@ -888,6 +899,10 @@ export default {
         .querySelector(".edui-editor-iframeholder")
         .querySelector("iframe").contentWindow.document.body;
       ifm.addEventListener("click", this.updateOrDelete);
+      ifm.addEventListener("click", (e) => {
+        // 富文本内a标签跳转
+        e.preventDefault();
+      });
       this.$emit("input", this.ueData);
     },
     mobHtml: function (val) {
@@ -1115,7 +1130,7 @@ export default {
     .add-document-list {
       width: 320px;
       position: fixed;
-      left: 230px;
+      left: 10px;
       top: 70px;
       background: white;
       padding: 20px;
